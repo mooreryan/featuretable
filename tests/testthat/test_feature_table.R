@@ -1,40 +1,4 @@
-################################################################################
-#### Test data #################################################################
-################################################################################
-
-nsamples <- 4
-nfeatures <- 5
-
-count_table <- matrix(0:19, nsamples, nfeatures)
-
-rownames(count_table) <- paste0("Sample_", 1:nsamples)
-colnames(count_table) <- paste0("Feature_", 1:nfeatures)
-
-feature_data <- data.frame(
-  Color = c("red", "red", "blue"),
-  Shape = c("square", "circle", "square"),
-  row.names = paste0("Feature_", c(1, 3, 5))
-)
-
-sample_data <- data.frame(
-  Location = c("Spain", "Portugal", "Spain"),
-  Season = c("Summer", "Winter", "Winter"),
-  row.names = paste0("Sample_", c(1, 2, 4))
-)
-
-feature_table <- FeatureTable$new(count_table, feature_data, sample_data)
-
-expected_sample_data <- data.frame(
-  Location = c("Spain", "Portugal", NA, "Spain"),
-  Season = c("Summer", "Winter", NA, "Winter"),
-  row.names = paste0("Sample_", 1:4)
-)
-
-expected_feature_data <- data.frame(
-  Color = c("red", NA, "red", NA, "blue"),
-  Shape = c("square", NA, "circle", NA, "square"),
-  row.names = paste0("Feature_", 1:5)
-)
+feature_table <- FeatureTable$new(testdata$count_table, testdata$feature_data, testdata$sample_data)
 
 expect_attribute <- function(thing, attr) {
   expect_true(exists(attr, thing))
@@ -62,41 +26,41 @@ test_that("FeatureTable has the right attributes", {
 })
 
 test_that("$new sets all the attributes correctly", {
-  ft <- FeatureTable$new(count_table, feature_data, sample_data, feature_table_rows_are_samples = TRUE)
+  ft <- FeatureTable$new(testdata$count_table, testdata$feature_data, testdata$sample_data, feature_table_rows_are_samples = TRUE)
 
-  expect_equal(ft$num_samples, nsamples)
-  expect_equal(ft$num_features, nfeatures)
+  expect_equal(ft$num_samples, testdata$nsamples)
+  expect_equal(ft$num_features, testdata$nfeatures)
 
-  expect_equal(ft$sample_names, rownames(count_table))
-  expect_equal(ft$feature_names, colnames(count_table))
+  expect_equal(ft$sample_names, rownames(testdata$count_table))
+  expect_equal(ft$feature_names, colnames(testdata$count_table))
 
-  expect_equal(ft$dim, c(nsamples, nfeatures))
-  expect_equal(ft$nrow, nsamples)
-  expect_equal(ft$ncol, nfeatures)
+  expect_equal(ft$dim, c(testdata$nsamples, testdata$nfeatures))
+  expect_equal(ft$nrow, testdata$nsamples)
+  expect_equal(ft$ncol, testdata$nfeatures)
 
-  expect_equal(ft$data, count_table)
-  expect_equal(ft$feature_data, expected_feature_data)
-  expect_equal(ft$sample_data, expected_sample_data)
+  expect_equal(ft$data, testdata$count_table)
+  expect_equal(ft$feature_data, testdata$expected_feature_data)
+  expect_equal(ft$sample_data, testdata$expected_sample_data)
 })
 
 test_that("$new transposes the feature_table if feature_table_rows_are_samples = FALSE", {
-  ft <- FeatureTable$new(t(count_table),
-                         feature_data,
-                         sample_data,
+  ft <- FeatureTable$new(t(testdata$count_table),
+                         testdata$feature_data,
+                         testdata$sample_data,
                          feature_table_rows_are_samples = FALSE)
 
-  expect_equal(dim(ft$data), dim(count_table))
+  expect_equal(dim(ft$data), dim(testdata$count_table))
 
-  expect_equal(ft$dim, dim(count_table))
-  expect_equal(c(ft$nrow, ft$ncol), dim(count_table))
-  expect_equal(c(ft$num_samples, ft$num_features), dim(count_table))
+  expect_equal(ft$dim, dim(testdata$count_table))
+  expect_equal(c(ft$nrow, ft$ncol), dim(testdata$count_table))
+  expect_equal(c(ft$num_samples, ft$num_features), dim(testdata$count_table))
 
-  expect_equal(ft$sample_names, rownames(count_table))
-  expect_equal(ft$feature_names, colnames(count_table))
+  expect_equal(ft$sample_names, rownames(testdata$count_table))
+  expect_equal(ft$feature_names, colnames(testdata$count_table))
 
-  expect_equal(ft$data, count_table)
-  expect_equal(ft$feature_data, expected_feature_data)
-  expect_equal(ft$sample_data, expected_sample_data)
+  expect_equal(ft$data, testdata$count_table)
+  expect_equal(ft$feature_data, testdata$expected_feature_data)
+  expect_equal(ft$sample_data, testdata$expected_sample_data)
 })
 
 test_that("$new raises error when feature_table argument isn'd a 2d thing", {
@@ -131,7 +95,7 @@ test_that("$new raises error when feature_table has > 2 dimensions", {
 ################################################################################
 
 test_that("$new raises error if sample_data is empty", {
-  expect_error(FeatureTable$new(count_table, sample_data = data.frame()),
+  expect_error(FeatureTable$new(testdata$count_table, sample_data = data.frame()),
                class = Error$ArgumentError)
 })
 
@@ -142,7 +106,7 @@ test_that("$new raises error if sample_data is empty", {
 test_that("$new raises error when sample_data has > 2 dimensions", {
   silly_data <- array(1:27, dim = c(3, 3, 3))
 
-  expect_error(FeatureTable$new(count_table, sample_data = silly_data), class = Error$ArgumentError)
+  expect_error(FeatureTable$new(testdata$count_table, sample_data = silly_data), class = Error$ArgumentError)
 })
 
 ################################################################################
@@ -160,7 +124,7 @@ test_that("$new gives good sample data even if there is only one sample", {
     Location = c(NA, "Portugal", NA, NA),
     row.names = paste0("Sample_", 1:4)
   )
-  ft <- FeatureTable$new(count_table, sample_data = sample_data)
+  ft <- FeatureTable$new(testdata$count_table, sample_data = sample_data)
   expect_equal(ft$sample_data, expected_sample_data)
 
   ## Multiple covariates
@@ -174,7 +138,7 @@ test_that("$new gives good sample data even if there is only one sample", {
     Season = c(NA, "Winter", NA, NA),
     row.names = paste0("Sample_", 1:4)
   )
-  ft <- FeatureTable$new(count_table, sample_data = sample_data)
+  ft <- FeatureTable$new(testdata$count_table, sample_data = sample_data)
   expect_equal(ft$sample_data, expected_sample_data)
 })
 
@@ -196,7 +160,7 @@ test_that("$new gives good sample data even with single covariate as data frame"
     row.names = paste0("Sample_", 1:4)
   )
 
-  ft <- FeatureTable$new(count_table, sample_data = sample_data)
+  ft <- FeatureTable$new(testdata$count_table, sample_data = sample_data)
 
   expect_equal(ft$sample_data, expected_sample_data)
 })
@@ -211,7 +175,7 @@ test_that("$new gives good sample data even with single covariate as a vector wi
     row.names = paste0("Sample_", 1:4)
   )
 
-  ft <- FeatureTable$new(count_table, sample_data = sample_data)
+  ft <- FeatureTable$new(testdata$count_table, sample_data = sample_data)
 
   expect_equal(ft$sample_data, expected_sample_data)
 })
@@ -221,7 +185,7 @@ test_that("$new gives good sample data even with single covariate as a vector wi
 test_that("$new raises error with 1d sample data with no names", {
   sample_data <- c("Spain", "Portugal", "Spain")
 
-  expect_error(FeatureTable$new(count_table, sample_data = sample_data),
+  expect_error(FeatureTable$new(testdata$count_table, sample_data = sample_data),
                class = Error$ArgumentError)
 })
 
@@ -229,14 +193,14 @@ test_that("$new raises error with 1d sample data that have no matches in feature
   sample_data <- c("Spain", "Portugal", "Spain")
   names(sample_data) <- letters[1:3]
 
-  expect_error(FeatureTable$new(count_table, sample_data = sample_data),
+  expect_error(FeatureTable$new(testdata$count_table, sample_data = sample_data),
                class = Error$ArgumentError)
 })
 
 test_that("$new gives a error if none of the samples have data in sample_data", {
   sample_data <- data.frame(Silly = c(TRUE, FALSE, TRUE), row.names = c("apple", "gie", "good"))
 
-  expect_error(FeatureTable$new(count_table, sample_data = sample_data),
+  expect_error(FeatureTable$new(testdata$count_table, sample_data = sample_data),
                class = Error$ArgumentError)
 })
 
@@ -252,7 +216,7 @@ test_that("$new gives a error if none of the samples have data in sample_data", 
 ################################################################################
 
 test_that("$new raises error if feature_data is empty", {
-  expect_error(FeatureTable$new(count_table, feature_data = data.frame()),
+  expect_error(FeatureTable$new(testdata$count_table, feature_data = data.frame()),
                class = Error$ArgumentError)
 })
 
@@ -263,7 +227,7 @@ test_that("$new raises error if feature_data is empty", {
 test_that("$new raises error when feature_data has > 2 dimensions", {
   silly_data <- array(1:27, dim = c(3, 3, 3))
 
-  expect_error(FeatureTable$new(count_table, feature_data = silly_data), class = Error$ArgumentError)
+  expect_error(FeatureTable$new(testdata$count_table, feature_data = silly_data), class = Error$ArgumentError)
 })
 
 ################################################################################
@@ -281,7 +245,7 @@ test_that("$new gives good feature data even if there is only one feature", {
     Color = c(NA, NA, "red", NA, NA),
     row.names = paste0("Feature_", 1:5)
   )
-  ft <- FeatureTable$new(count_table, feature_data = feature_data)
+  ft <- FeatureTable$new(testdata$count_table, feature_data = feature_data)
   expect_equal(ft$feature_data, expected_feature_data)
 
   ## Multiple covariates
@@ -295,7 +259,7 @@ test_that("$new gives good feature data even if there is only one feature", {
     Shape = c(NA, NA, "circle", NA, NA),
     row.names = paste0("Feature_", 1:5)
   )
-  ft <- FeatureTable$new(count_table, feature_data = feature_data)
+  ft <- FeatureTable$new(testdata$count_table, feature_data = feature_data)
   expect_equal(ft$feature_data, expected_feature_data)
 })
 
@@ -316,7 +280,7 @@ test_that("$new gives good feature data even with single covariate as data frame
     row.names = paste0("Feature_", 1:5)
   )
 
-  ft <- FeatureTable$new(count_table, feature_data = feature_data)
+  ft <- FeatureTable$new(testdata$count_table, feature_data = feature_data)
 
   expect_equal(ft$feature_data, expected_feature_data)
 })
@@ -331,7 +295,7 @@ test_that("$new gives good feature data even with single covariate as a vector w
     row.names = paste0("Feature_", 1:5)
   )
 
-  ft <- FeatureTable$new(count_table, feature_data = feature_data)
+  ft <- FeatureTable$new(testdata$count_table, feature_data = feature_data)
 
   expect_equal(ft$feature_data, expected_feature_data)
 })
@@ -341,7 +305,7 @@ test_that("$new gives good feature data even with single covariate as a vector w
 test_that("$new raises error with 1d feature data with no names", {
   feature_data <- c("red", "red", "blue")
 
-  expect_error(FeatureTable$new(count_table, feature_data = feature_data),
+  expect_error(FeatureTable$new(testdata$count_table, feature_data = feature_data),
                class = Error$ArgumentError)
 })
 
@@ -349,14 +313,14 @@ test_that("$new raises error with 1d sample data that have no matches in feature
   feature_data <- c("red", "red", "blue")
   names(feature_data) <- letters[1:3]
 
-  expect_error(FeatureTable$new(count_table, feature_data = feature_data),
+  expect_error(FeatureTable$new(testdata$count_table, feature_data = feature_data),
                class = Error$ArgumentError)
 })
 
 test_that("$new gives a error if none of the features have data in feature_data", {
   feature_data <- data.frame(Silly = c(TRUE, FALSE, TRUE), row.names = c("apple", "gie", "good"))
 
-  expect_error(FeatureTable$new(count_table, feature_data = feature_data),
+  expect_error(FeatureTable$new(testdata$count_table, feature_data = feature_data),
                class = Error$ArgumentError)
 })
 
