@@ -14,7 +14,7 @@ FeatureTable <- R6::R6Class(
 
     data = NULL,
 
-    # Rows are features, columns are stuff about the features.  TODO should it be hierarchical?
+    # Rows are features, columns are stuff about the features.  It currently isn't hierarchical.
     feature_data = NULL,
 
     # Rows are samples, columns are things about the samples.
@@ -34,6 +34,7 @@ FeatureTable <- R6::R6Class(
       }
 
       if (isFALSE(feature_table_rows_are_samples)) {
+        # Feature tables are always stored with the samples as the rows.
         self$data <- t(feature_table)
       } else {
         self$data <- feature_table
@@ -180,3 +181,6 @@ FeatureTable <- R6::R6Class(
   )
 )
 
+as.data.frame.FeatureTable <- function(ft) {
+  ft$data
+}
