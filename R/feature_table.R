@@ -60,6 +60,18 @@ FeatureTable <- R6::R6Class(
       if (!is.null(sample_data)) {
         private$handle_sample_data(sample_data)
       }
+    },
+
+    apply = function(margin, fn, ...) {
+      base::apply(X = self$data, MARGIN = margin, FUN = fn, ...)
+    },
+
+    apply_features = function(fn, ...) {
+      base::apply(X = self$data, MARGIN = 2, FUN = fn, ...)
+    },
+
+    apply_samples = function(fn, ...) {
+      base::apply(X = self$data, MARGIN = 1, FUN = fn, ...)
     }
   ),
   private = list(
