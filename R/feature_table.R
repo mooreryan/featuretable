@@ -66,6 +66,11 @@ FeatureTable <- R6::R6Class(
       base::apply(X = self$data, MARGIN = margin, FUN = fn, ...)
     },
 
+    # `fn` takes data and index
+    apply_with_index = function(margin, fn, ...) {
+      apply_with_index(self$data, margin, fn, ...)
+    },
+
     apply_features = function(fn, ...) {
       base::apply(X = self$data, MARGIN = 2, FUN = fn, ...)
     },
@@ -195,4 +200,40 @@ FeatureTable <- R6::R6Class(
 
 as.data.frame.FeatureTable <- function(ft) {
   ft$data
+}
+
+# Like `apply`, it coerces X to a matrix first.
+# FUN should take two arguments, whatever the MARGIN would have, plus the index.
+apply_with_index <- function(X, MARGIN, FUN, ...) {
+  if (!is.null(dim(MARGIN))) {
+    stop("MARGIN must be a scaler (1 or 2).")
+  }
+
+  if (length(dim(X)) != 2) {
+    stop("dim(X) must be 2.  Other stuff not implemented!")
+  } else {
+    X <- as.matrix(X)
+  }
+
+  if (MARGIN == 1) {
+    # By rows.
+    indices <- seq_len(nrow(X))
+
+    sapply(indices, function(i) {
+      dat <- X[i, ]
+
+      FUN(dat, i)
+    })
+  } else if (MARGIN == 2) {
+    # By cols.
+    indices <- seq_len(ncol(X))
+
+    sapply(indices, function(j) {
+      dat <- X[, j]
+
+      FUN(dat, j)
+    })
+  } else {
+    stop("MARGIN must be 1 or 2.")
+  }
 }
