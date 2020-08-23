@@ -62,6 +62,31 @@ FeatureTable <- R6::R6Class(
       }
     },
 
+    # TODO test me
+    print = function(...) {
+      cat("FeatureTable: \n")
+      cat("  data         -- ", self$num_samples, " samples, ", self$num_features, " features\n", sep = "")
+
+      if (!is.null(self$feature_data)) {
+        cat("  feature_data -- ",
+            ncol(self$feature_data),
+            " covariates for ",
+            nrow(self$feature_data),
+            " features\n",
+            sep = "")
+      }
+
+      if (!is.null(self$sample_data)) {
+        cat("  sample_data  -- ",
+            ncol(self$sample_data),
+            " covariates for ",
+            nrow(self$sample_data),
+            " samples\n", sep = "")
+      }
+
+      invisible(self)
+    },
+
     apply = function(margin, fn, ...) {
       base::apply(X = self$data, MARGIN = margin, FUN = fn, ...)
     },
@@ -170,6 +195,22 @@ FeatureTable <- R6::R6Class(
 
     map_samples_with_name = function(fn, ...) {
       self$map_with_name(1, fn, ...)
+    },
+
+    keep = function(margin, predicate, ...) {
+      if (margin == "features" || margin == 2) {
+        predicate_result <- self$apply(2, predicate, ...)
+        result <- self$data[, predicate_result]
+
+        FeatureTable$new(result, self$feature_data, self$sample_data)
+      } else if (margin == "samples" || margin == 1) {
+        predicate_result <- self$apply(1, predicate, ...)
+        result <- self$data[predicate_result, ]
+
+        FeatureTable$new(result, self$feature_data, self$sample_data)
+      } else {
+        stop("todo")
+      }
     }
   ),
   private = list(
