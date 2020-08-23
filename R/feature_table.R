@@ -88,18 +88,20 @@ FeatureTable <- R6::R6Class(
     },
 
     reduce = function(margin, fn, ...) {
-      # TODO check margin
+      if (length(margin) != 1 ||
+          (margin != 1 && margin != 2)) {
+        rlang::abort(sprintf("margin must be 1 or 2.  Got %s.", margin),
+                     class = Error$ArgumentError)
+      }
 
-      # Todo: Some special reducers will be slow: sum, prod, length, etc.
+      # TODO: Some special reducers will be slow: sum, prod, length, etc.
       result <- apply(X = self$data, MARGIN = margin, FUN = function(x) Reduce(fn, x, ...))
 
       if (length(result) != self$dim[margin]) {
-        # TODO check this
-        stop("something bad happened")
+        rlang::abort("something bad happened", class = Error$ImpossibleConditionError)
       } else {
         result
       }
-
     }
   ),
   private = list(

@@ -39,3 +39,17 @@ test_that("reduce margin 2 works", {
   names(expected_diffs) <- ft$feature_names
   expect_equal(ft$reduce(2, function(a, b) b - a), expected_diffs)
 })
+
+test_that("reduce gives an error when you're not actually sending a reduce type function", {
+  ft <- FeatureTable$new(testdata$count_table)
+
+  expect_error(ft$reduce(2, sqrt))
+})
+
+test_that("reduce with margin not 1 or 2 raises an error", {
+  ft <- FeatureTable$new(testdata$count_table)
+
+  expect_error(ft$reduce(1:2, sum), class = Error$ArgumentError)
+  expect_error(ft$reduce(0, sum), class = Error$ArgumentError)
+  expect_error(ft$reduce(3, sum), class = Error$ArgumentError)
+})
