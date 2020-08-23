@@ -102,6 +102,14 @@ FeatureTable <- R6::R6Class(
       } else {
         result
       }
+    },
+
+    reduce_features = function(fn, ...) {
+      self$reduce(2, fn, ...)
+    },
+
+    reduce_samples = function(fn, ...) {
+      self$reduce(1, fn, ...)
     }
   ),
   private = list(

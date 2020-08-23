@@ -11,12 +11,24 @@ test_that("reduce margin 1 works", {
   expect_equal(ft$reduce(1, `+`), expected_sums)
   expect_equal(ft$reduce(1, function(a, b) a + b, init = 100), expected_sums + 100)
 
+  # And check the helper version.
+  expect_equal(ft$reduce_samples(sum), ft$reduce(1, sum))
+  expect_equal(ft$reduce_samples(`+`), ft$reduce(1, `+`))
+  expect_equal(ft$reduce_samples(function(a, b) a + b, init = 100),
+               ft$reduce(1, function(a, b) a + b, init = 100))
+
+
   expect_equal(ft$reduce(1, `-`), expected_diffs)
   expect_equal(ft$reduce(1, function(a, b) a - b), expected_diffs)
+
+  # And the helper version
+  expect_equal(ft$reduce_samples(`-`), ft$reduce(1, `-`))
+  expect_equal(ft$reduce_samples(function(a, b) a - b), ft$reduce(1, function(a, b) a - b))
 
   expected_diffs <- c(8, 9, 10, 11)
   names(expected_diffs) <- ft$sample_names
   expect_equal(ft$reduce(1, function(a, b) b - a), expected_diffs)
+  expect_equal(ft$reduce_samples(function(a, b) b - a), ft$reduce(1, function(a, b) b - a))
 })
 
 test_that("reduce margin 2 works", {
@@ -32,12 +44,26 @@ test_that("reduce margin 2 works", {
   expect_equal(ft$reduce(2, `+`), expected_sums)
   expect_equal(ft$reduce(2, function(a, b) a + b, init = 100), expected_sums + 100)
 
+  # Test helpers
+  expect_equal(ft$reduce_features(sum), ft$reduce(2, sum))
+  expect_equal(ft$reduce_features(`+`), ft$reduce(2, `+`))
+  expect_equal(ft$reduce_features(function(a, b) a + b, init = 100),
+               ft$reduce(2, function(a, b) a + b, init = 100))
+
+
   expect_equal(ft$reduce(2, `-`), expected_diffs)
   expect_equal(ft$reduce(2, function(a, b) a - b), expected_diffs)
+
+  # Test helpers
+  expect_equal(ft$reduce_features(`-`), ft$reduce(2, `-`))
+  expect_equal(ft$reduce_features(function(a, b) a - b),
+               ft$reduce(2, function(a, b) a - b))
 
   expected_diffs <- c(2, 2, 2, 2, 2)
   names(expected_diffs) <- ft$feature_names
   expect_equal(ft$reduce(2, function(a, b) b - a), expected_diffs)
+  expect_equal(ft$reduce_features(function(a, b) b - a),
+               ft$reduce(2, function(a, b) b - a))
 })
 
 test_that("reduce gives an error when you're not actually sending a reduce type function", {
