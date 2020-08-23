@@ -124,23 +124,11 @@ FeatureTable <- R6::R6Class(
     },
 
     map = function(margin, fn, ...) {
-      if (margin == 1) {
-        result <- t(self$apply(margin, fn, ...))
-      } else if (margin == 2) {
-        result <- self$apply(margin, fn, ...)
-      } else {
-        rlang::abort(sprintf("margin should be 1 or 2.  Got %s.", margin),
-                     class = Error$ArgumentError)
-      }
+      private$map_wrapper(self$apply, margin, fn, ...)
+    },
 
-      if (is.null(dim(result)) ||
-          !isTRUE(all.equal(dim(result), dim(self$data)))) {
-        rlang::abort(sprintf("Dimension of result is wrong.  Should be %s. Check your mapping function.",
-                             paste(dim(self$data), collapse = ", ")),
-                     class = Error$BadFunctionError)
-      }
-
-      FeatureTable$new(result, feature_data = self$feature_data, sample_data = self$sample_data)
+    map_with_index = function(margin, fn, ...) {
+      private$map_wrapper(self$apply_with_index, margin, fn, ...)
     },
 
     map_features = function(fn, ...) {
@@ -266,6 +254,26 @@ FeatureTable <- R6::R6Class(
 
       # Ensure correct rownames are there in case there are more samples in feature_table than sample_data.
       rownames(self$sample_data) <- rownames(self$data)
+    },
+
+    map_wrapper = function(apply_fn, margin, fn, ...) {
+      if (margin == 1) {
+        result <- t(apply_fn(margin, fn, ...))
+      } else if (margin == 2) {
+        result <- apply_fn(margin, fn, ...)
+      } else {
+        rlang::abort(sprintf("margin should be 1 or 2.  Got %s.", margin),
+                     class = Error$ArgumentError)
+      }
+
+      if (is.null(dim(result)) ||
+          !isTRUE(all.equal(dim(result), dim(self$data)))) {
+        rlang::abort(sprintf("Dimension of result is wrong.  Should be %s. Check your mapping function.",
+                             paste(dim(self$data), collapse = ", ")),
+                     class = Error$BadFunctionError)
+      }
+
+      FeatureTable$new(result, feature_data = self$feature_data, sample_data = self$sample_data)
     }
   )
 )
@@ -274,6 +282,8 @@ as.data.frame.FeatureTable <- function(ft) {
   ft$data
 }
 
+# TODO Might not give you dimnames
+#
 # Like `apply`, it coerces X to a matrix first.
 # FUN should take two arguments, whatever the MARGIN would have, plus the index.
 apply_with_index <- function(X, MARGIN, FUN, ...) {
@@ -295,20 +305,56 @@ apply_with_index <- function(X, MARGIN, FUN, ...) {
     # By rows.
     indices <- seq_len(nrow(X))
 
-    sapply(indices, function(i) {
+    result <- sapply(indices, function(i) {
       dat <- X[i, ]
 
-      FUN(dat, i)
+      FUN(dat, i, ...)
     })
+
+    if (is.null(dim(result))) {
+      # vector type result....reducer type function
+      if (is.null(names(result)) && length(result) == nrow(X) && !is.null(rownames(X))) {
+        names(result) <- rownames(X)
+      }
+    } else {
+      if (nrow(result) == ncol(X) && ncol(result) == nrow(X)) {
+        if (!is.null(rownames(X)) && !is.null(colnames(X))) {
+          # TODO if the dimnames have 'names' for the dimension this won't come through.
+          rownames(result) <- colnames(X)
+          colnames(result) <- rownames(X)
+        }
+      } else {
+        rlang::abort("this shouldn't happen", class = Error$ImpossibleConditionError)
+      }
+    }
+
+    result
   } else if (MARGIN == 2) {
     # By cols.
     indices <- seq_len(ncol(X))
 
-    sapply(indices, function(j) {
+    result <- sapply(indices, function(j) {
       dat <- X[, j]
 
-      FUN(dat, j)
+      FUN(dat, j, ...)
     })
+
+    if (is.null(dim(result))) {
+      # vector type result ...reducer type function
+      if (is.null(names(result)) && length(result) == ncol(X) && !is.null(colnames(X))) {
+        names(result) <- colnames(X)
+      }
+    } else {
+      if (isTRUE(all.equal(dim(result), dim(X)))) {
+        # TODO dimnames would probably be better...but to match the margin 1 case, just copy individually.
+        #dimnames(result) <- dimnames(X)
+        rownames(result) <- rownames(X)
+        colnames(result) <- colnames(X)
+      }
+    }
+
+
+    result
   } else {
     stop("MARGIN must be 1 or 2.")
   }
