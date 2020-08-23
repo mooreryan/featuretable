@@ -1,6 +1,7 @@
+
 # Like `apply`, it coerces X to a matrix first.
 # FUN should take two arguments, whatever the MARGIN would have, plus the index.
-apply_with_index <- function(X, MARGIN, FUN, ...) {
+apply_with_wrapper <- function(which, X, MARGIN, FUN, ...) {
   if (length(MARGIN) != 1) {
     stop("MARGIN must be a scaler (1 or 2).")
   }
@@ -17,7 +18,19 @@ apply_with_index <- function(X, MARGIN, FUN, ...) {
 
   if (MARGIN == 1) {
     # By rows.
-    indices <- seq_len(nrow(X))
+    if (which == "index") {
+      indices <- seq_len(nrow(X))
+    } else if (which == "name") {
+      indices <- rownames(X)
+
+      if (is.null(indices)) {
+        # Raise error as this is likely NOT what the user intended.
+        rlang::abort("Tried to apply_with_name on margin 1 of object with no rownames",
+                     class = Error$Error)
+      }
+    } else {
+      stop("beep boop bop")
+    }
 
     result <- sapply(indices, function(i) {
       dat <- X[i, ]
@@ -62,7 +75,19 @@ apply_with_index <- function(X, MARGIN, FUN, ...) {
     result
   } else if (MARGIN == 2) {
     # By cols.
-    indices <- seq_len(ncol(X))
+    if (which == "index") {
+      indices <- seq_len(ncol(X))
+    } else if (which == "name") {
+      indices <- colnames(X)
+
+      if (is.null(indices)) {
+        # Raise error as this is likely NOT what the user intended.
+        rlang::abort("Tried to apply_with_name on margin 2 of object with no colnames",
+                     class = Error$Error)
+      }
+    } else {
+      stop("SCHMOOPY")
+    }
 
     result <- sapply(indices, function(j) {
       dat <- X[, j]
@@ -85,4 +110,12 @@ apply_with_index <- function(X, MARGIN, FUN, ...) {
   } else {
     stop("MARGIN must be 1 or 2.")
   }
+}
+
+apply_with_index <- function(X, MARGIN, FUN, ...) {
+  apply_with_wrapper("index", X, MARGIN, FUN, ...)
+}
+
+apply_with_name <- function(X, MARGIN, FUN, ...) {
+  apply_with_wrapper("name", X, MARGIN, FUN, ...)
 }

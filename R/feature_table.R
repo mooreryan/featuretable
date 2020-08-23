@@ -71,6 +71,11 @@ FeatureTable <- R6::R6Class(
       apply_with_index(self$data, margin, fn, ...)
     },
 
+    # `fn` takes data and name
+    apply_with_name = function(margin, fn, ...) {
+      apply_with_name(self$data, margin, fn, ...)
+    },
+
     apply_features = function(fn, ...) {
       base::apply(X = self$data, MARGIN = 2, FUN = fn, ...)
     },
@@ -79,12 +84,20 @@ FeatureTable <- R6::R6Class(
       self$apply_with_index(margin = 2, fn, ...)
     },
 
+    apply_features_with_name = function(fn, ...) {
+      self$apply_with_name(margin = 2, fn, ...)
+    },
+
     apply_samples = function(fn, ...) {
       base::apply(X = self$data, MARGIN = 1, FUN = fn, ...)
     },
 
     apply_samples_with_index = function(fn, ...) {
       self$apply_with_index(margin = 1, fn, ...)
+    },
+
+    apply_samples_with_name = function(fn, ...) {
+      self$apply_with_name(margin = 1, fn, ...)
     },
 
     reduce = function(margin, fn, ...) {
@@ -131,12 +144,32 @@ FeatureTable <- R6::R6Class(
       private$map_wrapper(self$apply_with_index, margin, fn, ...)
     },
 
+    map_with_name = function(margin, fn, ...) {
+      private$map_wrapper(self$apply_with_name, margin, fn, ...)
+    },
+
     map_features = function(fn, ...) {
       self$map(2, fn, ...)
     },
 
+    map_features_with_index = function(fn, ...) {
+      self$map_with_index(2, fn, ...)
+    },
+
+    map_features_with_name = function(fn, ...) {
+      self$map_with_name(2, fn, ...)
+    },
+
     map_samples = function(fn, ...) {
       self$map(1, fn, ...)
+    },
+
+    map_samples_with_index = function(fn, ...) {
+      self$map_with_index(1, fn, ...)
+    },
+
+    map_samples_with_name = function(fn, ...) {
+      self$map_with_name(1, fn, ...)
     }
   ),
   private = list(
