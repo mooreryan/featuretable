@@ -36,6 +36,24 @@ test_that("apply_features applies fn to samples", {
   expect_equal(result, expected_result)
 })
 
+test_that("apply_with_index with 2d margin raises error", {
+  ft <- FeatureTable$new(testdata$count_table)
+
+  expect_error(ft$apply_with_index(1:2, function(x, i) x + i))
+})
+
+test_that("apply_with_index with non-2d array input raises error", {
+  ary <- array(1:27, dim = c(3, 3, 3))
+
+  expect_error(apply_with_index(ary, 1:2, function(x, i) x + i))
+})
+
+test_that("apply_with_index raises error with bad function", {
+  ft <- FeatureTable$new(testdata$count_table)
+
+  expect_error(ft$apply_with_index(2, function(x) x))
+})
+
 test_that("apply_with_index margin 1 works", {
   zeros <- as.data.frame(matrix(0, nrow = 2, ncol = 3,
                                 dimnames = list(paste0("row_", 1:2),

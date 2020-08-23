@@ -213,7 +213,11 @@ as.data.frame.FeatureTable <- function(ft) {
 # Like `apply`, it coerces X to a matrix first.
 # FUN should take two arguments, whatever the MARGIN would have, plus the index.
 apply_with_index <- function(X, MARGIN, FUN, ...) {
-  if (!is.null(dim(MARGIN))) {
+  if (length(MARGIN) != 1) {
+    stop("MARGIN must be a scaler (1 or 2).")
+  }
+
+  if (MARGIN != 1 && MARGIN != 2) {
     stop("MARGIN must be a scaler (1 or 2).")
   }
 
