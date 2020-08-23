@@ -134,17 +134,21 @@ FeatureTable <- R6::R6Class(
       }
 
       if (is.null(dim(result)) ||
-          !all.equal(dim(result), dim(self$data))) {
+          !isTRUE(all.equal(dim(result), dim(self$data)))) {
         rlang::abort(sprintf("Dimension of result is wrong.  Should be %s. Check your mapping function.",
                              paste(dim(self$data), collapse = ", ")),
                      class = Error$BadFunctionError)
       }
 
-      if (all.equal(dim(result), dim(self$data))) {
-        FeatureTable$new(result, feature_data = self$feature_data, sample_data = self$sample_data)
-      } else {
-        rlang::abort("shouldn't be able to get here", class = Error$ImpossibleConditionError)
-      }
+      FeatureTable$new(result, feature_data = self$feature_data, sample_data = self$sample_data)
+    },
+
+    map_features = function(fn, ...) {
+      self$map(2, fn, ...)
+    },
+
+    map_samples = function(fn, ...) {
+      self$map(1, fn, ...)
     }
   ),
   private = list(
