@@ -82,7 +82,6 @@ test_that("apply_with_index margin 2 works", {
   })
   expect_equal(result, expected)
 
-
   result <- apply_with_index(zeros, 2, function(x, i) {
     i
   })
@@ -118,5 +117,24 @@ test_that("apply_with_index (feature table) works", {
 
   expect_equal(result, expected)
 })
+
+test_that("apply_samples_with_index is an helper for MARGIN = 1", {
+  ft <- FeatureTable$new(testdata$count_table)
+
+  expect_equal(
+    ft$apply_with_index(1, function(x, i, y) x + i, y = 10),
+    ft$apply_samples_with_index(function(x, i, y) x + i, y = 10)
+  )
+})
+
+test_that("apply_features_with_index is an helper for MARGIN = 2", {
+  ft <- FeatureTable$new(testdata$count_table)
+
+  expect_equal(
+    ft$apply_with_index(2, function(x, i, y) x + i, 10),
+    ft$apply_features_with_index(function(x, i, y) x + i, 10)
+  )
+})
+
 
 

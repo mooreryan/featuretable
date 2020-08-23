@@ -75,8 +75,16 @@ FeatureTable <- R6::R6Class(
       base::apply(X = self$data, MARGIN = 2, FUN = fn, ...)
     },
 
+    apply_features_with_index = function(fn, ...) {
+      self$apply_with_index(margin = 2, fn, ...)
+    },
+
     apply_samples = function(fn, ...) {
       base::apply(X = self$data, MARGIN = 1, FUN = fn, ...)
+    },
+
+    apply_samples_with_index = function(fn, ...) {
+      self$apply_with_index(margin = 1, fn, ...)
     }
   ),
   private = list(
