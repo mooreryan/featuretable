@@ -57,7 +57,7 @@ test_that("map raises error if the margin isn't correct", {
   expect_error(ft$map(3, sum), class = Error$ArgumentError)
 })
 
-test_that("map_with_index works", {
+test_that("basic map_with_index margin 2 works", {
   ft <- FeatureTable$new(testdata$count_table,
                          feature_data = testdata$feature_data,
                          sample_data = testdata$sample_data)
@@ -75,8 +75,8 @@ test_that("map_with_index works", {
     ncol = 5,
     byrow = TRUE,
     dimnames = list(
-      paste0("Sample_", 1:4),
-      paste0("Feature_", 1:5)
+      Samples = paste0("Sample_", 1:4),
+      Features = paste0("Feature_", 1:5)
     )
   )
 
@@ -87,3 +87,12 @@ test_that("map_with_index works", {
   expect_equal(result, expected_result)
 })
 
+test_that("basic map_with_index margin 1 works", {
+  ft <- FeatureTable$new(testdata$count_table,
+                         feature_data = testdata$feature_data,
+                         sample_data = testdata$sample_data)
+
+  result <- ft$map_with_index(1, function(x, i) x)
+
+  expect_equal(result, ft)
+})

@@ -2,8 +2,8 @@ testdata <- list(
   nsamples = 4,
   nfeatures = 5,
   count_table = matrix(0:19, 4, 5,
-                       dimnames = list(paste0("Sample_", 1:4),
-                                       paste0("Feature_", 1:5))),
+                       dimnames = list(Samples = paste0("Sample_", 1:4),
+                                       Features = paste0("Feature_", 1:5))),
 
   feature_data = data.frame(
     Color = c("red", "red", "blue"),

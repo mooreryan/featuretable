@@ -295,8 +295,22 @@ test_that("apply_with_index gives same answer as apply", {
     ft$apply(2, function(x, y, z) sum(x + y + z), y = 10, z = 0.1),
     ft$apply_with_index(2, function(x, i, y, z) sum(x + y + z), y = 10, z = 0.1)
   )
-
 })
 
+test_that("apply with index does fine with unnamed dimnames", {
+  dat <- matrix(1:6, 2, 3, dimnames = list(letters[1:2], paste0(letters[1:3], 1:3)))
 
+  expect_equal(
+    apply(dat, 1, function(x) x * 10),
+    apply_with_index(dat, 1, function(x, i) x * 10)
+  )
+})
 
+test_that("apply with index does fine with no dimnames", {
+  dat <- matrix(1:6, 2, 3)
+
+  expect_equal(
+    apply(dat, 1, function(x) x * 10),
+    apply_with_index(dat, 1, function(x, i) x * 10)
+  )
+})

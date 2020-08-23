@@ -319,9 +319,27 @@ apply_with_index <- function(X, MARGIN, FUN, ...) {
     } else {
       if (nrow(result) == ncol(X) && ncol(result) == nrow(X)) {
         if (!is.null(rownames(X)) && !is.null(colnames(X))) {
-          # TODO if the dimnames have 'names' for the dimension this won't come through.
-          rownames(result) <- colnames(X)
-          colnames(result) <- rownames(X)
+          # This bit of code is tricky, but we want to get the same named dimnames if the dimnames are in fact named.
+
+          # Technically, I could just transpose X and get the dimnames of that.
+
+          tmp <- list()
+
+          margin_2_orig_name <- names(dimnames(X)[2])
+          if (is.null(margin_2_orig_name)) {
+            tmp[[1]] <- dimnames(X)[[2]]
+          } else {
+            tmp[[margin_2_orig_name]] <- dimnames(X)[[2]]
+          }
+
+          margin_1_orig_name <- names(dimnames(X)[1])
+          if (is.null(margin_1_orig_name)) {
+            tmp[[2]] <- dimnames(X)[[1]]
+          } else {
+            tmp[[margin_1_orig_name]] <- dimnames(X)[[1]]
+          }
+
+          dimnames(result) <- tmp
         }
       } else {
         rlang::abort("this shouldn't happen", class = Error$ImpossibleConditionError)
@@ -347,9 +365,9 @@ apply_with_index <- function(X, MARGIN, FUN, ...) {
     } else {
       if (isTRUE(all.equal(dim(result), dim(X)))) {
         # TODO dimnames would probably be better...but to match the margin 1 case, just copy individually.
-        #dimnames(result) <- dimnames(X)
-        rownames(result) <- rownames(X)
-        colnames(result) <- colnames(X)
+        dimnames(result) <- dimnames(X)
+        #rownames(result) <- rownames(X)
+        #colnames(result) <- colnames(X)
       }
     }
 
