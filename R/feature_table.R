@@ -85,6 +85,21 @@ FeatureTable <- R6::R6Class(
 
     apply_samples_with_index = function(fn, ...) {
       self$apply_with_index(margin = 1, fn, ...)
+    },
+
+    reduce = function(margin, fn, ...) {
+      # TODO check margin
+
+      # Todo: Some special reducers will be slow: sum, prod, length, etc.
+      result <- apply(X = self$data, MARGIN = margin, FUN = function(x) Reduce(fn, x, ...))
+
+      if (length(result) != self$dim[margin]) {
+        # TODO check this
+        stop("something bad happened")
+      } else {
+        result
+      }
+
     }
   ),
   private = list(
