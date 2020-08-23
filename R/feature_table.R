@@ -121,6 +121,30 @@ FeatureTable <- R6::R6Class(
       } else {
         result
       }
+    },
+
+    map = function(margin, fn, ...) {
+      if (margin == 1) {
+        result <- t(self$apply(margin, fn, ...))
+      } else if (margin == 2) {
+        result <- self$apply(margin, fn, ...)
+      } else {
+        rlang::abort(sprintf("margin should be 1 or 2.  Got %s.", margin),
+                     class = Error$ArgumentError)
+      }
+
+      if (is.null(dim(result)) ||
+          !all.equal(dim(result), dim(self$data))) {
+        rlang::abort(sprintf("Dimension of result is wrong.  Should be %s. Check your mapping function.",
+                             paste(dim(self$data), collapse = ", ")),
+                     class = Error$BadFunctionError)
+      }
+
+      if (all.equal(dim(result), dim(self$data))) {
+        FeatureTable$new(result, feature_data = self$feature_data, sample_data = self$sample_data)
+      } else {
+        rlang::abort("shouldn't be able to get here", class = Error$ImpossibleConditionError)
+      }
     }
   ),
   private = list(
