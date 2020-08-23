@@ -1,4 +1,6 @@
 Error <- list(
   ArgumentError = "ArgumentError",
-  ImpossibleConditionError = "ImpossibleConditionError"
+  ImpossibleConditionError = "ImpossibleConditionError",
+  # A basic error.
+  Error = "Error"
 )

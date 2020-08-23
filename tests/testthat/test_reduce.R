@@ -79,3 +79,15 @@ test_that("reduce with margin not 1 or 2 raises an error", {
   expect_error(ft$reduce(0, sum), class = Error$ArgumentError)
   expect_error(ft$reduce(3, sum), class = Error$ArgumentError)
 })
+
+test_that("reduce_all reduces on all values in the feature_table", {
+  ft <- FeatureTable$new(testdata$count_table)
+
+  expect_equal(ft$reduce_all(sum), sum(ft$data))
+})
+
+test_that("reduce_all raises error on non reduce style function", {
+  ft <- FeatureTable$new(testdata$count_table)
+
+  expect_error(ft$reduce_all(sqrt))
+})

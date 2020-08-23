@@ -110,6 +110,17 @@ FeatureTable <- R6::R6Class(
 
     reduce_samples = function(fn, ...) {
       self$reduce(1, fn, ...)
+    },
+
+    reduce_all = function(fn, ...) {
+      result <- Reduce(fn, self$data, ...)
+
+      if (length(result) != 1) {
+        rlang::abort(sprintf("Length of result should be 1. Got %d", length(result)),
+                     class = Error$Error)
+      } else {
+        result
+      }
     }
   ),
   private = list(
