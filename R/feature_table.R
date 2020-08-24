@@ -199,6 +199,9 @@ FeatureTable <- R6::R6Class(
 
     keep = function(margin, predicate, ...) {
       if (margin == "features" || margin == 2) {
+        # Let the user have access to the feature_data
+        predicate <- rlang::eval_tidy(rlang::enquo(predicate), self$feature_data)
+
         if (isTRUE(is(predicate, "function"))) {
           predicate_result <- self$apply(2, predicate, ...)
         } else {
@@ -243,6 +246,9 @@ FeatureTable <- R6::R6Class(
 
         FeatureTable$new(result, self$feature_data, self$sample_data)
       } else if (margin == "samples" || margin == 1) {
+        # Let the user have access to the sample_data
+        predicate <- rlang::eval_tidy(rlang::enquo(predicate), self$sample_data)
+
         if (isTRUE(is(predicate, "function"))) {
           predicate_result <- self$apply(1, predicate, ...)
         } else {
@@ -291,10 +297,14 @@ FeatureTable <- R6::R6Class(
     },
 
     keep_features = function(predicate, ...) {
+      predicate <- rlang::eval_tidy(rlang::enquo(predicate), self$feature_data)
+
       self$keep(2, predicate, ...)
     },
 
     keep_samples = function(predicate, ...) {
+      predicate <- rlang::eval_tidy(rlang::enquo(predicate), self$sample_data)
+
       self$keep(1, predicate, ...)
     }
   ),

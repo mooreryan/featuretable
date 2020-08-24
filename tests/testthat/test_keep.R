@@ -30,10 +30,6 @@
 #   )
 # )
 
-#### With predicate functions
-####
-####
-
 test_that("keep can filter wrt features with a predicate function or logical vec", {
   ft <- FeatureTable$new(testdata$count_table,
                          feature_data = testdata$feature_data,
@@ -178,7 +174,6 @@ test_that("keep raises error if a vec of incorrect length is predicate", {
                          feature_data = testdata$feature_data,
                          sample_data = testdata$sample_data)
 
-  print("hey ryan")
   expect_error(ft$keep(1, rep(TRUE, 10)), class = Error$IncorrectLengthError)
   expect_error(ft$keep(2, rep(TRUE, 10)), class = Error$IncorrectLengthError)
 })
@@ -213,8 +208,49 @@ test_that("the aliases work like base keep", {
   )
 })
 
-test_that
+test_that("the sample data is available when the margin is samples (1)", {
+  ft <- FeatureTable$new(testdata$count_table,
+                         feature_data = testdata$feature_data,
+                         sample_data = testdata$sample_data)
 
-# aliases
-# TODO with non function predicate tidyeval
+  result <- ft$keep("samples", Location == "Spain")
+  expected <- FeatureTable$new(
+    matrix(testdata$count_table[c(1, 4), ],
+           nrow = 2, ncol = 5,
+           dimnames = list(Samples = c("Sample_1", "Sample_4"),
+                           Features = paste0("Feature_", 1:5))),
+    feature_data = testdata$feature_data,
+    sample_data = testdata$sample_data
+  )
+  expect_equal(result, expected)
+
+  expect_equal(ft$keep_samples(Location == "Spain"), expected)
+
+  # Boop
+  expect_equal(ft$keep_samples(ft$sample_data$Location == "Spain"),
+               ft$keep_samples(Location == "Spain"))
+})
+
+test_that("the feature data is available when the margin is features (2)", {
+  ft <- FeatureTable$new(testdata$count_table,
+                         feature_data = testdata$feature_data,
+                         sample_data = testdata$sample_data)
+
+  result <- ft$keep("features", Color == "red")
+  expected <- FeatureTable$new(
+    matrix(testdata$count_table[, c(1, 3)],
+           nrow = 4, ncol = 2,
+           dimnames = list(Samples = paste0("Sample_", 1:4),
+                           Features = c("Feature_1", "Feature_3"))),
+    feature_data = testdata$feature_data,
+    sample_data = testdata$sample_data
+  )
+  expect_equal(result, expected)
+
+  expect_equal(ft$keep_features(Color == "red"), expected)
+
+  # Boop
+  expect_equal(ft$keep_features(ft$feature_data$Color == "red"),
+               ft$keep_features(Color == "red"))
+})
 
