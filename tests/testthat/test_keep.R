@@ -183,6 +183,21 @@ test_that("keep raises error if a vec of incorrect length is predicate", {
   expect_error(ft$keep(2, rep(TRUE, 10)), class = Error$IncorrectLengthError)
 })
 
-# TODO with non function predicate
+test_that("NAs in the predicate result get treated like FALSE", {
+  ft <- FeatureTable$new(testdata$count_table,
+                         feature_data = testdata$feature_data,
+                         sample_data = testdata$sample_data)
+
+  expect_equal(
+    ft$keep(1, c(TRUE, TRUE, FALSE, FALSE)),
+    ft$keep(1, c(TRUE, TRUE, NA, NA))
+  )
+  expect_equal(
+    ft$keep(2, c(TRUE, TRUE, FALSE, FALSE, FALSE)),
+    ft$keep(2, c(TRUE, TRUE, NA, NA, NA))
+  )
+})
+
+# TODO test NA
 # TODO with non function predicate tidyeval
 

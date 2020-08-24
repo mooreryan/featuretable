@@ -221,6 +221,9 @@ FeatureTable <- R6::R6Class(
           )
         }
 
+        # Change all NA to FALSE.
+        predicate_result <- ifelse(is.na(predicate_result), FALSE, predicate_result)
+
         if (sum(predicate_result) == 0) {
           rlang::abort("No features remaining after filtering",
                        class = Error$NoFeaturesRemainingError)
@@ -261,6 +264,9 @@ FeatureTable <- R6::R6Class(
             class = Error$IncorrectLengthError
           )
         }
+
+        # Change all NA to FALSE.
+        predicate_result <- ifelse(is.na(predicate_result), FALSE, predicate_result)
 
         if (sum(predicate_result) == 0) {
           rlang::abort("No samples remaining after filtering",
