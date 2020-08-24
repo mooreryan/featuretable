@@ -3,5 +3,9 @@ Error <- list(
   ImpossibleConditionError = "ImpossibleConditionError",
   # A basic error.
   Error = "Error",
-  BadFunctionError = "BadFunctionError"
+  BadFunctionError = "BadFunctionError",
+  NoSamplesRemainingError = "NoSamplesRemainingError",
+  NoFeaturesRemainingError = "NoFeaturesRemainingError",
+  NonPredicateFunctionError = "NonPredicateFunctionError",
+  IncorrectLengthError = "IncorrectLengthError"
 )

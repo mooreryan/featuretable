@@ -199,13 +199,84 @@ FeatureTable <- R6::R6Class(
 
     keep = function(margin, predicate, ...) {
       if (margin == "features" || margin == 2) {
-        predicate_result <- self$apply(2, predicate, ...)
-        result <- self$data[, predicate_result]
+        if (isTRUE(is(predicate, "function"))) {
+          predicate_result <- self$apply(2, predicate, ...)
+        } else {
+          predicate_result <- predicate
+        }
+
+        if (isFALSE(is(predicate_result, "logical"))) {
+          rlang::abort("Predicate result was not logical.  Check your predicate function.",
+                       class = Error$NonPredicateFunctionError)
+        }
+
+        if (length(predicate_result) != self$num_features) {
+          rlang::abort(
+            sprintf(
+              "Predicate result should have length %s. Got %s. Check your predicate!",
+              self$num_features,
+              length(predicate_result)
+            ),
+            class = Error$IncorrectLengthError
+          )
+        }
+
+        if (sum(predicate_result) == 0) {
+          rlang::abort("No features remaining after filtering",
+                       class = Error$NoFeaturesRemainingError)
+        } else if (sum(predicate_result) == 1) {
+          feature_name <- colnames(self$data)[predicate_result]
+          stopifnot(length(feature_name) == 1)
+
+          result <- self$data[, predicate_result]
+
+          # nrow IS num_samples here and not non_samples
+          result <- matrix(result, nrow = self$num_samples, ncol = 1,
+                           dimnames = list(Samples = rownames(self$data),
+                                           Features = feature_name))
+        } else {
+          result <- self$data[, predicate_result]
+        }
 
         FeatureTable$new(result, self$feature_data, self$sample_data)
       } else if (margin == "samples" || margin == 1) {
-        predicate_result <- self$apply(1, predicate, ...)
-        result <- self$data[predicate_result, ]
+        if (isTRUE(is(predicate, "function"))) {
+          predicate_result <- self$apply(1, predicate, ...)
+        } else {
+          predicate_result <- predicate
+        }
+
+        if (isFALSE(is(predicate_result, "logical"))) {
+          rlang::abort("Predicate result was not logical.  Check your predicate function.",
+                       class = Error$NonPredicateFunctionError)
+        }
+
+        if (length(predicate_result) != self$num_samples) {
+          rlang::abort(
+            sprintf(
+              "Predicate result should have length %s. Got %s. Check your predicate!",
+              self$num_samples,
+              length(predicate_result)
+            ),
+            class = Error$IncorrectLengthError
+          )
+        }
+
+        if (sum(predicate_result) == 0) {
+          rlang::abort("No samples remaining after filtering",
+                       class = Error$NoSamplesRemainingError)
+        } else if (sum(predicate_result) == 1) {
+          sample_name <- rownames(self$data)[predicate_result]
+          stopifnot(length(sample_name) == 1)
+
+          result <- self$data[predicate_result, ]
+
+          result <- matrix(result, nrow = 1, ncol = self$num_features,
+                           dimnames = list(Samples = sample_name,
+                                           Features = colnames(self$data)))
+        } else {
+          result <- self$data[predicate_result, ]
+        }
 
         FeatureTable$new(result, self$feature_data, self$sample_data)
       } else {
