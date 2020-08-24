@@ -198,6 +198,23 @@ test_that("NAs in the predicate result get treated like FALSE", {
   )
 })
 
-# TODO test NA
+test_that("the aliases work like base keep", {
+  ft <- FeatureTable$new(testdata$count_table,
+                         feature_data = testdata$feature_data,
+                         sample_data = testdata$sample_data)
+
+  expect_equal(
+    ft$keep("samples", c(TRUE, TRUE, FALSE, FALSE)),
+    ft$keep_samples(c(TRUE, TRUE, FALSE, FALSE))
+  )
+  expect_equal(
+    ft$keep("features", c(TRUE, TRUE, FALSE, FALSE, FALSE)),
+    ft$keep_features(c(TRUE, TRUE, FALSE, FALSE, FALSE))
+  )
+})
+
+test_that
+
+# aliases
 # TODO with non function predicate tidyeval
 

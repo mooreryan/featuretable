@@ -288,6 +288,14 @@ FeatureTable <- R6::R6Class(
       } else {
         stop("todo")
       }
+    },
+
+    keep_features = function(predicate, ...) {
+      self$keep(2, predicate, ...)
+    },
+
+    keep_samples = function(predicate, ...) {
+      self$keep(1, predicate, ...)
     }
   ),
   private = list(
