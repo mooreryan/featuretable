@@ -29,3 +29,9 @@ testdata <- list(
     row.names = paste0("Feature_", 1:5)
   )
 )
+
+basic_feature_table <- function() {
+  FeatureTable$new(testdata$count_table,
+                   feature_data = testdata$feature_data,
+                   sample_data = testdata$sample_data)
+}
