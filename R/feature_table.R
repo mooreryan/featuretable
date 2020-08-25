@@ -65,23 +65,25 @@ FeatureTable <- R6::R6Class(
     # TODO test me
     print = function(...) {
       cat("FeatureTable: \n")
-      cat("  data         -- ", self$num_samples, " samples, ", self$num_features, " features\n", sep = "")
+      cat("  data         -- ",
+          self$num_samples,
+          " samples, ",
+          self$num_features,
+          " features\n",
+          sep = "")
 
       if (!is.null(self$feature_data)) {
         cat("  feature_data -- ",
             ncol(self$feature_data),
-            " covariates for ",
-            nrow(self$feature_data),
-            " features\n",
+            " covariates\n",
             sep = "")
       }
 
       if (!is.null(self$sample_data)) {
         cat("  sample_data  -- ",
             ncol(self$sample_data),
-            " covariates for ",
-            nrow(self$sample_data),
-            " samples\n", sep = "")
+            " covariates\n",
+            sep = "")
       }
 
       invisible(self)
@@ -450,4 +452,3 @@ FeatureTable <- R6::R6Class(
 as.data.frame.FeatureTable <- function(ft) {
   ft$data
 }
-
