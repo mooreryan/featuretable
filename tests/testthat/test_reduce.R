@@ -35,10 +35,10 @@ test_that("reduce margin 2 works", {
   ft <- FeatureTable$new(testdata$count_table)
 
   expected_sums <- c(6, 22, 38, 54, 70)
-  names(expected_sums) <- ft$feature_names
+  names(expected_sums) <- ft$feature_names()
 
   expected_diffs <- c(-6, -14, -22, -30, -38)
-  names(expected_diffs) <- ft$feature_names
+  names(expected_diffs) <- ft$feature_names()
 
   expect_equal(ft$reduce(2, sum), expected_sums)
   expect_equal(ft$reduce(2, `+`), expected_sums)
@@ -60,7 +60,7 @@ test_that("reduce margin 2 works", {
                ft$reduce(2, function(a, b) a - b))
 
   expected_diffs <- c(2, 2, 2, 2, 2)
-  names(expected_diffs) <- ft$feature_names
+  names(expected_diffs) <- ft$feature_names()
   expect_equal(ft$reduce(2, function(a, b) b - a), expected_diffs)
   expect_equal(ft$reduce_features(function(a, b) b - a),
                ft$reduce(2, function(a, b) b - a))

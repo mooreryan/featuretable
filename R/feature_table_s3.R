@@ -227,3 +227,13 @@ observation_names <- function(x) {
 observation_names.FeatureTable <- function(ft) {
   ft$observation_names()
 }
+
+#### feature_names & aliases
+
+feature_names <- function(x) {
+  UseMethod("feature_names")
+}
+
+feature_names.FeatureTable <- function(ft) {
+  ft$feature_names()
+}

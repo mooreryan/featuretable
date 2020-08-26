@@ -4,7 +4,6 @@ FeatureTable <- R6::R6Class(
     # Attributes
 
     # TODO change many of these attrs to active methods.
-    feature_names = NULL,
 
     dim = NULL,
     nrow = NULL,
@@ -40,8 +39,6 @@ FeatureTable <- R6::R6Class(
 
       self$nrow <- nrow(self$data)
       self$ncol <- ncol(self$data)
-
-      self$feature_names <- colnames(self$data)
 
       self$dim <- dim(self$data)
 
@@ -92,6 +89,11 @@ FeatureTable <- R6::R6Class(
 
     observation_names = function() {
       rownames(self$data)
+    },
+
+    #### Dealing with col names
+    feature_names = function() {
+      colnames(self$data)
     },
 
     print = function(...) {
@@ -359,12 +361,12 @@ FeatureTable <- R6::R6Class(
         }
 
         # Make sure that there are at least some names in common.
-        if (!any(self$feature_names %in% names(feature_data))) {
+        if (!any(self$feature_names() %in% names(feature_data))) {
           rlang::abort("None of the feature names in feature_table were found in feature_data. Check your input!", class = Error$ArgumentError)
         }
 
         # Create a data frame from the 1d data.
-        self$feature_data <- data.frame(X = feature_data[self$feature_names],
+        self$feature_data <- data.frame(X = feature_data[self$feature_names()],
                                         row.names = seq_len(self$num_features()))
       }
       # At least we have a 3d structure....
@@ -382,17 +384,17 @@ FeatureTable <- R6::R6Class(
           rlang::abort("feature_data had zero columns!", class = Error$ArgumentError)
         }
 
-        if (!any(self$feature_names %in% rownames(feature_data))) {
+        if (!any(self$feature_names() %in% rownames(feature_data))) {
           rlang::abort("None of the feature names in the feature_table were found in the feature_data. Check your input!",
                        class = Error$ArgumentError)
         }
 
         # Even if it is a data frame, it still may have 1 covariate, which needs special treatment.
         if (ncol(feature_data) == 1) {
-          self$feature_data <- data.frame(X = feature_data[self$feature_names, ])
+          self$feature_data <- data.frame(X = feature_data[self$feature_names(), ])
           colnames(self$feature_data) <- colnames(feature_data)[[1]]
         } else if (ncol(feature_data) > 1) {
-          self$feature_data <- feature_data[self$feature_names, ]
+          self$feature_data <- feature_data[self$feature_names(), ]
         } else {
           rlang::abort("it should be impossible to get here...",
                        class = Error$ImpossibleConditionError)

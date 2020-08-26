@@ -73,3 +73,18 @@ test_that("sample_names (and aliases) always gives correct result", {
   expect_equal(ft$observation_names(), expected_sample_names[-1])
   expect_equal(observation_names(ft), expected_sample_names[-1])
 })
+
+test_that("feature_names (and aliases) always gives correct result", {
+  ft <- basic_feature_table()
+  expected_feature_names <- colnames(testdata$count_table)
+
+  expect_equal(ft$feature_names(), expected_feature_names)
+  expect_equal(feature_names(ft), expected_feature_names)
+
+  # Manually removing a feature
+  # TODO would be nice to prevent the user from doing this in the code somewhere.
+  ft$data <- ft$data[, -1]
+
+  expect_equal(ft$feature_names(), expected_feature_names[-1])
+  expect_equal(feature_names(ft), expected_feature_names[-1])
+})
