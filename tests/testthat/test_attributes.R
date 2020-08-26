@@ -88,3 +88,30 @@ test_that("feature_names (and aliases) always gives correct result", {
   expect_equal(ft$feature_names(), expected_feature_names[-1])
   expect_equal(feature_names(ft), expected_feature_names[-1])
 })
+
+test_that("dim always gives correct result", {
+  ft <- basic_feature_table()
+  expected_dim <- c(testdata$nsamples, testdata$nfeatures)
+
+  expect_equal(ft$dim(), expected_dim)
+  expect_equal(dim(ft), expected_dim)
+
+  expect_equal(ft$nrow(), expected_dim[[1]])
+  expect_equal(nrow(ft), expected_dim[[1]])
+
+  expect_equal(ft$ncol(), expected_dim[[2]])
+  expect_equal(ncol(ft), expected_dim[[2]])
+
+  # Manually removing a feature and a sample
+  # TODO would be nice to prevent the user from doing this in the code somewhere.
+  ft$data <- ft$data[-1, -1]
+
+  expect_equal(ft$dim(), expected_dim - 1)
+  expect_equal(dim(ft), expected_dim - 1)
+
+  expect_equal(ft$nrow(), expected_dim[[1]] - 1)
+  expect_equal(nrow(ft), expected_dim[[1]] - 1)
+
+  expect_equal(ft$ncol(), expected_dim[[2]] - 1)
+  expect_equal(ncol(ft), expected_dim[[2]] - 1)
+})

@@ -237,3 +237,11 @@ feature_names <- function(x) {
 feature_names.FeatureTable <- function(ft) {
   ft$feature_names()
 }
+
+#### dim
+
+dim.FeatureTable <- function(ft) {
+  dim(ft$data)
+}
+
+

@@ -3,12 +3,6 @@ FeatureTable <- R6::R6Class(
   list(
     # Attributes
 
-    # TODO change many of these attrs to active methods.
-
-    dim = NULL,
-    nrow = NULL,
-    ncol = NULL,
-
     data = NULL,
 
     # Rows are features, columns are stuff about the features.  It currently isn't hierarchical.
@@ -36,11 +30,6 @@ FeatureTable <- R6::R6Class(
       } else {
         self$data <- feature_table
       }
-
-      self$nrow <- nrow(self$data)
-      self$ncol <- ncol(self$data)
-
-      self$dim <- dim(self$data)
 
       #### Set the feature data ####
       if (!is.null(feature_data)) {
@@ -92,8 +81,23 @@ FeatureTable <- R6::R6Class(
     },
 
     #### Dealing with col names
+
     feature_names = function() {
       colnames(self$data)
+    },
+
+    #### Dim
+
+    dim = function() {
+      dim(self$data)
+    },
+
+    nrow = function() {
+      nrow(self$data)
+    },
+
+    ncol = function() {
+      ncol(self$data)
     },
 
     print = function(...) {
@@ -170,7 +174,7 @@ FeatureTable <- R6::R6Class(
       # TODO: Some special reducers will be slow: sum, prod, length, etc.
       result <- apply(X = self$data, MARGIN = margin, FUN = function(x) Reduce(fn, x, ...))
 
-      if (length(result) != self$dim[margin]) {
+      if (length(result) != self$dim()[margin]) {
         rlang::abort("something bad happened", class = Error$ImpossibleConditionError)
       } else {
         result
