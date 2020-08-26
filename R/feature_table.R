@@ -2,9 +2,8 @@ FeatureTable <- R6::R6Class(
   "FeatureTable",
   list(
     # Attributes
-    num_samples = NULL,
-    num_features = NULL,
 
+    # TODO change many of these attrs to active methods.
     sample_names = NULL,
     feature_names = NULL,
 
@@ -43,9 +42,6 @@ FeatureTable <- R6::R6Class(
       self$nrow <- nrow(self$data)
       self$ncol <- ncol(self$data)
 
-      self$num_samples <- nrow(self$data)
-      self$num_features <- ncol(self$data)
-
       self$sample_names <- rownames(self$data)
       self$feature_names <- colnames(self$data)
 
@@ -62,13 +58,40 @@ FeatureTable <- R6::R6Class(
       }
     },
 
-    # TODO test me
+    #### Dealing with number of rows
+
+    num_samples = function() {
+      nrow(self$data)
+    },
+
+    nsamples = function() {
+      nrow(self$data)
+    },
+
+    num_observations = function() {
+      nrow(self$data)
+    },
+
+    nobservations = function() {
+      nrow(self$data)
+    },
+
+    #### Dealing with number of columns
+
+    num_features = function() {
+      ncol(self$data)
+    },
+
+    nfeatures = function() {
+      ncol(self$data)
+    },
+
     print = function(...) {
       cat("FeatureTable: \n")
       cat("  data         -- ",
-          self$num_samples,
+          self$num_samples(),
           " samples, ",
-          self$num_features,
+          self$num_features(),
           " features\n",
           sep = "")
 
@@ -216,11 +239,11 @@ FeatureTable <- R6::R6Class(
                        class = Error$NonPredicateFunctionError)
         }
 
-        if (length(predicate_result) != self$num_features) {
+        if (length(predicate_result) != self$num_features()) {
           rlang::abort(
             sprintf(
               "Predicate result should have length %s. Got %s. Check your predicate!",
-              self$num_features,
+              self$num_features(),
               length(predicate_result)
             ),
             class = Error$IncorrectLengthError
@@ -240,7 +263,7 @@ FeatureTable <- R6::R6Class(
           result <- self$data[, predicate_result]
 
           # nrow IS num_samples here and not non_samples
-          result <- matrix(result, nrow = self$num_samples, ncol = 1,
+          result <- matrix(result, nrow = self$num_samples(), ncol = 1,
                            dimnames = list(Samples = rownames(self$data),
                                            Features = feature_name))
         } else {
@@ -263,11 +286,11 @@ FeatureTable <- R6::R6Class(
                        class = Error$NonPredicateFunctionError)
         }
 
-        if (length(predicate_result) != self$num_samples) {
+        if (length(predicate_result) != self$num_samples()) {
           rlang::abort(
             sprintf(
               "Predicate result should have length %s. Got %s. Check your predicate!",
-              self$num_samples,
+              self$num_samples(),
               length(predicate_result)
             ),
             class = Error$IncorrectLengthError
@@ -286,7 +309,7 @@ FeatureTable <- R6::R6Class(
 
           result <- self$data[predicate_result, ]
 
-          result <- matrix(result, nrow = 1, ncol = self$num_features,
+          result <- matrix(result, nrow = 1, ncol = self$num_features(),
                            dimnames = list(Samples = sample_name,
                                            Features = colnames(self$data)))
         } else {
@@ -334,7 +357,7 @@ FeatureTable <- R6::R6Class(
 
         # Create a data frame from the 1d data.
         self$feature_data <- data.frame(X = feature_data[self$feature_names],
-                                        row.names = seq_len(self$num_features))
+                                        row.names = seq_len(self$num_features()))
       }
       # At least we have a 3d structure....
       else {
@@ -391,7 +414,7 @@ FeatureTable <- R6::R6Class(
         self$sample_data <- data.frame(X = sample_data[self$sample_names],
                                        # Need to set this manually.  If more samples in feature_table
                                        # than in sample_data, you will get some missing row names here.
-                                       row.names = 1:self$num_samples)
+                                       row.names = 1:self$num_samples())
       } else {
         # At least we have a 2d structure.
 

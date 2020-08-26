@@ -153,3 +153,59 @@ keep_samples <- function(x, ...) {
 keep_samples.FeatureTable <- function(ft, fn, ...) {
   ft$keep_samples(fn, ...)
 }
+
+################################################################################
+#### attribute type things #####################################################
+################################################################################
+
+#### num_samples & aliases
+
+num_samples <- function(x) {
+  UseMethod("num_samples")
+}
+
+num_samples.FeatureTable <- function(ft) {
+  ft$num_samples()
+}
+
+nsamples <- function(x) {
+  UseMethod("nsamples")
+}
+
+nsamples.FeatureTable <- function(ft) {
+  ft$nsamples()
+}
+
+num_observations <- function(x) {
+  UseMethod("num_observations")
+}
+
+num_observations.FeatureTable <- function(ft) {
+  ft$num_observations()
+}
+
+nobservations <- function(x) {
+  UseMethod("nobservations")
+}
+
+nobservations.FeatureTable <- function(ft) {
+  ft$nobservations()
+}
+
+#### num_features & aliases
+
+num_features <- function(x) {
+  UseMethod("num_features")
+}
+
+num_features.FeatureTable <- function(ft) {
+  ft$num_features()
+}
+
+nfeatures <- function(x) {
+  UseMethod("nfeatures")
+}
+
+nfeatures.FeatureTable <- function(ft) {
+  ft$nfeatures()
+}

@@ -13,8 +13,6 @@ test_that("$new makes a new Featuretable", {
 })
 
 test_that("FeatureTable has the right attributes", {
-  expect_attribute(feature_table, "num_samples")
-  expect_attribute(feature_table, "num_features")
   expect_attribute(feature_table, "sample_names")
   expect_attribute(feature_table, "feature_names")
   expect_attribute(feature_table, "dim")
@@ -28,8 +26,8 @@ test_that("FeatureTable has the right attributes", {
 test_that("$new sets all the attributes correctly", {
   ft <- FeatureTable$new(testdata$count_table, testdata$feature_data, testdata$sample_data, feature_table_rows_are_samples = TRUE)
 
-  expect_equal(ft$num_samples, testdata$nsamples)
-  expect_equal(ft$num_features, testdata$nfeatures)
+  expect_equal(ft$num_samples(), testdata$nsamples)
+  expect_equal(ft$num_features(), testdata$nfeatures)
 
   expect_equal(ft$sample_names, rownames(testdata$count_table))
   expect_equal(ft$feature_names, colnames(testdata$count_table))
@@ -53,7 +51,7 @@ test_that("$new transposes the feature_table if feature_table_rows_are_samples =
 
   expect_equal(ft$dim, dim(testdata$count_table))
   expect_equal(c(ft$nrow, ft$ncol), dim(testdata$count_table))
-  expect_equal(c(ft$num_samples, ft$num_features), dim(testdata$count_table))
+  expect_equal(c(ft$num_samples(), ft$num_features()), dim(testdata$count_table))
 
   expect_equal(ft$sample_names, rownames(testdata$count_table))
   expect_equal(ft$feature_names, colnames(testdata$count_table))
