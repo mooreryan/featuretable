@@ -242,13 +242,13 @@ FeatureTable <- R6::R6Class(
         # Let the user have access to the feature_data
         predicate <- rlang::eval_tidy(rlang::enquo(predicate), self$feature_data)
 
-        if (isTRUE(is(predicate, "function"))) {
+        if (isTRUE(inherits(predicate, "function"))) {
           predicate_result <- self$apply(2, predicate, ...)
         } else {
           predicate_result <- predicate
         }
 
-        if (isFALSE(is(predicate_result, "logical"))) {
+        if (isFALSE(inherits(predicate_result, "logical"))) {
           rlang::abort("Predicate result was not logical.  Check your predicate function.",
                        class = Error$NonPredicateFunctionError)
         }
@@ -289,13 +289,13 @@ FeatureTable <- R6::R6Class(
         # Let the user have access to the sample_data
         predicate <- rlang::eval_tidy(rlang::enquo(predicate), self$sample_data)
 
-        if (isTRUE(is(predicate, "function"))) {
+        if (isTRUE(inherits(predicate, "function"))) {
           predicate_result <- self$apply(1, predicate, ...)
         } else {
           predicate_result <- predicate
         }
 
-        if (isFALSE(is(predicate_result, "logical"))) {
+        if (isFALSE(inherits(predicate_result, "logical"))) {
           rlang::abort("Predicate result was not logical.  Check your predicate function.",
                        class = Error$NonPredicateFunctionError)
         }

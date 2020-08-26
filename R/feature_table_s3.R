@@ -1,5 +1,3 @@
-# TODO replace all `is` calls with `inherits`
-
 as.data.frame.FeatureTable <- function(ft) {
   ft$data
 }
