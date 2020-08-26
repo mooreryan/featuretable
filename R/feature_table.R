@@ -148,6 +148,7 @@ FeatureTable <- R6::R6Class(
       self$reduce(2, fn, ...)
     },
 
+    # TODO add an alias called `reduce_observations`.
     reduce_samples = function(fn, ...) {
       self$reduce(1, fn, ...)
     },
@@ -448,7 +449,3 @@ FeatureTable <- R6::R6Class(
     }
   )
 )
-
-as.data.frame.FeatureTable <- function(ft) {
-  ft$data
-}
