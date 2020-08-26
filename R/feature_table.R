@@ -1,3 +1,10 @@
+#' FeatureTable
+#'
+#' @description
+#' R6 Class representing a feature table and its associated data.
+#'
+#' @details
+#' A FeatureTable has a feature_table, sample_data, and feature_data.
 FeatureTable <- R6::R6Class(
   "FeatureTable",
   list(
@@ -11,6 +18,18 @@ FeatureTable <- R6::R6Class(
     # Rows are samples, columns are things about the samples.
     sample_data = NULL,
 
+    #' @description
+    #' Create a new FeatureTable object.
+    #'
+    #' @param feature_table Feature table, count table, or something similar.
+    #' @param feature_data Feature data (data about the features).
+    #' @param sample_data Sample/observation data (data about the samples/observations).
+    #' @param feature_table_rows_are_samples Are the rows of the feature_table samples/observations?
+    #'
+    #' @return A new `FeatureTable` object.
+    #'
+    #' @examples
+    #' TODO
     initialize = function(feature_table,
                           feature_data = NULL,
                           sample_data = NULL,
@@ -42,62 +61,126 @@ FeatureTable <- R6::R6Class(
       }
     },
 
+    #### Dim
+
+    #' @description
+    #' Return the dimensions of the FeatureTable.
+    #'
+    #' @return The dimension of the feature_table.
+    dim = function() {
+      dim(self$data)
+    },
+
     #### Dealing with number of rows
 
+    #' @description
+    #' Return the number of samples/observations/rows in the FeatureTable.
+    #'
+    #' @return The number of rows in the FeatureTable.
+    #'
+    #' @family nrow functions
     num_samples = function() {
       nrow(self$data)
     },
 
+    #' @description
+    #' Return the number of samples/observations/rows in the FeatureTable.
+    #'
+    #' @return The number of rows in the FeatureTable.
+    #'
+    #' @family nrow functions
     nsamples = function() {
       nrow(self$data)
     },
 
+    #' @description
+    #' Return the number of samples/observations/rows in the FeatureTable.
+    #'
+    #' @return The number of rows in the FeatureTable.
+    #'
+    #' @family nrow functions
     num_observations = function() {
       nrow(self$data)
     },
 
+    #' @description
+    #' Return the number of samples/observations/rows in the FeatureTable.
+    #'
+    #' @return The number of rows in the FeatureTable.
+    #'
+    #' @family nrow functions
     nobservations = function() {
+      nrow(self$data)
+    },
+
+    #' @description
+    #' Return the number of samples/observations/rows in the FeatureTable.
+    #'
+    #' @return The number of rows in the FeatureTable.
+    #'
+    #' @family nrow functions
+    nrow = function() {
       nrow(self$data)
     },
 
     #### Dealing with number of columns
 
+    #' @description
+    #' Return the number of features/columns in the FeatureTable.
+    #'
+    #' @return The number of columns in the FeatureTable.
+    #'
+    #' @family ncol functions
     num_features = function() {
       ncol(self$data)
     },
 
+    #' @description
+    #' Return the number of features/columns in the FeatureTable.
+    #'
+    #' @return The number of columns in the FeatureTable.
+    #'
+    #' @family ncol functions
     nfeatures = function() {
+      ncol(self$data)
+    },
+
+    #' @description
+    #' Return the number of features/columns in the FeatureTable.
+    #'
+    #' @return The number of columns in the FeatureTable.
+    #'
+    #' @family ncol functions
+    ncol = function() {
       ncol(self$data)
     },
 
     #### Dealing with row names
 
+    #' @description
+    #' Return the names of samples/observations/rows in the FeatureTable.
+    #'
+    #' @return The names of samples/observations/rows in the FeatureTable.
     sample_names = function() {
       rownames(self$data)
     },
 
+    #' @description
+    #' Return the names of samples/observations/rows in the FeatureTable.
+    #'
+    #' @return The names of samples/observations/rows in the FeatureTable.
     observation_names = function() {
       rownames(self$data)
     },
 
     #### Dealing with col names
 
+    #' @description
+    #' Return the names of features/columns in the FeatureTable.
+    #'
+    #' @return The names of features/columns in the FeatureTable.
     feature_names = function() {
       colnames(self$data)
-    },
-
-    #### Dim
-
-    dim = function() {
-      dim(self$data)
-    },
-
-    nrow = function() {
-      nrow(self$data)
-    },
-
-    ncol = function() {
-      ncol(self$data)
     },
 
     print = function(...) {
