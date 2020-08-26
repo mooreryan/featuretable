@@ -4,6 +4,10 @@ as.data.frame.FeatureTable <- function(ft) {
   ft$data
 }
 
+is.FeatureTable <- function(x) {
+  inherits(x, "FeatureTable")
+}
+
 # Generic `reduce`
 reduce <- function(x, ...) {
   UseMethod("reduce")
@@ -116,4 +120,36 @@ map_samples_with_name <- function(x, ...) {
 
 map_samples_with_name.FeatureTable <- function(ft, fn, ...) {
   ft$map_samples_with_name(fn, ...)
+}
+
+################################################################################
+#### keep ######################################################################
+################################################################################
+
+keep <- function(x, ...) {
+  UseMethod("keep")
+}
+
+keep.FeatureTable <- function(ft, margin, fn, ...) {
+  ft$keep(margin, fn, ...)
+}
+
+#### keep_features ####
+
+keep_features <- function(x, ...) {
+  UseMethod("keep_features")
+}
+
+keep_features.FeatureTable <- function(ft, fn, ...) {
+  ft$keep_features(fn, ...)
+}
+
+#### keep_samples ####
+
+keep_samples <- function(x, ...) {
+  UseMethod("keep_samples")
+}
+
+keep_samples.FeatureTable <- function(ft, fn, ...) {
+  ft$keep_samples(fn, ...)
 }

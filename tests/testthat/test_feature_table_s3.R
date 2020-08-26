@@ -1,34 +1,8 @@
-# testdata <- list(
-#   nsamples = 4,
-#   nfeatures = 5,
-#   count_table = matrix(0:19, 4, 5,
-#                        dimnames = list(Samples = paste0("Sample_", 1:4),
-#                                        Features = paste0("Feature_", 1:5))),
-#
-#   feature_data = data.frame(
-#     Color = c("red", "red", "blue"),
-#     Shape = c("square", "circle", "square"),
-#     row.names = paste0("Feature_", c(1, 3, 5))
-#   ),
-#
-#   sample_data = data.frame(
-#     Location = c("Spain", "Portugal", "Spain"),
-#     Season = c("Summer", "Winter", "Winter"),
-#     row.names = paste0("Sample_", c(1, 2, 4))
-#   ),
-#
-#   expected_sample_data = data.frame(
-#     Location = c("Spain", "Portugal", NA, "Spain"),
-#     Season = c("Summer", "Winter", NA, "Winter"),
-#     row.names = paste0("Sample_", 1:4)
-#   ),
-#
-#   expected_feature_data = data.frame(
-#     Color = c("red", NA, "red", NA, "blue"),
-#     Shape = c("square", NA, "circle", NA, "square"),
-#     row.names = paste0("Feature_", 1:5)
-#   )
-# )
+test_that("is works", {
+  ft <- basic_feature_table()
+
+  expect_true(is.FeatureTable(ft))
+})
 
 test_that("as.data.frame returns data.frame of the feature_table", {
   ft <- basic_feature_table()
@@ -164,9 +138,39 @@ test_that("the s3 map_samples_with_name function matches the R6 version", {
   )
 })
 
+################################################################################
+#### keep ######################################################################
+################################################################################
 
-# test_that("apply works", {
-#   ft <- basic_feature_table()
-#
-#   expect_equal(ft$apply(2, sqrt), apply(ft, 2, sqrt))
-# })
+keep_test_fn <- function(x) sum(x) > 35
+
+test_that("the s3 keep function matches the R6 version", {
+  ft <- basic_feature_table()
+
+  expect_equal(
+    keep(ft, 2, keep_test_fn),
+    ft$keep(2, keep_test_fn)
+  )
+})
+
+#### keep_features
+
+test_that("the s3 keep_features function matches the R6 version", {
+  ft <- basic_feature_table()
+
+  expect_equal(
+    keep_features(ft, keep_test_fn),
+    ft$keep_features(keep_test_fn)
+  )
+})
+
+#### keep_samples
+
+test_that("the s3 keep_samples function matches the R6 version", {
+  ft <- basic_feature_table()
+
+  expect_equal(
+    keep_samples(ft, keep_test_fn),
+    ft$keep_samples(keep_test_fn)
+  )
+})
