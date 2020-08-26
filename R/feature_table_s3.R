@@ -209,3 +209,21 @@ nfeatures <- function(x) {
 nfeatures.FeatureTable <- function(ft) {
   ft$nfeatures()
 }
+
+#### sample_names & aliases
+
+sample_names <- function(x) {
+  UseMethod("sample_names")
+}
+
+sample_names.FeatureTable <- function(ft) {
+  ft$sample_names()
+}
+
+observation_names <- function(x) {
+  UseMethod("observation_names")
+}
+
+observation_names.FeatureTable <- function(ft) {
+  ft$observation_names()
+}

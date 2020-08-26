@@ -4,7 +4,6 @@ FeatureTable <- R6::R6Class(
     # Attributes
 
     # TODO change many of these attrs to active methods.
-    sample_names = NULL,
     feature_names = NULL,
 
     dim = NULL,
@@ -42,7 +41,6 @@ FeatureTable <- R6::R6Class(
       self$nrow <- nrow(self$data)
       self$ncol <- ncol(self$data)
 
-      self$sample_names <- rownames(self$data)
       self$feature_names <- colnames(self$data)
 
       self$dim <- dim(self$data)
@@ -84,6 +82,16 @@ FeatureTable <- R6::R6Class(
 
     nfeatures = function() {
       ncol(self$data)
+    },
+
+    #### Dealing with row names
+
+    sample_names = function() {
+      rownames(self$data)
+    },
+
+    observation_names = function() {
+      rownames(self$data)
     },
 
     print = function(...) {
@@ -406,12 +414,12 @@ FeatureTable <- R6::R6Class(
           rlang::abort("1d sample_data had no names attribute", class = Error$ArgumentError)
         }
 
-        if (!any(self$sample_names %in% names(sample_data))) {
+        if (!any(self$sample_names() %in% names(sample_data))) {
           rlang::abort("None of the sample names in feature_table were found in sample_data.  Check your input!",
                        class = Error$ArgumentError)
         }
 
-        self$sample_data <- data.frame(X = sample_data[self$sample_names],
+        self$sample_data <- data.frame(X = sample_data[self$sample_names()],
                                        # Need to set this manually.  If more samples in feature_table
                                        # than in sample_data, you will get some missing row names here.
                                        row.names = 1:self$num_samples())
@@ -431,16 +439,16 @@ FeatureTable <- R6::R6Class(
           rlang::abort("sample_data had zero columns!", class = Error$ArgumentError)
         }
 
-        if (!any(self$sample_names %in% rownames(sample_data))) {
+        if (!any(self$sample_names() %in% rownames(sample_data))) {
           rlang::abort("None of the sample names in feature_table were found in sample_data.  Check your input!",
                        class = Error$ArgumentError)
         }
 
         if (ncol(sample_data) == 1) {
-          self$sample_data <- data.frame(X = sample_data[self$sample_names, ])
+          self$sample_data <- data.frame(X = sample_data[self$sample_names(), ])
           colnames(self$sample_data) <- colnames(sample_data)[[1]]
         } else if (ncol(sample_data) > 1) {
-          self$sample_data <- sample_data[self$sample_names, ]
+          self$sample_data <- sample_data[self$sample_names(), ]
         } else {
           rlang::abort("it should be impossible to get here...",
                        class = Error$ImpossibleConditionError)
