@@ -324,3 +324,31 @@ test_that("$new gives a error if none of the features have data in feature_data"
 
 # TODO map really is apply but forced to return the same dimension...need a real map function that can take multi param input function
 
+################################################################################
+#### querying aspects of FeatureTable ##########################################
+################################################################################
+
+test_that("$is_count_table returns TRUE if all numbers in feature_table are natural numbers", {
+  ft <- basic_feature_table()
+
+  expect_true(ft$is_count_table())
+  expect_true(is_count_table(ft))
+})
+
+test_that("$is_count_table returns FALSE if all numbers in feature_table are NOT natural numbers", {
+  ft <- basic_feature_table()
+
+  ft$data[1, 2] <- 0.5
+
+  expect_false(ft$is_count_table())
+  expect_false(is_count_table(ft))
+
+  # Negatives
+
+  ft <- basic_feature_table()
+
+  ft$data[1, 2] <- -1
+
+  expect_false(ft$is_count_table())
+  expect_false(is_count_table(ft))
+})

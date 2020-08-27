@@ -443,7 +443,48 @@ FeatureTable <- R6::R6Class(
         rlang::abort("Package 'phyloseq' is not available.  Try installing it first!",
                      class = Error$PhyloseqUnavailableError)
       }
+    },
+
+    #### Querying
+
+    #' Is the FeatureTable a count table?
+    #'
+    #' @param ft A FeatureTable
+    #'
+    #' @return TRUE if \code{feature_table} contains only natural numbers (counting numbers >= 0), FALSE otherwise.
+    is_count_table = function() {
+      all(is_natural_number(self$data))
+    },
+
+    #### CoDA basics
+
+    # TODO note that replacement is ignored if use_cmultRepl = TRUE.
+    replace_zeros = function(replacement = 0.05,
+                             tol = .Machine$double.eps ^ 0.5,
+                             use_cmultRepl = FALSE,
+                             ...) {
+      if (isTRUE(use_cmultRepl) && package_available("zCompositions")) {
+        extra_args <- eval(substitute(alist(...)))
+
+        if (is.null(extra_args$output)) {
+          new_feature_table <- zCompositions::cmultRepl(self$data, output = "p-counts", ...)
+        } else {
+          new_feature_table <- zCompositions::cmultRepl(self$data, ...)
+        }
+      } else if (isTRUE(use_cmultRepl)) {
+        rlang::abort("Package 'zCompositions' is not available.  Try installing it!",
+                     class = Error$zCompositionsUnavailableError)
+      } else if (tol >= replacement) {
+        rlang::abort("tol must be < replacement", class = Error$ArgumentError)
+      } else {
+        new_feature_table <- ifelse(self$data < tol, replacement, self$data)
+      }
+
+      FeatureTable$new(feature_table = new_feature_table,
+                       sample_data = self$sample_data,
+                       feature_data = self$feature_data)
     }
+
   ),
   private = list(
     handle_feature_data = function(feature_data) {

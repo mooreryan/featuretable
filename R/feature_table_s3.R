@@ -566,3 +566,50 @@ as.phyloseq <- function(ft) {
 as.phyloseq.FeatureTable <- function(ft) {
   ft$as_phyloseq()
 }
+
+################################################################################
+#### querying aspects of FeatureTable ##########################################
+################################################################################
+
+#' Is the FeatureTable a count table?
+#'
+#' @param ft A FeatureTable
+#'
+#' @return TRUE if \code{feature_table} contains only natural numbers (counting numbers >= 0), FALSE otherwise.
+#'
+#' @export
+is_count_table <- function(ft) {
+  UseMethod("is_count_table")
+}
+
+is_count_table.FeatureTable <- function(ft) {
+  ft$is_count_table()
+}
+
+################################################################################
+#### basic CoDA ################################################################
+################################################################################
+
+replace_zeros <- function(ft, ...) {
+  UseMethod("replace_zeros")
+}
+
+#' Title
+#'
+#' @param ft
+#' @param replacement (Ignored if \code{use_cmultRepl = TRUE})
+#' @param tol (Ignored if \code{use_cmultRepl = TRUE})
+#' @param use_cmultRepl
+#' @param ...
+#'
+#' @return
+#'
+#' @export
+replace_zeros.FeatureTable <- function(ft,
+                                       replacement = 0.05,
+                                       tol = .Machine$double.eps ^ 0.5,
+                                       use_cmultRepl = FALSE,
+                                       ...) {
+  ft$replace_zeros(replacement, tol, use_cmultRepl, ...)
+}
+

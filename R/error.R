@@ -8,5 +8,6 @@ Error <- list(
   NoFeaturesRemainingError = "NoFeaturesRemainingError",
   NonPredicateFunctionError = "NonPredicateFunctionError",
   IncorrectLengthError = "IncorrectLengthError",
-  PhyloseqUnavailableError = "PhyloseqUnavailableError"
+  PhyloseqUnavailableError = "PhyloseqUnavailableError",
+  zCompositionsUnavailableError = "zCompositionsUnavailableError"
 )
