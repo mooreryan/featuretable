@@ -5,6 +5,8 @@
 #'
 #' @details
 #' A FeatureTable has a feature_table, sample_data, and feature_data.
+#'
+#' @export
 FeatureTable <- R6::R6Class(
   "FeatureTable",
   list(
@@ -29,7 +31,7 @@ FeatureTable <- R6::R6Class(
     #' @return A new `FeatureTable` object.
     #'
     #' @examples
-    #' TODO
+    #' "TODO"
     initialize = function(feature_table,
                           feature_data = NULL,
                           sample_data = NULL,
@@ -77,8 +79,6 @@ FeatureTable <- R6::R6Class(
     #' Return the number of samples/observations/rows in the FeatureTable.
     #'
     #' @return The number of rows in the FeatureTable.
-    #'
-    #' @family nrow functions
     num_samples = function() {
       nrow(self$data)
     },
@@ -87,8 +87,6 @@ FeatureTable <- R6::R6Class(
     #' Return the number of samples/observations/rows in the FeatureTable.
     #'
     #' @return The number of rows in the FeatureTable.
-    #'
-    #' @family nrow functions
     nsamples = function() {
       nrow(self$data)
     },
@@ -97,8 +95,6 @@ FeatureTable <- R6::R6Class(
     #' Return the number of samples/observations/rows in the FeatureTable.
     #'
     #' @return The number of rows in the FeatureTable.
-    #'
-    #' @family nrow functions
     num_observations = function() {
       nrow(self$data)
     },
@@ -107,8 +103,6 @@ FeatureTable <- R6::R6Class(
     #' Return the number of samples/observations/rows in the FeatureTable.
     #'
     #' @return The number of rows in the FeatureTable.
-    #'
-    #' @family nrow functions
     nobservations = function() {
       nrow(self$data)
     },
@@ -117,8 +111,6 @@ FeatureTable <- R6::R6Class(
     #' Return the number of samples/observations/rows in the FeatureTable.
     #'
     #' @return The number of rows in the FeatureTable.
-    #'
-    #' @family nrow functions
     nrow = function() {
       nrow(self$data)
     },
@@ -129,8 +121,6 @@ FeatureTable <- R6::R6Class(
     #' Return the number of features/columns in the FeatureTable.
     #'
     #' @return The number of columns in the FeatureTable.
-    #'
-    #' @family ncol functions
     num_features = function() {
       ncol(self$data)
     },
@@ -139,8 +129,6 @@ FeatureTable <- R6::R6Class(
     #' Return the number of features/columns in the FeatureTable.
     #'
     #' @return The number of columns in the FeatureTable.
-    #'
-    #' @family ncol functions
     nfeatures = function() {
       ncol(self$data)
     },
@@ -149,8 +137,6 @@ FeatureTable <- R6::R6Class(
     #' Return the number of features/columns in the FeatureTable.
     #'
     #' @return The number of columns in the FeatureTable.
-    #'
-    #' @family ncol functions
     ncol = function() {
       ncol(self$data)
     },

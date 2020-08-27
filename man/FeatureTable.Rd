@@ -15,14 +15,13 @@ A FeatureTable has a feature_table, sample_data, and feature_data.
 ## Method `FeatureTable$new`
 ## ------------------------------------------------
 
-TODO
+"TODO"
 }
-\concept{ncol functions}
-\concept{nrow functions}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{FeatureTable$new()}}
+\item \href{#method-dim}{\code{FeatureTable$dim()}}
 \item \href{#method-num_samples}{\code{FeatureTable$num_samples()}}
 \item \href{#method-nsamples}{\code{FeatureTable$nsamples()}}
 \item \href{#method-num_observations}{\code{FeatureTable$num_observations()}}
@@ -34,7 +33,6 @@ TODO
 \item \href{#method-sample_names}{\code{FeatureTable$sample_names()}}
 \item \href{#method-observation_names}{\code{FeatureTable$observation_names()}}
 \item \href{#method-feature_names}{\code{FeatureTable$feature_names()}}
-\item \href{#method-dim}{\code{FeatureTable$dim()}}
 \item \href{#method-print}{\code{FeatureTable$print()}}
 \item \href{#method-apply}{\code{FeatureTable$apply()}}
 \item \href{#method-apply_with_index}{\code{FeatureTable$apply_with_index()}}
@@ -96,12 +94,25 @@ A new `FeatureTable` object.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{TODO
+\preformatted{"TODO"
 }
 \if{html}{\out{</div>}}
 
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-dim"></a>}}
+\if{latex}{\out{\hypertarget{method-dim}{}}}
+\subsection{Method \code{dim()}}{
+Return the dimensions of the FeatureTable.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$dim()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+The dimension of the feature_table.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-num_samples"></a>}}
@@ -244,19 +255,6 @@ Return the names of features/columns in the FeatureTable.
 
 \subsection{Returns}{
 The names of features/columns in the FeatureTable.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-dim"></a>}}
-\if{latex}{\out{\hypertarget{method-dim}{}}}
-\subsection{Method \code{dim()}}{
-Return the dimensions of the `FeatureTable`.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$dim()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The dimension of the `feature_table`.
 }
 }
 \if{html}{\out{<hr>}}
