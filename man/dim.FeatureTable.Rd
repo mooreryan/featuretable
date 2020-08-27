@@ -4,7 +4,7 @@
 \alias{dim.FeatureTable}
 \title{Dimensions of a FeatureTable}
 \usage{
-\method{dim}{FeatureTable}(ft)
+\method{dim}{FeatureTable}(x)
 }
 \arguments{
 \item{ft}{A FeatureTable object.}
