@@ -415,6 +415,34 @@ FeatureTable <- R6::R6Class(
       predicate <- rlang::eval_tidy(rlang::enquo(predicate), self$sample_data)
 
       self$keep(1, predicate, ...)
+    },
+
+    #### Conversion
+
+    #' Convert FeatureTable to phyloseq object.
+    #'
+    #' @description
+    #' If the 'phyloseq' package is not installed, it raises an Error.
+    #'
+    #' @param ft A FeatureTable
+    #'
+    #' @return a phyloseq object
+    as_phyloseq = function() {
+      if (package_available("phyloseq")) {
+        phyloseq::phyloseq(
+          phyloseq::otu_table(self$data, taxa_are_rows = FALSE),
+
+          # Need to manually ensure that this is a matrix.
+          #
+          # TODO FeatureTable feature_data doesn't have to be hierarchical, will this mess up phyloseq?
+          phyloseq::tax_table(as.matrix(self$feature_data)),
+
+          phyloseq::sample_data(self$sample_data)
+        )
+      } else {
+        rlang::abort("Package 'phyloseq' is not available.  Try installing it first!",
+                     class = Error$PhyloseqUnavailableError)
+      }
     }
   ),
   private = list(

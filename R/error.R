@@ -7,5 +7,6 @@ Error <- list(
   NoSamplesRemainingError = "NoSamplesRemainingError",
   NoFeaturesRemainingError = "NoFeaturesRemainingError",
   NonPredicateFunctionError = "NonPredicateFunctionError",
-  IncorrectLengthError = "IncorrectLengthError"
+  IncorrectLengthError = "IncorrectLengthError",
+  PhyloseqUnavailableError = "PhyloseqUnavailableError"
 )

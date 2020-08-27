@@ -543,3 +543,26 @@ feature_names.FeatureTable <- function(ft) {
 dim.FeatureTable <- function(x) {
   dim(x$data)
 }
+
+
+################################################################################
+#### conversion ################################################################
+################################################################################
+
+#' Convert FeatureTable to phyloseq object.
+#'
+#' @description
+#' If the 'phyloseq' package is not installed, it raises an Error.
+#'
+#' @param ft A FeatureTable
+#'
+#' @return a phyloseq object
+#'
+#' @export
+as.phyloseq <- function(ft) {
+  UseMethod("as.phyloseq")
+}
+
+as.phyloseq.FeatureTable <- function(ft) {
+  ft$as_phyloseq()
+}
