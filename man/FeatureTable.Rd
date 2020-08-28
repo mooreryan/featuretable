@@ -59,6 +59,11 @@ A FeatureTable has a feature_table, sample_data, and feature_data.
 \item \href{#method-keep}{\code{FeatureTable$keep()}}
 \item \href{#method-keep_features}{\code{FeatureTable$keep_features()}}
 \item \href{#method-keep_samples}{\code{FeatureTable$keep_samples()}}
+\item \href{#method-as_phyloseq}{\code{FeatureTable$as_phyloseq()}}
+\item \href{#method-is_count_table}{\code{FeatureTable$is_count_table()}}
+\item \href{#method-replace_zeros}{\code{FeatureTable$replace_zeros()}}
+\item \href{#method-clr}{\code{FeatureTable$clr()}}
+\item \href{#method-pca_biplot}{\code{FeatureTable$pca_biplot()}}
 \item \href{#method-clone}{\code{FeatureTable$clone()}}
 }
 }
@@ -255,6 +260,7 @@ Return the names of features/columns in the FeatureTable.
 
 \subsection{Returns}{
 The names of features/columns in the FeatureTable.
+Convert FeatureTable to phyloseq object.
 }
 }
 \if{html}{\out{<hr>}}
@@ -488,6 +494,108 @@ The names of features/columns in the FeatureTable.
 \subsection{Method \code{keep_samples()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$keep_samples(predicate, ...)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-as_phyloseq"></a>}}
+\if{latex}{\out{\hypertarget{method-as_phyloseq}{}}}
+\subsection{Method \code{as_phyloseq()}}{
+If the 'phyloseq' package is not installed, it raises an Error.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$as_phyloseq()}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{ft}}{A FeatureTable}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+a phyloseq object
+Is the FeatureTable a count table?
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-is_count_table"></a>}}
+\if{latex}{\out{\hypertarget{method-is_count_table}{}}}
+\subsection{Method \code{is_count_table()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$is_count_table()}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{ft}}{A FeatureTable}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+TRUE if \code{feature_table} contains only natural numbers (counting numbers >= 0), FALSE otherwise.
+Replacing zeros.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-replace_zeros"></a>}}
+\if{latex}{\out{\hypertarget{method-replace_zeros}{}}}
+\subsection{Method \code{replace_zeros()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$replace_zeros(
+  replacement = 0.05,
+  tol = .Machine$double.eps^0.5,
+  use_cmultRepl = FALSE,
+  ...
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{replacement}}{(Ignored if \code{use_cmultRepl = TRUE})}
+
+\item{\code{tol}}{(Ignored if \code{use_cmultRepl = TRUE})}
+
+\item{\code{use_cmultRepl}}{TRUE/FALSE whether to use \code{cmultRepl} function.}
+
+\item{\code{...}}{Extra arguments (i.g., passed to \code{cmultRepl})}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new FeatureTable with the zeros in \code{data} replaced.
+Centered log ratio.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clr"></a>}}
+\if{latex}{\out{\hypertarget{method-clr}{}}}
+\subsection{Method \code{clr()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$clr(base = 2)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{base}}{Base of logarithm.}
+
+\item{\code{ft}}{A Feature table.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A FeatureTable with the \code{data} transformed with centered log ratio.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-pca_biplot"></a>}}
+\if{latex}{\out{\hypertarget{method-pca_biplot}{}}}
+\subsection{Method \code{pca_biplot()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$pca_biplot(use_biplotr = FALSE, ...)}\if{html}{\out{</div>}}
 }
 
 }
