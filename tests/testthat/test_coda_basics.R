@@ -1,3 +1,7 @@
+################################################################################
+#### replace_zeros #############################################################
+################################################################################
+
 test_that("replace_zeros raises if use_cmultRepl = TRUE, but it isn't available", {
   ft <- basic_feature_table()
 
@@ -103,3 +107,42 @@ test_that("replace_zeros raises if tol >= replacement", {
 })
 
 # TODO check that output for pcounts isnt overwritten in a weird way
+
+################################################################################
+#### clr #######################################################################
+################################################################################
+
+test_that("clr transforms feature_table to centered log ratio", {
+  ft <- basic_feature_table()
+  ft$data[1, 1] <- 1
+
+  expected <- FeatureTable$new(
+    t(apply(ft$data, 1, function(x) log2(x) - mean(log2(x)))),
+    feature_data = ft$feature_data,
+    sample_data = ft$sample_data
+  )
+
+  expect_equal(ft$clr(), expected)
+  expect_equal(clr(ft), expected)
+})
+
+test_that("clr takes arbitrary base", {
+  ft <- basic_feature_table()
+  ft$data[1, 1] <- 1
+
+  expected <- FeatureTable$new(
+    t(apply(ft$data, 1, function(x) log(x, base = 2.5) - mean(log(x, base = 2.5)))),
+    feature_data = ft$feature_data,
+    sample_data = ft$sample_data
+  )
+
+  expect_equal(ft$clr(base = 2.5), expected)
+  expect_equal(clr(ft, base = 2.5), expected)
+})
+
+test_that("clr raises error if any values are <= 0", {
+  ft <- basic_feature_table()
+
+  expect_error(ft$clr(), class = Error$DomainError)
+  expect_error(clr(ft), class = Error$DomainError)
+})

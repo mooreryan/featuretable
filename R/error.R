@@ -9,5 +9,6 @@ Error <- list(
   NonPredicateFunctionError = "NonPredicateFunctionError",
   IncorrectLengthError = "IncorrectLengthError",
   PhyloseqUnavailableError = "PhyloseqUnavailableError",
-  zCompositionsUnavailableError = "zCompositionsUnavailableError"
+  zCompositionsUnavailableError = "zCompositionsUnavailableError",
+  DomainError = "DomainError"
 )

@@ -459,6 +459,16 @@ FeatureTable <- R6::R6Class(
     #### CoDA basics
 
     # TODO note that replacement is ignored if use_cmultRepl = TRUE.
+
+    #' Replacing zeros.
+    #'
+    #' @param ft
+    #' @param replacement (Ignored if \code{use_cmultRepl = TRUE})
+    #' @param tol (Ignored if \code{use_cmultRepl = TRUE})
+    #' @param use_cmultRepl TRUE/FALSE whether to use \code{cmultRepl} function.
+    #' @param ... Extra arguments (i.g., passed to \code{cmultRepl})
+    #'
+    #' @return A new FeatureTable with the zeros in \code{data} replaced.
     replace_zeros = function(replacement = 0.05,
                              tol = .Machine$double.eps ^ 0.5,
                              use_cmultRepl = FALSE,
@@ -483,6 +493,30 @@ FeatureTable <- R6::R6Class(
       FeatureTable$new(feature_table = new_feature_table,
                        sample_data = self$sample_data,
                        feature_data = self$feature_data)
+    },
+
+    #' Centered log ratio.
+    #'
+    #' @param ft A Feature table.
+    #' @param base Base of logarithm.
+    #'
+    #' @return A FeatureTable with the \code{data} transformed with centered log ratio.
+    clr = function(base = 2) {
+      if (any(self$data <= 0)) {
+        rlang::abort("At least one value was <= 0.  Did you replace zeros?",
+                     class = Error$DomainError)
+      }
+
+      transformed_data <- t(apply(self$data, 1, function(x) {
+        log(x, base = base) - mean(log(x, base = base))
+      }))
+
+
+      FeatureTable$new(
+        transformed_data,
+        sample_data = self$sample_data,
+        feature_data = self$feature_data
+      )
     }
 
   ),

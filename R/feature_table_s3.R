@@ -594,15 +594,15 @@ replace_zeros <- function(ft, ...) {
   UseMethod("replace_zeros")
 }
 
-#' Title
+#' Replacing zeros.
 #'
 #' @param ft
 #' @param replacement (Ignored if \code{use_cmultRepl = TRUE})
 #' @param tol (Ignored if \code{use_cmultRepl = TRUE})
-#' @param use_cmultRepl
-#' @param ...
+#' @param use_cmultRepl TRUE/FALSE whether to use \code{cmultRepl} function.
+#' @param ... Extra arguments (i.g., passed to \code{cmultRepl})
 #'
-#' @return
+#' @return A new FeatureTable with the zeros in \code{data} replaced.
 #'
 #' @export
 replace_zeros.FeatureTable <- function(ft,
@@ -613,3 +613,18 @@ replace_zeros.FeatureTable <- function(ft,
   ft$replace_zeros(replacement, tol, use_cmultRepl, ...)
 }
 
+#' Centered log ratio.
+#'
+#' @param ft A Feature table.
+#' @param base Base of logarithm.
+#'
+#' @return A FeatureTable with the \code{data} transformed with centered log ratio.
+#'
+#' @export
+clr <- function(ft, base = 2) {
+  UseMethod("clr")
+}
+
+clr.FeatureTable <- function(ft, base = 2) {
+  ft$clr(base)
+}
