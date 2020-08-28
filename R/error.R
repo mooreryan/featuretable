@@ -10,5 +10,6 @@ Error <- list(
   IncorrectLengthError = "IncorrectLengthError",
   PhyloseqUnavailableError = "PhyloseqUnavailableError",
   zCompositionsUnavailableError = "zCompositionsUnavailableError",
-  DomainError = "DomainError"
+  DomainError = "DomainError",
+  PackageUnavailableError = "PackageUnavailableError"
 )

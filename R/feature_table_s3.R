@@ -628,3 +628,15 @@ clr <- function(ft, base = 2) {
 clr.FeatureTable <- function(ft, base = 2) {
   ft$clr(base)
 }
+
+################################################################################
+#### ordination ################################################################
+################################################################################
+
+pca_biplot <- function(ft, ...) {
+  UseMethod("pca_biplot")
+}
+
+pca_biplot.FeatureTable <- function(ft, use_biplotr = FALSE, ...) {
+  ft$pca_biplot(use_biplotr = use_biplotr, ...)
+}

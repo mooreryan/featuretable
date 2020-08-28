@@ -35,3 +35,11 @@ basic_feature_table <- function() {
                    feature_data = testdata$feature_data,
                    sample_data = testdata$sample_data)
 }
+
+iris_feature_table <- function() {
+  d <- data.frame(Species = iris[, 5])
+
+  rownames(d) <- rownames(iris)
+
+  FeatureTable$new(iris[, 1:4], sample_data = d)
+}

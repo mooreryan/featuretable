@@ -517,6 +517,42 @@ FeatureTable <- R6::R6Class(
         sample_data = self$sample_data,
         feature_data = self$feature_data
       )
+    },
+
+    # TODO requires biplotr >= v0.0.13
+    # Be careful if you use_biplotr = TRUE, not to set options for the normal biplot function.
+    pca_biplot = function(use_biplotr = FALSE, include_sample_data = FALSE, ...) {
+      if (isTRUE(use_biplotr)) {
+        # Need to check some things!
+        if (package_unavailable("biplotr")) {
+          rlang::abort("Package 'biplotr' is not available. Try installing it.",
+                       class = Error$PackageUnavailableError)
+        }
+
+        if (isTRUE(include_sample_data)) {
+          # TODO test case when self$sample_data is null.
+
+          plot_data <- merge(self$data, self$sample_data, by = "row.names")
+
+          # plot_data doesn't have rownames correct...fix it!
+          rownames(plot_data) <- plot_data$Row.names
+          plot_data$Row.names <- NULL
+
+          # TODO handle case where na are present in sample_data
+
+          biplotr::pca_biplot(plot_data, data_cols = 1:self$num_features(), ...)
+        } else {
+          biplotr::pca_biplot(self$data, ...)
+        }
+      } else {
+        # Need to check some more things!
+        if (isTRUE(include_sample_data)) {
+          rlang::abort("include_sample_data was TRUE, but use_biplotr was FALSE. Check your arguments.",
+                       class = Error$ArgumentError)
+        }
+
+        biplot(prcomp(self$data), ...)
+      }
     }
 
   ),
