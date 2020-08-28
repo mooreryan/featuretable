@@ -637,6 +637,6 @@ pca_biplot <- function(ft, ...) {
   UseMethod("pca_biplot")
 }
 
-pca_biplot.FeatureTable <- function(ft, use_biplotr = FALSE, ...) {
-  ft$pca_biplot(use_biplotr = use_biplotr, ...)
+pca_biplot.FeatureTable <- function(ft, use_biplotr = FALSE, include_sample_data = FALSE, ...) {
+  ft$pca_biplot(use_biplotr = use_biplotr, include_sample_data = include_sample_data, ...)
 }
