@@ -713,3 +713,20 @@ ft_from.phyloseq <- function(x, numeric_feature_data_columns = NULL, ...) {
     feature_table_rows_are_samples = !phyloseq::taxa_are_rows(x)
   )
 }
+
+################################################################################
+#### core microbiome ###########################################################
+################################################################################
+
+core_microbiome <- function(ft, ...) {
+  UseMethod("core_microbiome")
+}
+
+core_microbiome.FeatureTable <- function(ft,
+                                         detection_limit = 1,
+                                         min_sample_proportion = NULL,
+                                         min_samples = NULL) {
+  ft$core_microbiome(detection_limit = detection_limit,
+                     min_sample_proportion = min_sample_proportion,
+                     min_samples = min_samples)
+}
