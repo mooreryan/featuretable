@@ -722,6 +722,23 @@ core_microbiome <- function(ft, ...) {
   UseMethod("core_microbiome")
 }
 
+#' Core Microbiome
+#'
+#' @param ft A FeatureTable
+#' @param detection_limit Limit of detection for a feature to be considered
+#'   present in a sample
+#' @param min_sample_proportion Minimum proportion of samples in which a feature
+#'    must be present to be kept
+#' @param min_samples Minimum number of samples in which a feature must be
+#'   present to be kept
+#'
+#' @return A new FeatureTable with only the specified "core" features.
+#'
+#' @details
+#' If both \code{min_sample_proportion} and \code{min_samples} are given, an
+#'   error will be raised. If \code{min_sample_proportion} is not a proportion,
+#'   an error will be raised.  If \code{min_samples} looks like a proportion, a
+#'    warning will be given.
 core_microbiome.FeatureTable <- function(ft,
                                          detection_limit = 1,
                                          min_sample_proportion = NULL,

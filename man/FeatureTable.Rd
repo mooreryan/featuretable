@@ -64,6 +64,7 @@ A FeatureTable has a feature_table, sample_data, and feature_data.
 \item \href{#method-replace_zeros}{\code{FeatureTable$replace_zeros()}}
 \item \href{#method-clr}{\code{FeatureTable$clr()}}
 \item \href{#method-pca_biplot}{\code{FeatureTable$pca_biplot()}}
+\item \href{#method-core_microbiome}{\code{FeatureTable$core_microbiome()}}
 \item \href{#method-clone}{\code{FeatureTable$clone()}}
 }
 }
@@ -596,6 +597,19 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 \subsection{Method \code{pca_biplot()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$pca_biplot(use_biplotr = FALSE, include_sample_data = FALSE, ...)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-core_microbiome"></a>}}
+\if{latex}{\out{\hypertarget{method-core_microbiome}{}}}
+\subsection{Method \code{core_microbiome()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$core_microbiome(
+  detection_limit = 1,
+  min_sample_proportion = NULL,
+  min_samples = NULL
+)}\if{html}{\out{</div>}}
 }
 
 }
