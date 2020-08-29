@@ -555,8 +555,42 @@ FeatureTable <- R6::R6Class(
 
         biplot(prcomp(self$data), ...)
       }
-    }
+    },
 
+    # both are greater than or equal to
+    core_microbiome = function(detection_limit = 1, min_sample_proportion = NULL, min_samples = NULL) {
+      if (!is.null(min_sample_proportion) && !is.null(min_samples)) {
+        rlang::abort("Don't specify both min_samples and min_sample_proportion. Pick one!",
+                     class = Error$ArgumentError)
+      } else if (!is.null(min_sample_proportion)) {
+        # By proportion.
+        if (min_sample_proportion < 0 || min_sample_proportion > 1) {
+          rlang::abort(paste("min_sample_proportion must be >= 0 and <= 1. Got", min_sample_proportion),
+                       class = Error$ArgumentError)
+        }
+
+        self$keep_features(function(feature) {
+          sum(feature >= detection_limit) >= min_sample_proportion * self$num_samples()
+        })
+      } else if (!is.null(min_samples)) {
+        # By number of samples.
+        if (min_samples < 0 || min_samples > self$num_samples()) {
+          rlang::abort(paste("min_samples must be >= 0 and <= num_samples. Got", min_samples),
+                       class = Error$ArgumentError)
+        }
+
+        if (min_samples > 0 && min_samples < 1) {
+          rlang::warn("min_samples looks like a proportion. Did you mean min_sample_proportion?")
+        }
+
+        self$keep_features(function(feature) {
+          sum(feature >= detection_limit) >= min_samples
+        })
+      } else {
+        rlang::abort("You must specify one of min_samples or min_sample_proportion. Pick one!",
+                     class = Error$ArgumentError)
+      }
+    }
   ),
   private = list(
     handle_feature_data = function(feature_data) {
