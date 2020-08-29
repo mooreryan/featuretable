@@ -36,6 +36,19 @@ basic_feature_table <- function() {
                    sample_data = testdata$sample_data)
 }
 
+feature_table_with_numeric_extra_data <- function() {
+  fd <- testdata$feature_data
+  sd <- testdata$sample_data
+
+  fd$Apple <- seq(from = 1, to = nrow(fd), by = 1)
+  fd$Orange <- seq(from = nrow(fd), to = 1, by = -1)
+  sd$Pie <- seq(from = 1, to = nrow(sd), by = 1)
+
+  FeatureTable$new(testdata$count_table,
+                   feature_data = fd,
+                   sample_data = sd)
+}
+
 
 rnorm_feature_table <- function() {
   count_table <- matrix(rnorm(20), 4, 5,
