@@ -595,7 +595,7 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 \if{latex}{\out{\hypertarget{method-pca_biplot}{}}}
 \subsection{Method \code{pca_biplot()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$pca_biplot(use_biplotr = FALSE, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$pca_biplot(use_biplotr = FALSE, include_sample_data = FALSE, ...)}\if{html}{\out{</div>}}
 }
 
 }

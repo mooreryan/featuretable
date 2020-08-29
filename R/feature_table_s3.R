@@ -633,7 +633,7 @@ clr.FeatureTable <- function(ft, base = 2) {
 #### ordination ################################################################
 ################################################################################
 
-pca_biplot <- function(ft, ...) {
+pca_biplot <- function(ft, use_biplotr = FALSE, include_sample_data = FALSE, ...) {
   UseMethod("pca_biplot")
 }
 

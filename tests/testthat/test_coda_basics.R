@@ -6,12 +6,12 @@ test_that("replace_zeros raises if use_cmultRepl = TRUE, but it isn't available"
   ft <- basic_feature_table()
 
   with_mock(
-    package_available = function(...) FALSE,
+    "featuretable:::package_available" = function(...) FALSE,
     expect_error(ft$replace_zeros(use_cmultRepl = TRUE),
                  class = Error$zCompositionsUnavailableError)
   )
   with_mock(
-    package_available = function(...) FALSE,
+    "featuretable:::package_available" = function(...) FALSE,
     expect_error(replace_zeros(ft, use_cmultRepl = TRUE),
                  class = Error$zCompositionsUnavailableError)
   )

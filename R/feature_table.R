@@ -519,7 +519,6 @@ FeatureTable <- R6::R6Class(
       )
     },
 
-    # TODO requires biplotr >= v0.0.13
     # Be careful if you use_biplotr = TRUE, not to set options for the normal biplot function.
     pca_biplot = function(use_biplotr = FALSE, include_sample_data = FALSE, ...) {
       if (isTRUE(use_biplotr)) {
@@ -530,7 +529,10 @@ FeatureTable <- R6::R6Class(
         }
 
         if (isTRUE(include_sample_data)) {
-          # TODO test case when self$sample_data is null.
+          if (is.null(self$sample_data)) {
+            rlang::abort("self$sample_data is NULL, but include_sample_data was TRUE. Check your arguments.",
+                         class = Error$ArgumentError)
+          }
 
           plot_data <- merge(self$data, self$sample_data, by = "row.names")
 

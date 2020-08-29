@@ -36,6 +36,17 @@ basic_feature_table <- function() {
                    sample_data = testdata$sample_data)
 }
 
+
+rnorm_feature_table <- function() {
+  count_table <- matrix(rnorm(20), 4, 5,
+                        dimnames = list(Samples = paste0("Sample_", 1:4),
+                                        Features = paste0("Feature_", 1:5)))
+
+  FeatureTable$new(count_table,
+                   feature_data = testdata$feature_data,
+                   sample_data = testdata$sample_data)
+}
+
 iris_feature_table <- function() {
   d <- data.frame(Species = iris[, 5])
 

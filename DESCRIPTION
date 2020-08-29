@@ -11,7 +11,10 @@ LazyData: true
 Imports:
     rlang
 Suggests: 
-    testthat
+    biplotr (>= 0.0.13),
+    phyloseq,
+    testthat,
+    zCompositions
 RoxygenNote: 7.1.0
 Depends: 
     R (>= 2.10)

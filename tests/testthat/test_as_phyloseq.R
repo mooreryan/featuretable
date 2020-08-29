@@ -11,12 +11,12 @@ test_that("as.phyloseq.FeatureTable raises error if called when phyloseq isn't a
   ft <- basic_feature_table()
 
   with_mock(
-    package_available = function(...) FALSE,
+    "featuretable:::package_available" = function(...) FALSE,
     expect_error(ft$as_phyloseq(), class = Error$PhyloseqUnavailableError)
   )
 
   with_mock(
-    package_available = function(...) FALSE,
+    "featuretable:::package_available" = function(...) FALSE,
     expect_error(as.phyloseq(ft), class = Error$PhyloseqUnavailableError)
   )
 })
