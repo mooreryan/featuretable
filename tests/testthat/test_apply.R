@@ -36,6 +36,27 @@ test_that("apply_features applies fn to samples", {
   expect_equal(result, expected_result)
 })
 
+test_that("apply_with_* raises with bad margins", {
+  ft <- basic_feature_table()
+
+  # With index
+  expect_error(ft$apply_with_index(0, function(x, i) x + i),
+               class = Error$ArgumentError)
+  expect_error(ft$apply_with_index(1.5, function(x, i) x + i),
+               class = Error$ArgumentError)
+  expect_error(ft$apply_with_index(3, function(x, i) x + i),
+               class = Error$ArgumentError)
+
+  # With name
+  expect_error(ft$apply_with_name(0, function(x, i) x + i),
+               class = Error$ArgumentError)
+  expect_error(ft$apply_with_name(1.5, function(x, i) x + i),
+               class = Error$ArgumentError)
+  expect_error(ft$apply_with_name(3, function(x, i) x + i),
+               class = Error$ArgumentError)
+
+})
+
 test_that("apply_with_index with 2d margin raises error", {
   ft <- FeatureTable$new(testdata$count_table)
 
@@ -561,4 +582,9 @@ test_that("basic map_with_index margin 1 works", {
 
   result <- ft$map_samples_with_index(function(x, i) x)
   expect_equal(result, ft)
+})
+
+test_that("apply_with raises if dim(X) != 2", {
+  expect_error(apply_with_wrapper("index", array(1:27, dim = c(3, 3, 3)), 2, identity),
+               class = Error$ArgumentError)
 })

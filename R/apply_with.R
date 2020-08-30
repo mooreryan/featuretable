@@ -3,15 +3,16 @@
 # FUN should take two arguments, whatever the MARGIN would have, plus the index.
 apply_with_wrapper <- function(which, X, MARGIN, FUN, ...) {
   if (length(MARGIN) != 1) {
-    stop("MARGIN must be a scaler (1 or 2).")
+    rlang::abort("MARGIN must be 1 or 2 (not a vector).", class = Error$ArgumentError)
   }
 
   if (MARGIN != 1 && MARGIN != 2) {
-    stop("MARGIN must be a scaler (1 or 2).")
+    rlang::abort("MARGIN must be 1 or 2.", class = Error$ArgumentError)
   }
 
   if (length(dim(X)) != 2) {
-    stop("dim(X) must be 2.  Other stuff not implemented!")
+    rlang::abort("dim(X) must be 2. Other stuff not yet implemented!",
+                 class = Error$ArgumentError)
   } else {
     X <- as.matrix(X)
   }
@@ -29,7 +30,7 @@ apply_with_wrapper <- function(which, X, MARGIN, FUN, ...) {
                      class = Error$Error)
       }
     } else {
-      stop("beep boop bop")
+      rlang::abort("should be impossible", class = Error$ImpossibleConditionError)
     }
 
     result <- sapply(indices, function(i) {
@@ -68,7 +69,7 @@ apply_with_wrapper <- function(which, X, MARGIN, FUN, ...) {
           dimnames(result) <- tmp
         }
       } else {
-        rlang::abort("this shouldn't happen", class = Error$ImpossibleConditionError)
+        rlang::abort("should be impossible", class = Error$ImpossibleConditionError)
       }
     }
 
@@ -86,7 +87,7 @@ apply_with_wrapper <- function(which, X, MARGIN, FUN, ...) {
                      class = Error$Error)
       }
     } else {
-      stop("SCHMOOPY")
+      rlang::abort("should be impossible", error = Error$ImpossibleConditionError)
     }
 
     result <- sapply(indices, function(j) {
@@ -108,7 +109,7 @@ apply_with_wrapper <- function(which, X, MARGIN, FUN, ...) {
 
     result
   } else {
-    stop("MARGIN must be 1 or 2.")
+    rlang::abort("MARGIN must be 1 or 2.", class = Error$ArgumentError)
   }
 }
 
