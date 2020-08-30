@@ -558,38 +558,108 @@ FeatureTable <- R6::R6Class(
     },
 
     # both are greater than or equal to
-    core_microbiome = function(detection_limit = 1, min_sample_proportion = NULL, min_samples = NULL) {
-      if (!is.null(min_sample_proportion) && !is.null(min_samples)) {
-        rlang::abort("Don't specify both min_samples and min_sample_proportion. Pick one!",
+    core_microbiome = function(detection_limit = 1,
+                               min_sample_proportion = NULL,
+                               max_sample_proportion = NULL,
+                               min_samples = NULL,
+                               max_samples = NULL) {
+      # At least one must be given.
+      if (is.null(min_sample_proportion) &&
+          is.null(max_sample_proportion) &&
+          is.null(min_samples) &&
+          is.null(max_samples)) {
+        rlang::abort("No filtering was specified. Check your args!",
                      class = Error$ArgumentError)
-      } else if (!is.null(min_sample_proportion)) {
-        # By proportion.
+      }
+
+      # At least one of the proportions were given.
+      if (!is.null(min_sample_proportion) || !is.null(max_sample_proportion)) {
+        if (!is.null(min_samples)) {
+          rlang::abort("Don't mix min_samples with proportion arguments!",
+                       class = Error$ArgumentError)
+        }
+
+        if (!is.null(max_samples)) {
+          rlang::abort("Don't mix max_samples with proportion arguments!",
+                       class = Error$ArgumentError)
+        }
+
+        # At least one proportion arg was given, so make sure the one that wasn't given is the correct value.
+        if (is.null(min_sample_proportion)) {
+          min_sample_proportion <- 0
+        }
+
+        if (is.null(max_sample_proportion)) {
+          max_sample_proportion <- 1
+        }
+
+        # Check that proportion args were good.
         if (min_sample_proportion < 0 || min_sample_proportion > 1) {
           rlang::abort(paste("min_sample_proportion must be >= 0 and <= 1. Got", min_sample_proportion),
                        class = Error$ArgumentError)
         }
+        if (max_sample_proportion <= 0 || max_sample_proportion > 1) {
+          rlang::abort(paste("max_sample_proportion must be > 0 and <= 1. Got", max_sample_proportion),
+                       class = Error$ArgumentError)
+        }
+        if (min_sample_proportion > max_sample_proportion) {
+          rlang::abort("min_sample_proportion must be <= max_sample_proportion.",
+                       class = Error$ArgumentError)
+        }
 
-        self$keep_features(function(feature) {
-          sum(feature >= detection_limit) >= min_sample_proportion * self$num_samples()
-        })
-      } else if (!is.null(min_samples)) {
-        # By number of samples.
+        # Set the min and max samples using the proportion arguments.
+        min_samples <- min_sample_proportion * self$num_samples()
+        max_samples <- max_sample_proportion * self$num_samples()
+      }
+      # At least one of the counts args were given.
+      else if (!is.null(min_samples) || !is.null(max_samples)) {
+        if (!is.null(min_sample_proportion)) {
+          # Technically, this should never happen.
+          rlang::abort("Don't mix min_sample_proportion with count arguments!",
+                       class = Error$ArgumentError)
+        }
+
+        if (!is.null(max_sample_proportion)) {
+          # Technically, this should never happen.
+          rlang::abort("Don't mix max_sample_proportion with count arguments!",
+                       class = Error$ArgumentError)
+        }
+
+        # At least one count arg was given, so make sure the one that wasn't given is the correct value.
+        if (is.null(min_samples)) {
+          min_samples <- 0
+        }
+
+        if (is.null(max_samples)) {
+          max_samples <- self$num_samples()
+        }
+
+        # Check the count args.
         if (min_samples < 0 || min_samples > self$num_samples()) {
           rlang::abort(paste("min_samples must be >= 0 and <= num_samples. Got", min_samples),
                        class = Error$ArgumentError)
         }
-
         if (min_samples > 0 && min_samples < 1) {
           rlang::warn("min_samples looks like a proportion. Did you mean min_sample_proportion?")
         }
-
-        self$keep_features(function(feature) {
-          sum(feature >= detection_limit) >= min_samples
-        })
+        if (max_samples < 1 || max_samples > self$num_samples()) {
+          rlang::abort(paste("max_samples must be >= 1 and <= num_samples. Got", max_samples),
+                       class = Error$ArgumentError)
+        }
+        if (min_samples > max_samples) {
+          rlang::abort("min_samples must be <= max_samples",
+                       class = Error$ArgumentError)
+        }
       } else {
-        rlang::abort("You must specify one of min_samples or min_sample_proportion. Pick one!",
-                     class = Error$ArgumentError)
+        rlang::abort("should be impossible", class = Error$ImpossibleConditionError)
       }
+
+      # Finally filter!
+      self$keep_features(function(feature) {
+        samples_present <- sum(feature >= detection_limit)
+
+        samples_present >= min_samples && samples_present <= max_samples
+      })
     }
   ),
   private = list(
@@ -730,3 +800,5 @@ FeatureTable <- R6::R6Class(
     }
   )
 )
+
+# TODO should all data be converted either to df or matrix?
