@@ -608,7 +608,9 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$core_microbiome(
   detection_limit = 1,
   min_sample_proportion = NULL,
-  min_samples = NULL
+  max_sample_proportion = NULL,
+  min_samples = NULL,
+  max_samples = NULL
 )}\if{html}{\out{</div>}}
 }
 

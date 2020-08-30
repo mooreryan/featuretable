@@ -4,7 +4,8 @@ Title: FeatureTable -- R6 and s3 classes for feature tables, data, and microbiom
 Version: 0.1.0
 Author: Ryan Moore <rmm1047@gmail.com> [aut, cre]
 Maintainer: Ryan Moore <rmm1047@gmail.com>
-Description: A nice package for dealing with FeatureTables
+Description: The featuretable package provides R6 and s3 classes for feature tables, 
+    associated data, and microbiome analysis.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

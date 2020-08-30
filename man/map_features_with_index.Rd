@@ -4,14 +4,14 @@
 \alias{map_features_with_index}
 \title{Apply a function over features of a FeatureTable}
 \usage{
-map_features_with_index(ft, ...)
+map_features_with_index(ft, fn, ...)
 }
 \arguments{
 \item{ft}{A FeatureTable object.}
 
-\item{...}{Optional arguments to \code{fn} (if \code{fn} is a function).}
-
 \item{fn}{The function to be applied over the features. This function should have at least 2 parameters, the data applied over, and the index of the current row or column.}
+
+\item{...}{Optional arguments to \code{fn} (if \code{fn} is a function).}
 }
 \value{
 A new FeatureTable with the result of applying \code{fn} over features.

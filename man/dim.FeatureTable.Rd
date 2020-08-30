@@ -7,7 +7,7 @@
 \method{dim}{FeatureTable}(x)
 }
 \arguments{
-\item{ft}{A FeatureTable object.}
+\item{x}{A FeatureTable object.}
 }
 \value{
 The dimension of the feature_table.

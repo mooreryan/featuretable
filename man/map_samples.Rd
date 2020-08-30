@@ -4,14 +4,14 @@
 \alias{map_samples}
 \title{Apply a function over samples of a FeatureTable}
 \usage{
-map_samples(ft, ...)
+map_samples(ft, fn, ...)
 }
 \arguments{
 \item{ft}{A FeatureTable object.}
 
-\item{...}{Optional arguments to \code{fn} (if \code{fn} is a function).}
-
 \item{fn}{The function to be applied over the samples}
+
+\item{...}{Optional arguments to \code{fn} (if \code{fn} is a function).}
 }
 \value{
 A new FeatureTable with the result of applying \code{fn} over samples

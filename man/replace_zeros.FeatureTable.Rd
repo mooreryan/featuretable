@@ -13,6 +13,8 @@
 )
 }
 \arguments{
+\item{ft}{A FeatureTable}
+
 \item{replacement}{(Ignored if \code{use_cmultRepl = TRUE})}
 
 \item{tol}{(Ignored if \code{use_cmultRepl = TRUE})}

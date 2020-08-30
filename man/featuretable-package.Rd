@@ -6,6 +6,6 @@
 \alias{featuretable-package}
 \title{FeatureTable}
 \description{
-A FeatureTable R6 and s3 class for managing feature tables and data associated with its features and observations.
+FeatureTable -- an R6 and s3 class for managing feature tables and data associated with its features and observations.
 }
 \keyword{internal}

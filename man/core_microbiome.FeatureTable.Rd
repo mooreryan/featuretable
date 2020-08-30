@@ -8,7 +8,9 @@
   ft,
   detection_limit = 1,
   min_sample_proportion = NULL,
-  min_samples = NULL
+  max_sample_proportion = NULL,
+  min_samples = NULL,
+  max_samples = NULL
 )
 }
 \arguments{
@@ -18,10 +20,16 @@
 present in a sample}
 
 \item{min_sample_proportion}{Minimum proportion of samples in which a feature
-must be present to be kept}
+must be present to be kept.}
+
+\item{max_sample_proportion}{Maximum proportion of samples in which a feature
+must be present to be kept.}
 
 \item{min_samples}{Minimum number of samples in which a feature must be
-present to be kept}
+present to be kept.}
+
+\item{max_samples}{Maximum number of samples in which a feature must be
+present to be kept.}
 }
 \value{
 A new FeatureTable with only the specified "core" features.
