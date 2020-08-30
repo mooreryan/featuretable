@@ -132,7 +132,7 @@ map_with_name.FeatureTable <- function(ft, margin, fn, ...) {
 #' @family mapping functions
 #'
 #' @export
-map_features <- function(ft, ...) {
+map_features <- function(ft, fn, ...) {
   UseMethod("map_features")
 }
 
@@ -154,7 +154,7 @@ map_features.FeatureTable <- function(ft, fn, ...) {
 #' @family mapping functions
 #'
 #' @export
-map_features_with_index <- function(ft, ...) {
+map_features_with_index <- function(ft, fn, ...) {
   UseMethod("map_features_with_index")
 }
 
@@ -176,7 +176,7 @@ map_features_with_index.FeatureTable <- function(ft, fn, ...) {
 #' @family mapping functions
 #'
 #' @export
-map_features_with_name <- function(ft, ...) {
+map_features_with_name <- function(ft, fn, ...) {
   UseMethod("map_features_with_name")
 }
 
@@ -200,7 +200,7 @@ map_features_with_name.FeatureTable <- function(ft, fn, ...) {
 #' @family mapping functions
 #'
 #' @export
-map_samples <- function(ft, ...) {
+map_samples <- function(ft, fn, ...) {
   UseMethod("map_samples")
 }
 
@@ -222,7 +222,7 @@ map_samples.FeatureTable <- function(ft, fn, ...) {
 #' @family mapping functions
 #'
 #' @export
-map_samples_with_index <- function(ft, ...) {
+map_samples_with_index <- function(ft, fn, ...) {
   UseMethod("map_samples_with_index")
 }
 
@@ -244,7 +244,7 @@ map_samples_with_index.FeatureTable <- function(ft, fn, ...) {
 #' @family mapping functions
 #'
 #' @export
-map_samples_with_name <- function(ft, ...) {
+map_samples_with_name <- function(ft, fn, ...) {
   UseMethod("map_samples_with_name")
 }
 
@@ -530,7 +530,7 @@ feature_names.FeatureTable <- function(ft) {
 #' @description
 #' Return the dimensions of the FeatureTable.
 #'
-#' @param ft A FeatureTable object.
+#' @param x A FeatureTable object.
 #'
 #' @return
 #' The dimension of the feature_table.
@@ -596,7 +596,7 @@ replace_zeros <- function(ft, ...) {
 
 #' Replacing zeros.
 #'
-#' @param ft
+#' @param ft A FeatureTable
 #' @param replacement (Ignored if \code{use_cmultRepl = TRUE})
 #' @param tol (Ignored if \code{use_cmultRepl = TRUE})
 #' @param use_cmultRepl TRUE/FALSE whether to use \code{cmultRepl} function.
