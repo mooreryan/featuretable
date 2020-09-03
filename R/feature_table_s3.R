@@ -760,17 +760,9 @@ core_microbiome.FeatureTable <- function(ft,
 #### merge #####################################################################
 ################################################################################
 
-merge <- function(ft, ...) {
-  UseMethod("merge")
-}
+# It seems a bit hackish to reuse merge in a way that is def NOT how the base generic function works.
 
-merge.FeatureTable <- function(ft, margin, by) {
-  by_expr <- rlang::enexpr(by)
-
-  if (inherits(by_expr, "name")) {
-    by <- as.character(by_expr)
-  }
-
-  # This eval(by) hack is to ensure the 'by' arg is evaluated properly in the next function down.
-  ft$merge(margin = margin, by = eval(by))
+#' @export
+merge.FeatureTable <- function(ft, ...) {
+  ft$merge(...)
 }

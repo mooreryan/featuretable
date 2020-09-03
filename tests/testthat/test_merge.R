@@ -45,7 +45,7 @@ test_that("merge features raises if 'by' isn't valid", {
 
   expect_error(ft$merge("features", by = "COLORS"),
                class = Error$ArgumentError)
-  expect_error(featuretable:::merge(ft, "features", by = "COLORS"),
+  expect_error(merge(ft, "features", by = "COLORS"),
                class = Error$ArgumentError)
 
 })
@@ -87,7 +87,7 @@ test_that("merge features works even if one category has only a single feature",
   actual <- ft$merge("features", "Color")
 
   expect_equal(actual, expected)
-  expect_equal(featuretable:::merge(ft, "features", "Color"), expected)
+  expect_equal(merge(ft, "features", "Color"), expected)
 })
 
 test_that("merge features works even if a feature data col is the same for all features", {
@@ -127,17 +127,17 @@ test_that("merge features works even if a feature data col is the same for all f
   actual <- ft$merge("features", "Shape")
 
   expect_equal(actual, expected)
-  expect_equal(featuretable:::merge(ft, "features", "Shape"), expected)
+  expect_equal(merge(ft, "features", "Shape"), expected)
 })
 
 test_that("merge with margin=2 is the same as 'features'", {
   ft <- ft_for_merge_testing()
 
   expect_equal(ft$merge(2, "Shape"), ft$merge("features", "Shape"))
-  expect_equal(featuretable:::merge(ft, 2, "Shape"), featuretable:::merge(ft, "features", "Shape"))
+  expect_equal(merge(ft, 2, "Shape"), merge(ft, "features", "Shape"))
 
   expect_equal(ft$merge(2, "Color"), ft$merge("features", "Color"))
-  expect_equal(featuretable:::merge(ft, 2, "Color"), featuretable:::merge(ft, "features", "Color"))
+  expect_equal(merge(ft, 2, "Color"), merge(ft, "features", "Color"))
 })
 
 test_that("merge features can use tidy eval", {
@@ -146,11 +146,17 @@ test_that("merge features can use tidy eval", {
   expect_equal(ft$merge("features", Shape),
                ft$merge("features", "Shape"))
 
-  expect_equal(featuretable:::merge(ft, "features", Shape),
-               featuretable:::merge(ft, "features", "Shape"))
+  expect_equal(merge(ft, "features", Shape),
+               merge(ft, "features", "Shape"))
 
   expect_equal(ft$merge("features", Color),
                ft$merge("features", "Color"))
-  expect_equal(featuretable:::merge(ft, "features", Color),
-               featuretable:::merge(ft, "features", "Color"))
+  expect_equal(merge(ft, "features", Color),
+               merge(ft, "features", "Color"))
+})
+
+test_that("s3 merge raises when passed weird args", {
+  ft <- ft_for_merge_testing()
+
+  expect_error(merge(ft, apple = 3, pie = "yum"))
 })
