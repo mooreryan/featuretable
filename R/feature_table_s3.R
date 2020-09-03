@@ -274,12 +274,12 @@ map_samples_with_name.FeatureTable <- function(ft, fn, ...) {
 #' @family filtering functions
 #'
 #' @export
-keep <- function(ft, margin, predicate, ...) {
+keep <- function(ft, ...) {
   UseMethod("keep")
 }
 
-keep.FeatureTable <- function(ft, margin, predicate, ...) {
-  ft$keep(margin, predicate, ...)
+keep.FeatureTable <- function(ft, ...) {
+  ft$keep(...)
 }
 
 #### keep_features ####
@@ -302,8 +302,8 @@ keep_features <- function(ft, predicate, ...) {
   UseMethod("keep_features")
 }
 
-keep_features.FeatureTable <- function(ft, predicate, ...) {
-  ft$keep_features(predicate, ...)
+keep_features.FeatureTable <- function(ft, ...) {
+  ft$keep_features(...)
 }
 
 #### keep_samples ####
@@ -322,12 +322,12 @@ keep_features.FeatureTable <- function(ft, predicate, ...) {
 #' @family filtering functions
 #'
 #' @export
-keep_samples <- function(ft, predicate, ...) {
+keep_samples <- function(ft, ...) {
   UseMethod("keep_samples")
 }
 
-keep_samples.FeatureTable <- function(ft, predicate, ...) {
-  ft$keep_samples(predicate, ...)
+keep_samples.FeatureTable <- function(ft, ...) {
+  ft$keep_samples(...)
 }
 
 ################################################################################

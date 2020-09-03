@@ -222,3 +222,31 @@ test_that("the feature data is available when the margin is features (2)", {
                ft$keep_features(Color == "red"))
 })
 
+test_that("keep features can remove features with NA in the specified column", {
+  ft <- basic_feature_table()
+
+  expected <- FeatureTable$new(
+    matrix(ft$data[, c(1, 3, 5)],
+           nrow = 4, ncol = 3,
+           dimnames = list(Samples = ft$sample_names(),
+                           Features = paste("Feature", c(1, 3, 5), sep = "_"))),
+    feature_data = ft$feature_data[c(1, 3, 5), ],
+    sample_data = ft$sample_data
+  )
+
+  predicate <- !is.na(ft$feature_data$Color)
+
+  expect_equal(ft$keep("features", !is.na(Color)), expected)
+  expect_equal(ft$keep("features", predicate), expected)
+  expect_equal(ft$keep_features(!is.na(Color)), expected)
+  expect_equal(ft$keep_features(predicate), expected)
+
+  expect_equal(keep(ft, "features", !is.na(Color)), expected)
+  expect_equal(keep(ft, "features", predicate), expected)
+  expect_equal(keep_features(ft, !is.na(Color)), expected)
+  expect_equal(keep_features(ft, predicate), expected)
+
+  # These don't work since the predicate is bad!
+  expect_error(ft$keep_features(!is.na("Color")), class = Error$IncorrectLengthError)
+  expect_error(keep_features(ft, !is.na("Color")), class = Error$IncorrectLengthError)
+})
