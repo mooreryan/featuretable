@@ -755,3 +755,22 @@ core_microbiome.FeatureTable <- function(ft,
                      min_samples = min_samples,
                      max_samples = max_samples)
 }
+
+################################################################################
+#### merge #####################################################################
+################################################################################
+
+merge <- function(ft, ...) {
+  UseMethod("merge")
+}
+
+merge.FeatureTable <- function(ft, margin, by) {
+  by_expr <- rlang::enexpr(by)
+
+  if (inherits(by_expr, "name")) {
+    by <- as.character(by_expr)
+  }
+
+  # This eval(by) hack is to ensure the 'by' arg is evaluated properly in the next function down.
+  ft$merge(margin = margin, by = eval(by))
+}

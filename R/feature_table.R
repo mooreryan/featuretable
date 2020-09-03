@@ -306,6 +306,7 @@ FeatureTable <- R6::R6Class(
       self$map_with_name(1, fn, ...)
     },
 
+    # TODO what if the predicate attempts to get a column not in the feature/sample data?
     keep = function(margin, predicate, ...) {
       if (margin == "features" || margin == 2) {
         # Let the user have access to the feature_data
@@ -660,6 +661,64 @@ FeatureTable <- R6::R6Class(
 
         samples_present >= min_samples && samples_present <= max_samples
       })
+    },
+
+    #### Merging ####
+
+    merge = function(margin, by) {
+      if (margin == "features" || margin == 2) {
+        by_expr <- rlang::enexpr(by)
+
+        if (inherits(by_expr, "name")) {
+          by <- as.character(by_expr)
+        }
+
+        if (all(by %in% colnames(self$feature_data))) {
+          categories <- self$feature_data[, by]
+
+          # TODO what if it doesn't have levels? ie is character vector?  assert that it has levels
+          category_levels <- levels(categories)
+
+          if (is.null(category_levels)) {
+            stop("TODO category_levels was NULL")
+          }
+
+          new_feature_names <- paste(by, category_levels, sep = "_")
+
+          merged <- sapply(category_levels, function(level) {
+            keep_these <- categories == level
+            keep_these <- ifelse(is.na(keep_these), FALSE, keep_these)
+
+            if (sum(keep_these) == 0) {
+              stop("TODO test me")
+            } else if (sum(keep_these) == 1) {
+              # Only a single feature in this category.
+              self$data[, keep_these]
+            } else {
+              # Multiple features are present for this category.
+              rowSums(self$data[, keep_these])
+            }
+          })
+
+          dimnames(merged) <- list(Samples = self$sample_names(),
+                                   Features = new_feature_names)
+
+          new_feature_data <- data.frame(X = category_levels)
+          colnames(new_feature_data) <- c(by)
+          rownames(new_feature_data) <- new_feature_names
+
+          FeatureTable$new(
+            feature_table = merged,
+            feature_data = new_feature_data,
+            sample_data = self$sample_data
+          )
+        } else {
+          rlang::abort("Not all data categories passed to the 'by' argument were present in feature_data!",
+                       class = Error$ArgumentError)
+        }
+      } else {
+        stop("TODO")
+      }
     }
   ),
   private = list(
