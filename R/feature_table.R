@@ -665,7 +665,7 @@ FeatureTable <- R6::R6Class(
 
     #### Merging ####
 
-    merge = function(margin, by) {
+    merge = function(margin, by, keep_na = FALSE) {
       if (margin == "features" || margin == 2) {
         by_expr <- rlang::enexpr(by)
 
@@ -674,7 +674,27 @@ FeatureTable <- R6::R6Class(
         }
 
         if (all(by %in% colnames(self$feature_data))) {
+          # TODO This is a bad variable name!
           categories <- self$feature_data[, by]
+
+          if (any(is.na(categories)) && isTRUE(keep_na)) {
+            # We have NAs and we want to keep them!
+            #
+            # Note: If we don't want to keep them, we don't have to do anything
+            # as it will be taken care of later!
+
+            # We will make a new category called "NA".  First check if any "NA" string already there.
+            #
+            # Note na.rm = TRUE because we want to check all the non-NA values to see if there
+            # are any NA character/factor type things in the data.  Shouldn't be, but just a
+            # sanity check.
+            if (any(categories == "NA", na.rm = TRUE)) {
+              stop("TODO test me implement me")
+            }
+
+            # Replace real NAs with the fake "NA" level.
+            categories <- `levels<-`(addNA(categories), c(levels(categories), "NA"))
+          }
 
           # TODO what if it doesn't have levels? ie is character vector?  assert that it has levels
           category_levels <- levels(categories)

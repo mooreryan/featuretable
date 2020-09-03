@@ -65,6 +65,7 @@ A FeatureTable has a feature_table, sample_data, and feature_data.
 \item \href{#method-clr}{\code{FeatureTable$clr()}}
 \item \href{#method-pca_biplot}{\code{FeatureTable$pca_biplot()}}
 \item \href{#method-core_microbiome}{\code{FeatureTable$core_microbiome()}}
+\item \href{#method-merge}{\code{FeatureTable$merge()}}
 \item \href{#method-clone}{\code{FeatureTable$clone()}}
 }
 }
@@ -612,6 +613,15 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
   min_samples = NULL,
   max_samples = NULL
 )}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-merge"></a>}}
+\if{latex}{\out{\hypertarget{method-merge}{}}}
+\subsection{Method \code{merge()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$merge(margin, by, keep_na = FALSE)}\if{html}{\out{</div>}}
 }
 
 }

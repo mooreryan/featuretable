@@ -2,6 +2,7 @@
 
 S3method(dim,FeatureTable)
 S3method(feature_names,FeatureTable)
+S3method(merge,FeatureTable)
 S3method(observation_names,FeatureTable)
 S3method(replace_zeros,FeatureTable)
 S3method(sample_names,FeatureTable)
