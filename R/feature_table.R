@@ -755,11 +755,14 @@ FeatureTable <- R6::R6Class(
       result <- min(self$data[self$data != 0], ...)
 
       if (!is.na(result) && result < 0) {
-        print(result)
         rlang::warn("Non-zero min was negative. Do you really want this function?")
       }
 
       result
+    },
+
+    size = function(...) {
+      nrow(self$data) * ncol(self$data)
     }
 
   ),

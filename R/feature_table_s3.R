@@ -790,3 +790,13 @@ non_zero_min <- function(ft, ...) {
 non_zero_min.FeatureTable <- function(ft, ...) {
   ft$non_zero_min(...)
 }
+
+#' @export
+size <- function(ft, ...) {
+  UseMethod("size")
+}
+
+#' @export
+size.FeatureTable <- function(ft) {
+  ft$size()
+}

@@ -405,3 +405,10 @@ test_that("min and max give correct values", {
   expect_equal(min(ft, na.rm = TRUE), min(ft$data, na.rm = TRUE))
   expect_equal(max(ft, na.rm = TRUE), max(ft$data, na.rm = TRUE))
 })
+
+test_that("size returns data nrows * ncols", {
+  ft <- basic_feature_table()
+
+  expect_equal(ft$size(), nrow(ft$data) * ncol(ft$data))
+  expect_equal(size(ft), nrow(ft$data) * ncol(ft$data))
+})
