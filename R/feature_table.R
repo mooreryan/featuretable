@@ -306,6 +306,10 @@ FeatureTable <- R6::R6Class(
       self$map_with_name(1, fn, ...)
     },
 
+    ################################################################################
+    #### keep ######################################################################
+    ################################################################################
+
     # TODO what if the predicate attempts to get a column not in the feature/sample data?
     keep = function(margin, predicate, ...) {
       if (margin == "features" || margin == 2) {
@@ -403,6 +407,8 @@ FeatureTable <- R6::R6Class(
 
           result <- self$data[predicate_result, ]
 
+          # TODO see the section on features for how to deal with NOT adding dimnames
+          # for data that didn't already have them.
           result <- matrix(result, nrow = 1, ncol = self$num_features(),
                            dimnames = list(Samples = sample_name,
                                            Features = colnames(self$data)))
@@ -428,7 +434,57 @@ FeatureTable <- R6::R6Class(
       self$keep(1, predicate, ...)
     },
 
-    #### Conversion
+    shared_features = function(method, other) {
+      if (method == "keep") {
+        self$keep_shared_features(other)
+      } else if (method == "names") {
+        self$shared_feature_names(other)
+      } else {
+        rlang::abort(
+          "method must be either 'keep' or 'names'",
+          class = Error$ArgumentError
+        )
+      }
+    },
+
+    keep_shared_features = function(other) {
+      shared_names <- self$shared_feature_names(other)
+
+      if (length(shared_names) == 0) {
+        rlang::abort("There were no shared features!",
+                     class = Error$ArgumentError)
+      } else {
+        self$keep_features(self$feature_names() %in% shared_names)
+      }
+    },
+
+    shared_feature_names = function(other) {
+      if (!inherits(other, "FeatureTable")) {
+        rlang::abort(
+          "'other' is not a FeatureTable!",
+          class = Error$ArgumentError
+        )
+      }
+
+      if (is.null(self$feature_names())) {
+        rlang::abort(
+          "FeatureTable (self) has no feature names!",
+          class = Error$MissingFeatureNamesError
+        )
+      }
+      if (is.null(other$feature_names())) {
+        rlang::abort(
+          "FeatureTable (other) has no feature names!",
+          class = Error$MissingFeatureNamesError
+        )
+      }
+
+      base::intersect(self$feature_names(), other$feature_names())
+    },
+
+    ################################################################################
+    #### Conversion ################################################################
+    ################################################################################
 
     #' Convert FeatureTable to phyloseq object.
     #'

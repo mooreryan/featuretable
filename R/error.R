@@ -11,5 +11,6 @@ Error <- list(
   PhyloseqUnavailableError = "PhyloseqUnavailableError",
   zCompositionsUnavailableError = "zCompositionsUnavailableError",
   DomainError = "DomainError",
-  PackageUnavailableError = "PackageUnavailableError"
+  PackageUnavailableError = "PackageUnavailableError",
+  MissingFeatureNamesError = "MissingFeatureNamesError"
 )

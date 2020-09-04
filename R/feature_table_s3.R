@@ -800,3 +800,40 @@ size <- function(ft, ...) {
 size.FeatureTable <- function(ft) {
   ft$size()
 }
+
+################################################################################
+#### shared data ###############################################################
+################################################################################
+
+# TODO docs: if you just have a list of feature names, you don't need these, you'd use keep directly.
+
+#' @export
+shared_features <- function(ft, method, other) {
+  UseMethod("shared_features")
+}
+
+#' @export
+shared_features.FeatureTable <- function(ft, method, other) {
+  ft$shared_features(method, other)
+}
+
+#' @export
+keep_shared_features <- function(ft, other) {
+  UseMethod("keep_shared_features")
+}
+
+#' @export
+keep_shared_features.FeatureTable <- function(ft, other) {
+  ft$keep_shared_features(other)
+}
+
+#' @export
+shared_feature_names <- function(ft, other) {
+  UseMethod("shared_feature_names")
+}
+
+#' @export
+shared_feature_names.FeatureTable <- function(ft, other) {
+  ft$shared_feature_names(other)
+}
+

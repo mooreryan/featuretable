@@ -59,6 +59,9 @@ A FeatureTable has a feature_table, sample_data, and feature_data.
 \item \href{#method-keep}{\code{FeatureTable$keep()}}
 \item \href{#method-keep_features}{\code{FeatureTable$keep_features()}}
 \item \href{#method-keep_samples}{\code{FeatureTable$keep_samples()}}
+\item \href{#method-shared_features}{\code{FeatureTable$shared_features()}}
+\item \href{#method-keep_shared_features}{\code{FeatureTable$keep_shared_features()}}
+\item \href{#method-shared_feature_names}{\code{FeatureTable$shared_feature_names()}}
 \item \href{#method-as_phyloseq}{\code{FeatureTable$as_phyloseq()}}
 \item \href{#method-is_count_table}{\code{FeatureTable$is_count_table()}}
 \item \href{#method-replace_zeros}{\code{FeatureTable$replace_zeros()}}
@@ -500,6 +503,33 @@ Convert FeatureTable to phyloseq object.
 \subsection{Method \code{keep_samples()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$keep_samples(predicate, ...)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-shared_features"></a>}}
+\if{latex}{\out{\hypertarget{method-shared_features}{}}}
+\subsection{Method \code{shared_features()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$shared_features(method, other)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-keep_shared_features"></a>}}
+\if{latex}{\out{\hypertarget{method-keep_shared_features}{}}}
+\subsection{Method \code{keep_shared_features()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$keep_shared_features(other)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-shared_feature_names"></a>}}
+\if{latex}{\out{\hypertarget{method-shared_feature_names}{}}}
+\subsection{Method \code{shared_feature_names()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$shared_feature_names(other)}\if{html}{\out{</div>}}
 }
 
 }
