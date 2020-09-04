@@ -3,25 +3,27 @@ test_that("keep can filter wrt features with a predicate function or logical vec
                          feature_data = testdata$feature_data,
                          sample_data = testdata$sample_data)
 
-  result <- ft$keep("features", function(feature) sum(feature) < 35)
   expected <- FeatureTable$new(
     testdata$count_table[, 1:2],
     # The feature data also gets handled properly, because of the FeatureTable constructor!
     feature_data = testdata$feature_data,
     sample_data = testdata$sample_data
   )
-  expect_equal(result, expected)
+  expect_equal(ft$keep("features", function(feature) sum(feature) < 35), expected)
+  expect_equal(keep(ft, "features", function(feature) sum(feature) < 35), expected)
   expect_equal(ft$keep("features", c(TRUE, TRUE, FALSE, FALSE, FALSE)), expected)
+  expect_equal(keep(ft, "features", c(TRUE, TRUE, FALSE, FALSE, FALSE)), expected)
 
-  result <- ft$keep(2, function(feature) sum(feature) > 35)
   expected <- FeatureTable$new(
     testdata$count_table[, 3:5],
     # The feature data also gets handled properly, because of the FeatureTable constructor!
     feature_data = testdata$feature_data,
     sample_data = testdata$sample_data
   )
-  expect_equal(result, expected)
+  expect_equal(ft$keep(2, function(feature) sum(feature) > 35), expected)
+  expect_equal(keep(ft, 2, function(feature) sum(feature) > 35), expected)
   expect_equal(ft$keep("features", c(FALSE, FALSE, TRUE, TRUE, TRUE)), expected)
+  expect_equal(keep(ft, "features", c(FALSE, FALSE, TRUE, TRUE, TRUE)), expected)
 })
 
 test_that("keep can filter wrt samples with a predicate function", {
@@ -29,25 +31,27 @@ test_that("keep can filter wrt samples with a predicate function", {
                          feature_data = testdata$feature_data,
                          sample_data = testdata$sample_data)
 
-  result <- ft$keep("samples", function(feature) sum(feature) < 48)
   expected <- FeatureTable$new(
     testdata$count_table[1:2, ],
     # The feature data also gets handled properly, because of the FeatureTable constructor!
     feature_data = testdata$feature_data,
     sample_data = testdata$sample_data
   )
-  expect_equal(result, expected)
+  expect_equal(ft$keep("samples", function(feature) sum(feature) < 48), expected)
+  expect_equal(keep(ft, "samples", function(feature) sum(feature) < 48), expected)
   expect_equal(ft$keep("samples", c(TRUE, TRUE, FALSE, FALSE)), expected)
+  expect_equal(keep(ft, "samples", c(TRUE, TRUE, FALSE, FALSE)), expected)
 
-  result <- ft$keep(1, function(feature) sum(feature) > 48)
   expected <- FeatureTable$new(
     testdata$count_table[3:4, ],
     # The feature data also gets handled properly, because of the FeatureTable constructor!
     feature_data = testdata$feature_data,
     sample_data = testdata$sample_data
   )
-  expect_equal(result, expected)
+  expect_equal(ft$keep(1, function(feature) sum(feature) > 48), expected)
+  expect_equal(keep(ft, 1, function(feature) sum(feature) > 48), expected)
   expect_equal(ft$keep("samples", c(FALSE, FALSE, TRUE, TRUE)), expected)
+  expect_equal(keep(ft, "samples", c(FALSE, FALSE, TRUE, TRUE)), expected)
 })
 
 test_that("keep handles more interesting predicates", {
@@ -56,22 +60,22 @@ test_that("keep handles more interesting predicates", {
                          sample_data = testdata$sample_data)
 
   # Keep features that have more than one count divisible by 3.
-  result <- ft$keep("features", function(feature) sum(feature %% 3 == 0) > 1)
   expected <- FeatureTable$new(
     testdata$count_table[, c("Feature_1", "Feature_4")],
     feature_data = testdata$feature_data,
     sample_data = testdata$sample_data
   )
-  expect_equal(result, expected)
+  expect_equal(ft$keep("features", function(feature) sum(feature %% 3 == 0) > 1), expected)
+  expect_equal(keep(ft, "features", function(feature) sum(feature %% 3 == 0) > 1), expected)
 
   # Keep samples that have more than one count divisible by 3.
-  result <- ft$keep("samples", function(samples) sum(samples %% 3 == 0) > 1)
   expected <- FeatureTable$new(
     testdata$count_table[c("Sample_1", "Sample_3", "Sample_4"), ],
     feature_data = testdata$feature_data,
     sample_data = testdata$sample_data
   )
-  expect_equal(result, expected)
+  expect_equal(ft$keep("samples", function(samples) sum(samples %% 3 == 0) > 1), expected)
+  expect_equal(keep(ft, "samples", function(samples) sum(samples %% 3 == 0) > 1), expected)
 })
 
 test_that("keep raises error if 0 samples or features would be returned", {
@@ -82,9 +86,13 @@ test_that("keep raises error if 0 samples or features would be returned", {
   # Features
   expect_error(ft$keep("features", function(feature) sum(feature) > 10000),
                class = Error$NoFeaturesRemainingError)
+  expect_error(keep(ft, "features", function(feature) sum(feature) > 10000),
+               class = Error$NoFeaturesRemainingError)
 
   # Samples
   expect_error(ft$keep("samples", function(sample) sum(sample) > 10000),
+               class = Error$NoSamplesRemainingError)
+  expect_error(keep(ft, "samples", function(sample) sum(sample) > 10000),
                class = Error$NoSamplesRemainingError)
 })
 
@@ -94,7 +102,6 @@ test_that("keep works fine if 1 sample or feature would be returned", {
                          sample_data = testdata$sample_data)
 
   #### Features
-  result <- ft$keep("features", function(feature) sum(feature) > 65)
   expected <- FeatureTable$new(
     matrix(testdata$count_table[, 5], nrow = 4, ncol = 1,
            dimnames = list(Samples = paste0("Sample_", 1:4),
@@ -102,10 +109,10 @@ test_that("keep works fine if 1 sample or feature would be returned", {
     feature_data = testdata$feature_data,
     sample_data = testdata$sample_data
   )
-  expect_equal(result, expected)
+  expect_equal(ft$keep("features", function(feature) sum(feature) > 65), expected)
+  expect_equal(keep(ft, "features", function(feature) sum(feature) > 65), expected)
 
   #### Samples
-  result <- ft$keep("samples", function(sample) sum(sample) > 53)
   expected <- FeatureTable$new(
     matrix(testdata$count_table[4, ],
            nrow = 1, ncol = 5,
@@ -114,7 +121,8 @@ test_that("keep works fine if 1 sample or feature would be returned", {
     feature_data = testdata$feature_data,
     sample_data = testdata$sample_data
   )
-  expect_equal(result, expected)
+  expect_equal(ft$keep("samples", function(sample) sum(sample) > 53), expected)
+  expect_equal(keep(ft, "samples", function(sample) sum(sample) > 53), expected)
 })
 
 test_that("keep works fine when all samples are returned", {
@@ -123,7 +131,10 @@ test_that("keep works fine when all samples are returned", {
                          sample_data = testdata$sample_data)
 
   expect_equal(ft$keep(1, function(x) sum(x) >= 0), ft)
+  expect_equal(keep(ft, 1, function(x) sum(x) >= 0), ft)
+
   expect_equal(ft$keep(2, function(x) sum(x) >= 0), ft)
+  expect_equal(keep(ft, 2, function(x) sum(x) >= 0), ft)
 })
 
 test_that("keep raises error if function (or vec) isn't a predicate", {
@@ -135,6 +146,11 @@ test_that("keep raises error if function (or vec) isn't a predicate", {
     expect_error(ft$keep(2, function(x) x), class = Error$NonPredicateFunctionError)
     expect_error(ft$keep(1, 1:4), class = Error$NonPredicateFunctionError)
     expect_error(ft$keep(2, 1:5), class = Error$NonPredicateFunctionError)
+
+    expect_error(keep(ft, 1, function(x) x), class = Error$NonPredicateFunctionError)
+    expect_error(keep(ft, 2, function(x) x), class = Error$NonPredicateFunctionError)
+    expect_error(keep(ft, 1, 1:4), class = Error$NonPredicateFunctionError)
+    expect_error(keep(ft, 2, 1:5), class = Error$NonPredicateFunctionError)
 })
 
 test_that("keep raises error if a vec of incorrect length is predicate", {
@@ -144,6 +160,9 @@ test_that("keep raises error if a vec of incorrect length is predicate", {
 
   expect_error(ft$keep(1, rep(TRUE, 10)), class = Error$IncorrectLengthError)
   expect_error(ft$keep(2, rep(TRUE, 10)), class = Error$IncorrectLengthError)
+
+  expect_error(keep(ft, 1, rep(TRUE, 10)), class = Error$IncorrectLengthError)
+  expect_error(keep(ft, 2, rep(TRUE, 10)), class = Error$IncorrectLengthError)
 })
 
 test_that("NAs in the predicate result get treated like FALSE", {
@@ -158,6 +177,15 @@ test_that("NAs in the predicate result get treated like FALSE", {
   expect_equal(
     ft$keep(2, c(TRUE, TRUE, FALSE, FALSE, FALSE)),
     ft$keep(2, c(TRUE, TRUE, NA, NA, NA))
+  )
+
+  expect_equal(
+    keep(ft, 1, c(TRUE, TRUE, FALSE, FALSE)),
+    keep(ft, 1, c(TRUE, TRUE, NA, NA))
+  )
+  expect_equal(
+    keep(ft, 2, c(TRUE, TRUE, FALSE, FALSE, FALSE)),
+    keep(ft, 2, c(TRUE, TRUE, NA, NA, NA))
   )
 })
 
@@ -174,14 +202,22 @@ test_that("the aliases work like base keep", {
     ft$keep("features", c(TRUE, TRUE, FALSE, FALSE, FALSE)),
     ft$keep_features(c(TRUE, TRUE, FALSE, FALSE, FALSE))
   )
+
+  expect_equal(
+    keep(ft, "samples", c(TRUE, TRUE, FALSE, FALSE)),
+    keep_samples(ft, c(TRUE, TRUE, FALSE, FALSE))
+  )
+  expect_equal(
+    keep(ft, "features", c(TRUE, TRUE, FALSE, FALSE, FALSE)),
+    keep_features(ft, c(TRUE, TRUE, FALSE, FALSE, FALSE))
+  )
 })
 
-test_that("the sample data is available when the margin is samples (1)", {
+test_that("the sample data (tidy) is available when the margin is samples (1)", {
   ft <- FeatureTable$new(testdata$count_table,
                          feature_data = testdata$feature_data,
                          sample_data = testdata$sample_data)
 
-  result <- ft$keep("samples", Location == "Spain")
   expected <- FeatureTable$new(
     matrix(testdata$count_table[c(1, 4), ],
            nrow = 2, ncol = 5,
@@ -190,21 +226,22 @@ test_that("the sample data is available when the margin is samples (1)", {
     feature_data = testdata$feature_data,
     sample_data = testdata$sample_data
   )
-  expect_equal(result, expected)
-
+  expect_equal(ft$keep("samples", Location == "Spain"), expected)
   expect_equal(ft$keep_samples(Location == "Spain"), expected)
-
-  # Boop
   expect_equal(ft$keep_samples(ft$sample_data$Location == "Spain"),
                ft$keep_samples(Location == "Spain"))
+
+  expect_equal(keep(ft, "samples", Location == "Spain"), expected)
+  expect_equal(keep_samples(ft, Location == "Spain"), expected)
+  expect_equal(keep_samples(ft, ft$sample_data$Location == "Spain"),
+               keep_samples(ft, Location == "Spain"))
 })
 
-test_that("the feature data is available when the margin is features (2)", {
+test_that("the feature data (tidy) is available when the margin is features (2)", {
   ft <- FeatureTable$new(testdata$count_table,
                          feature_data = testdata$feature_data,
                          sample_data = testdata$sample_data)
 
-  result <- ft$keep("features", Color == "red")
   expected <- FeatureTable$new(
     matrix(testdata$count_table[, c(1, 3)],
            nrow = 4, ncol = 2,
@@ -213,13 +250,15 @@ test_that("the feature data is available when the margin is features (2)", {
     feature_data = testdata$feature_data,
     sample_data = testdata$sample_data
   )
-  expect_equal(result, expected)
-
+  expect_equal(ft$keep("features", Color == "red"), expected)
   expect_equal(ft$keep_features(Color == "red"), expected)
-
-  # Boop
   expect_equal(ft$keep_features(ft$feature_data$Color == "red"),
                ft$keep_features(Color == "red"))
+
+  expect_equal(keep(ft, "features", Color == "red"), expected)
+  expect_equal(keep_features(ft, Color == "red"), expected)
+  expect_equal(keep_features(ft, ft$feature_data$Color == "red"),
+               keep_features(ft, Color == "red"))
 })
 
 test_that("keep features can remove features with NA in the specified column", {
