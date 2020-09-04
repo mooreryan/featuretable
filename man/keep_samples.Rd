@@ -4,14 +4,14 @@
 \alias{keep_samples}
 \title{Keep elements using a predicate}
 \usage{
-keep_samples(ft, predicate, ...)
+keep_samples(ft, ...)
 }
 \arguments{
 \item{ft}{A FeatureTable object.}
 
-\item{predicate}{The predicate function or expression to be applied.  Only those elements where \code{predicate} is or evaluates to \code{TRUE} will be kept.}
-
 \item{...}{Optional arguments to \code{predicate} (if \code{predicate} is a function).}
+
+\item{predicate}{The predicate function or expression to be applied.  Only those elements where \code{predicate} is or evaluates to \code{TRUE} will be kept.}
 }
 \value{
 A new FeatureTable with the elements that were kept.

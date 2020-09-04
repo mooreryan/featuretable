@@ -66,6 +66,9 @@ A FeatureTable has a feature_table, sample_data, and feature_data.
 \item \href{#method-pca_biplot}{\code{FeatureTable$pca_biplot()}}
 \item \href{#method-core_microbiome}{\code{FeatureTable$core_microbiome()}}
 \item \href{#method-merge}{\code{FeatureTable$merge()}}
+\item \href{#method-max}{\code{FeatureTable$max()}}
+\item \href{#method-min}{\code{FeatureTable$min()}}
+\item \href{#method-non_zero_min}{\code{FeatureTable$non_zero_min()}}
 \item \href{#method-clone}{\code{FeatureTable$clone()}}
 }
 }
@@ -622,6 +625,33 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 \subsection{Method \code{merge()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$merge(margin, by, keep_na = FALSE)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-max"></a>}}
+\if{latex}{\out{\hypertarget{method-max}{}}}
+\subsection{Method \code{max()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$max(...)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-min"></a>}}
+\if{latex}{\out{\hypertarget{method-min}{}}}
+\subsection{Method \code{min()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$min(...)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-non_zero_min"></a>}}
+\if{latex}{\out{\hypertarget{method-non_zero_min}{}}}
+\subsection{Method \code{non_zero_min()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$non_zero_min(...)}\if{html}{\out{</div>}}
 }
 
 }

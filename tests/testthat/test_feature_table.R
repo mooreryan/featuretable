@@ -352,3 +352,56 @@ test_that("$is_count_table returns FALSE if all numbers in feature_table are NOT
   expect_false(ft$is_count_table())
   expect_false(is_count_table(ft))
 })
+
+################################################################################
+#### little data utils #########################################################
+################################################################################
+
+test_that("non_zero_min gives the minimum value excluding zeros", {
+  ft <- basic_feature_table()
+
+  expect_equal(ft$non_zero_min(), 1)
+  expect_equal(non_zero_min(ft), 1)
+
+  # No message for normal usage.
+  expect_message(ft$non_zero_min(), NA)
+  expect_message(non_zero_min(ft), NA)
+
+  ft$data[1, 1] <- NA
+
+  expect_true(is.na(ft$non_zero_min()))
+  expect_true(is.na(non_zero_min(ft)))
+
+  expect_equal(ft$non_zero_min(na.rm = TRUE), 1)
+  expect_equal(non_zero_min(ft, na.rm = TRUE), 1)
+
+  ft$data[1, 1] <- -100
+
+  expect_equal(ft$non_zero_min(), -100)
+  expect_equal(non_zero_min(ft), -100)
+
+  # User probably didn't mean to use this if there are negative values.  Warn them.
+  expect_warning(ft$non_zero_min(), regexp = "negative")
+  expect_warning(non_zero_min(ft), regexp = "negative")
+})
+
+test_that("min and max give correct values", {
+  ft <- basic_feature_table()
+
+  expect_equal(ft$min(), min(ft$data))
+  expect_equal(ft$max(), max(ft$data))
+
+  expect_equal(min(ft), min(ft$data))
+  expect_equal(max(ft), max(ft$data))
+
+  ft$data[1, 1] <- NA
+
+  expect_true(is.na(ft$min()))
+  expect_true(is.na(ft$max()))
+
+  expect_equal(ft$min(na.rm = TRUE), min(ft$data, na.rm = TRUE))
+  expect_equal(ft$max(na.rm = TRUE), max(ft$data, na.rm = TRUE))
+
+  expect_equal(min(ft, na.rm = TRUE), min(ft$data, na.rm = TRUE))
+  expect_equal(max(ft, na.rm = TRUE), max(ft$data, na.rm = TRUE))
+})

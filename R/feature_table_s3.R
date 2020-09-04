@@ -766,3 +766,27 @@ core_microbiome.FeatureTable <- function(ft,
 merge.FeatureTable <- function(ft, ...) {
   ft$merge(...)
 }
+
+################################################################################
+#### little data utils #########################################################
+################################################################################
+
+#' @export
+max.FeatureTable <- function(ft, ...) {
+  ft$max(...)
+}
+
+#' @export
+min.FeatureTable <- function(ft, ...) {
+  ft$min(...)
+}
+
+#' @export
+non_zero_min <- function(ft, ...) {
+  UseMethod("non_zero_min")
+}
+
+#' @export
+non_zero_min.FeatureTable <- function(ft, ...) {
+  ft$non_zero_min(...)
+}

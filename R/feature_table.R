@@ -739,8 +739,35 @@ FeatureTable <- R6::R6Class(
       } else {
         stop("TODO")
       }
+    },
+
+    #### little data utils #######################################################
+
+    max = function(...) {
+      max(self$data, ...)
+    },
+
+    min = function(...) {
+      min(self$data, ...)
+    },
+
+    non_zero_min = function(...) {
+      result <- min(self$data[self$data != 0], ...)
+
+      if (!is.na(result) && result < 0) {
+        print(result)
+        rlang::warn("Non-zero min was negative. Do you really want this function?")
+      }
+
+      result
     }
+
   ),
+
+  ################################################################################
+  #### private methods ###########################################################
+  ################################################################################
+
   private = list(
     handle_feature_data = function(feature_data) {
       if (length(dim(feature_data)) > 2) {

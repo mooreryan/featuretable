@@ -4,16 +4,16 @@
 \alias{keep}
 \title{Keep samples/observations/rows using a predicate}
 \usage{
-keep(ft, margin, predicate, ...)
+keep(ft, ...)
 }
 \arguments{
 \item{ft}{A FeatureTable object.}
 
+\item{...}{Optional arguments to \code{predicate} (if \code{predicate} is a function).}
+
 \item{margin}{Subscript which the predicate will be applied over.  E.g., \code{1} or \code{"samples"} indicates rows, \code{2} or \code{"features"} indicates columns.}
 
 \item{predicate}{The predicate function or expression to be applied.  Only those elements where \code{predicate} is or evaluates to \code{TRUE} will be kept.}
-
-\item{...}{Optional arguments to \code{predicate} (if \code{predicate} is a function).}
 }
 \value{
 A new FeatureTable with the elements that were kept.
