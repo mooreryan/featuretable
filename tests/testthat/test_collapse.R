@@ -49,6 +49,11 @@ test_that("collapse features raises if 'by' isn't valid", {
   expect_error(collapse(ft, "features", by = "COLORS"),
                class = Error$ArgumentError)
 
+  expect_error(ft$collapse_features(by = "COLORS"),
+               class = Error$ArgumentError)
+  expect_error(collapse_features(ft, "features", by = "COLORS"),
+               class = Error$ArgumentError)
+
 })
 
 test_that("collapse features works even if one category has only a single feature", {
@@ -85,10 +90,10 @@ test_that("collapse features works even if one category has only a single featur
     sample_data = ft$sample_data
   )
 
-  actual <- ft$collapse("features", "Color")
-
-  expect_equal(actual, expected)
+  expect_equal(ft$collapse("features", "Color"), expected)
   expect_equal(collapse(ft, "features", "Color"), expected)
+  expect_equal(ft$collapse_features("Color"), expected)
+  expect_equal(collapse_features(ft, "Color"), expected)
 })
 
 test_that("collapse features works even if a feature data col is the same for all features", {
@@ -125,10 +130,10 @@ test_that("collapse features works even if a feature data col is the same for al
     sample_data = ft$sample_data
   )
 
-  actual <- ft$collapse("features", "Shape")
-
-  expect_equal(actual, expected)
+  expect_equal(ft$collapse("features", "Shape"), expected)
   expect_equal(collapse(ft, "features", "Shape"), expected)
+  expect_equal(ft$collapse_features("Shape"), expected)
+  expect_equal(collapse_features(ft, "Shape"), expected)
 })
 
 test_that("collapse with margin=2 is the same as 'features'", {
@@ -136,9 +141,13 @@ test_that("collapse with margin=2 is the same as 'features'", {
 
   expect_equal(ft$collapse(2, "Shape"), ft$collapse("features", "Shape"))
   expect_equal(collapse(ft, 2, "Shape"), collapse(ft, "features", "Shape"))
+  expect_equal(ft$collapse(2, "Shape"), ft$collapse_features("Shape"))
+  expect_equal(collapse(ft, 2, "Shape"), collapse_features(ft, "Shape"))
 
   expect_equal(ft$collapse(2, "Color"), ft$collapse("features", "Color"))
   expect_equal(collapse(ft, 2, "Color"), collapse(ft, "features", "Color"))
+  expect_equal(ft$collapse(2, "Color"), ft$collapse_features("Color"))
+  expect_equal(collapse(ft, 2, "Color"), collapse_features(ft, "Color"))
 })
 
 test_that("collapse features can use tidy eval", {
@@ -146,7 +155,6 @@ test_that("collapse features can use tidy eval", {
 
   expect_equal(ft$collapse("features", Shape),
                ft$collapse("features", "Shape"))
-
   expect_equal(collapse(ft, "features", Shape),
                collapse(ft, "features", "Shape"))
 
@@ -154,12 +162,25 @@ test_that("collapse features can use tidy eval", {
                ft$collapse("features", "Color"))
   expect_equal(collapse(ft, "features", Color),
                collapse(ft, "features", "Color"))
+
+
+  expect_equal(ft$collapse_features(Shape),
+               ft$collapse_features("Shape"))
+  expect_equal(collapse_features(ft, Shape),
+               collapse_features(ft, "Shape"))
+
+  expect_equal(ft$collapse_features(Color),
+               ft$collapse_features("Color"))
+  expect_equal(collapse_features(ft, Color),
+               collapse_features(ft, "Color"))
 })
 
 test_that("s3 collapse raises when passed weird args", {
   ft <- ft_for_collapse_testing()
 
   expect_error(collapse(ft, apple = 3, pie = "yum"))
+  expect_error(collapse_features(ft, apple = 3, pie = "yum"))
+
 })
 
 ################################################################################
@@ -206,6 +227,11 @@ test_that("collapse features drops features with NA in the category by default",
   expect_equal(collapse(ft, "features", Color), expected)
   expect_equal(ft$collapse("features", Color, keep_na = FALSE), expected)
   expect_equal(collapse(ft, "features", Color, keep_na = FALSE), expected)
+
+  expect_equal(ft$collapse_features(Color), expected)
+  expect_equal(collapse_features(ft, Color), expected)
+  expect_equal(ft$collapse_features(Color, keep_na = FALSE), expected)
+  expect_equal(collapse_features(ft, Color, keep_na = FALSE), expected)
 })
 
 test_that("collapse features combines all NAs into single category if keep_na=TRUE", {
@@ -249,6 +275,9 @@ test_that("collapse features combines all NAs into single category if keep_na=TR
   expect_equal(ft$collapse("features", Color, keep_na = TRUE), expected)
   expect_equal(collapse(ft, "features", Color, keep_na = TRUE), expected)
 
+  expect_equal(ft$collapse_features(Color, keep_na = TRUE), expected)
+  expect_equal(collapse_features(ft, Color, keep_na = TRUE), expected)
+
   #### Also works fine with a single feature with NA
   ft <- ft_for_collapse_testing()
   ft$feature_data[2, "Color"] <- NA
@@ -278,5 +307,8 @@ test_that("collapse features combines all NAs into single category if keep_na=TR
 
   expect_equal(ft$collapse("features", Color, keep_na = TRUE), expected)
   expect_equal(collapse(ft, "features", Color, keep_na = TRUE), expected)
+
+  expect_equal(ft$collapse_features(Color, keep_na = TRUE), expected)
+  expect_equal(collapse_features(ft, Color, keep_na = TRUE), expected)
 })
 

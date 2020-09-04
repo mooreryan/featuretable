@@ -769,3 +769,83 @@ collapse <- function(ft, ...) {
 collapse.FeatureTable <- function(ft, ...) {
   ft$collapse(...)
 }
+
+#' @export
+collapse_features <- function(ft, ...) {
+  UseMethod("collapse_features")
+}
+
+#' @export
+collapse_features.FeatureTable <- function(ft, ...) {
+  ft$collapse_features(...)
+}
+
+################################################################################
+#### little data utils #########################################################
+################################################################################
+
+#' @export
+max.FeatureTable <- function(ft, ...) {
+  ft$max(...)
+}
+
+#' @export
+min.FeatureTable <- function(ft, ...) {
+  ft$min(...)
+}
+
+#' @export
+non_zero_min <- function(ft, ...) {
+  UseMethod("non_zero_min")
+}
+
+#' @export
+non_zero_min.FeatureTable <- function(ft, ...) {
+  ft$non_zero_min(...)
+}
+
+#' @export
+size <- function(ft, ...) {
+  UseMethod("size")
+}
+
+#' @export
+size.FeatureTable <- function(ft) {
+  ft$size()
+}
+
+################################################################################
+#### shared data ###############################################################
+################################################################################
+
+# TODO docs: if you just have a list of feature names, you don't need these, you'd use keep directly.
+
+#' @export
+shared_features <- function(ft, method, other) {
+  UseMethod("shared_features")
+}
+
+#' @export
+shared_features.FeatureTable <- function(ft, method, other) {
+  ft$shared_features(method, other)
+}
+
+#' @export
+keep_shared_features <- function(ft, other) {
+  UseMethod("keep_shared_features")
+}
+
+#' @export
+keep_shared_features.FeatureTable <- function(ft, other) {
+  ft$keep_shared_features(other)
+}
+
+#' @export
+shared_feature_names <- function(ft, other) {
+  UseMethod("shared_feature_names")
+}
+
+#' @export
+shared_feature_names.FeatureTable <- function(ft, other) {
+  ft$shared_feature_names(other)
+}
