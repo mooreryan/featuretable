@@ -601,7 +601,7 @@ FeatureTable <- R6::R6Class(
                          class = Error$ArgumentError)
           }
 
-          plot_data <- merge(self$data, self$sample_data, by = "row.names")
+          plot_data <- base::merge(self$data, self$sample_data, by = "row.names")
 
           # plot_data doesn't have rownames correct...fix it!
           rownames(plot_data) <- plot_data$Row.names
@@ -731,7 +731,7 @@ FeatureTable <- R6::R6Class(
 
     #### Merging ####
 
-    merge = function(margin, by, keep_na = FALSE) {
+    collapse = function(margin, by, keep_na = FALSE) {
       if (margin == "features" || margin == 2) {
         by_expr <- rlang::enexpr(by)
 
@@ -771,7 +771,7 @@ FeatureTable <- R6::R6Class(
 
           new_feature_names <- paste(by, category_levels, sep = "_")
 
-          merged <- sapply(category_levels, function(level) {
+          collapsed <- sapply(category_levels, function(level) {
             keep_these <- categories == level
             keep_these <- ifelse(is.na(keep_these), FALSE, keep_these)
 
@@ -786,7 +786,7 @@ FeatureTable <- R6::R6Class(
             }
           })
 
-          dimnames(merged) <- list(Samples = self$sample_names(),
+          dimnames(collapsed) <- list(Samples = self$sample_names(),
                                    Features = new_feature_names)
 
           new_feature_data <- data.frame(X = category_levels)
@@ -794,7 +794,7 @@ FeatureTable <- R6::R6Class(
           rownames(new_feature_data) <- new_feature_names
 
           FeatureTable$new(
-            feature_table = merged,
+            feature_table = collapsed,
             feature_data = new_feature_data,
             sample_data = self$sample_data
           )

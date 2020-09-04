@@ -757,83 +757,15 @@ core_microbiome.FeatureTable <- function(ft,
 }
 
 ################################################################################
-#### merge #####################################################################
-################################################################################
-
-# It seems a bit hackish to reuse merge in a way that is def NOT how the base generic function works.
-
-#' @export
-merge.FeatureTable <- function(ft, ...) {
-  ft$merge(...)
-}
-
-################################################################################
-#### little data utils #########################################################
+#### collapse ##################################################################
 ################################################################################
 
 #' @export
-max.FeatureTable <- function(ft, ...) {
-  ft$max(...)
+collapse <- function(ft, ...) {
+  UseMethod("collapse")
 }
 
 #' @export
-min.FeatureTable <- function(ft, ...) {
-  ft$min(...)
+collapse.FeatureTable <- function(ft, ...) {
+  ft$collapse(...)
 }
-
-#' @export
-non_zero_min <- function(ft, ...) {
-  UseMethod("non_zero_min")
-}
-
-#' @export
-non_zero_min.FeatureTable <- function(ft, ...) {
-  ft$non_zero_min(...)
-}
-
-#' @export
-size <- function(ft, ...) {
-  UseMethod("size")
-}
-
-#' @export
-size.FeatureTable <- function(ft) {
-  ft$size()
-}
-
-################################################################################
-#### shared data ###############################################################
-################################################################################
-
-# TODO docs: if you just have a list of feature names, you don't need these, you'd use keep directly.
-
-#' @export
-shared_features <- function(ft, method, other) {
-  UseMethod("shared_features")
-}
-
-#' @export
-shared_features.FeatureTable <- function(ft, method, other) {
-  ft$shared_features(method, other)
-}
-
-#' @export
-keep_shared_features <- function(ft, other) {
-  UseMethod("keep_shared_features")
-}
-
-#' @export
-keep_shared_features.FeatureTable <- function(ft, other) {
-  ft$keep_shared_features(other)
-}
-
-#' @export
-shared_feature_names <- function(ft, other) {
-  UseMethod("shared_feature_names")
-}
-
-#' @export
-shared_feature_names.FeatureTable <- function(ft, other) {
-  ft$shared_feature_names(other)
-}
-
