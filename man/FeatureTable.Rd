@@ -69,6 +69,7 @@ A FeatureTable has a feature_table, sample_data, and feature_data.
 \item \href{#method-max}{\code{FeatureTable$max()}}
 \item \href{#method-min}{\code{FeatureTable$min()}}
 \item \href{#method-non_zero_min}{\code{FeatureTable$non_zero_min()}}
+\item \href{#method-size}{\code{FeatureTable$size()}}
 \item \href{#method-clone}{\code{FeatureTable$clone()}}
 }
 }
@@ -652,6 +653,15 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 \subsection{Method \code{non_zero_min()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$non_zero_min(...)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-size"></a>}}
+\if{latex}{\out{\hypertarget{method-size}{}}}
+\subsection{Method \code{size()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$size(...)}\if{html}{\out{</div>}}
 }
 
 }

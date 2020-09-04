@@ -341,15 +341,25 @@ FeatureTable <- R6::R6Class(
           rlang::abort("No features remaining after filtering",
                        class = Error$NoFeaturesRemainingError)
         } else if (sum(predicate_result) == 1) {
+          # Note that this can be NULL if there are no colnames.
           feature_name <- colnames(self$data)[predicate_result]
-          stopifnot(length(feature_name) == 1)
+          stopifnot(length(feature_name) == 1 || is.null(feature_name))
 
           result <- self$data[, predicate_result]
 
-          # nrow IS num_samples here and not non_samples
+          # If the input data does NOT have dimnames, and we keep only a single result,
+          # we don't want to add new dimnames.
+          #
+          # TODO need some test for this in the keep samples section, I'm pretty sure.
+          if (is.null(dimnames(self$data))) {
+            new_dimnames <- NULL
+          } else {
+            new_dimnames <- list(Samples = rownames(self$data),
+                                 Features = feature_name)
+          }
+
           result <- matrix(result, nrow = self$num_samples(), ncol = 1,
-                           dimnames = list(Samples = rownames(self$data),
-                                           Features = feature_name))
+                           dimnames = new_dimnames)
         } else {
           result <- self$data[, predicate_result]
         }

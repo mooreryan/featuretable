@@ -45,3 +45,68 @@ test_that("is_natural_number returns TRUE for integers, FALSE otherwise", {
 test_that("is_natural_number gives an error with non number input", {
   expect_error(is_natural_number("apple"))
 })
+
+#### Some "wordy" helpers
+
+test_that("present is true if something is there (ie val > 0)", {
+  # present()
+  expect_true(present(0.0001))
+  expect_true(present(0.5))
+  expect_true(present(1))
+
+  expect_false(present(0))
+
+  # is_present()
+  expect_true(is_present(0.0001))
+  expect_true(is_present(0.5))
+  expect_true(is_present(1))
+
+  expect_false(is_present(0))
+})
+
+test_that("absent is the opposite of present (val <= 0)", {
+  # absent()
+  expect_equal(absent(0.0001), !present(0.0001))
+  expect_equal(absent(0.5), !present(0.5))
+  expect_equal(absent(1), !present(1))
+
+  expect_equal(absent(0), !present(0))
+
+  # is_absent()
+  expect_equal(is_absent(0.0001), !present(0.0001))
+  expect_equal(is_absent(0.5), !present(0.5))
+  expect_equal(is_absent(1), !present(1))
+
+  expect_equal(is_absent(0), !present(0))
+})
+
+test_that("present/absent work with vectors too", {
+  expect_true(present(c(0, 1)))
+  expect_true(is_present(c(0, 1)))
+  expect_false(present(c(0, 0)))
+  expect_false(is_present(c(0, 0)))
+
+  expect_false(absent(c(0, 1)))
+  expect_false(is_absent(c(0, 1)))
+  expect_true(absent(c(0, 0)))
+  expect_true(is_absent(c(0, 0)))
+})
+
+test_that("present/absent always ignore NA", {
+  expect_true(present(c(0, 1, NA)))
+  expect_true(is_present(c(0, 1, NA)))
+  expect_false(absent(c(0, 1, NA)))
+  expect_false(is_absent(c(0, 1, NA)))
+
+  expect_false(present(c(0, 0, NA)))
+  expect_false(is_present(c(0, 0, NA)))
+  expect_true(absent(c(0, 0, NA)))
+  expect_true(is_absent(c(0, 0, NA)))
+})
+
+test_that("present/absent raise when negative numbers are present", {
+  expect_error(present(-1:1), class = Error$ArgumentError)
+  expect_error(is_present(-1:1), class = Error$ArgumentError)
+  expect_error(absent(-1:1), class = Error$ArgumentError)
+  expect_error(is_absent(-1:1), class = Error$ArgumentError)
+})

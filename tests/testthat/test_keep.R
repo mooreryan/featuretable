@@ -289,3 +289,81 @@ test_that("keep features can remove features with NA in the specified column", {
   expect_error(ft$keep_features(!is.na("Color")), class = Error$IncorrectLengthError)
   expect_error(keep_features(ft, !is.na("Color")), class = Error$IncorrectLengthError)
 })
+
+test_that("keep can use the presence/absence wordy helpers", {
+  ft <- FeatureTable$new(
+    matrix(
+      c(
+        1, 0, 0,
+        1, 0, 1,
+        2, 0, 0.5
+      ),
+      nrow = 3, ncol = 3,
+      byrow = TRUE
+    )
+  )
+
+  expected <- FeatureTable$new(
+    matrix(
+      c(
+        1, 0,
+        1, 1,
+        2, 0.5
+      ),
+      nrow = 3, ncol = 2,
+      byrow = TRUE
+    )
+  )
+
+  expect_equal(ft$keep("features", present), expected)
+  expect_equal(ft$keep("features", if_present), expected)
+  expect_equal(ft$keep("features", that_are_present), expected)
+  expect_equal(ft$keep("features", that_were_present), expected)
+
+  expect_equal(ft$keep_features(present), expected)
+  expect_equal(ft$keep_features(if_present), expected)
+  expect_equal(ft$keep_features(that_are_present), expected)
+  expect_equal(ft$keep_features(that_were_present), expected)
+
+  expect_equal(keep(ft, "features", present), expected)
+  expect_equal(keep(ft, "features", if_present), expected)
+  expect_equal(keep(ft, "features", that_are_present), expected)
+  expect_equal(keep(ft, "features", that_were_present), expected)
+
+  expect_equal(keep_features(ft, present), expected)
+  expect_equal(keep_features(ft, if_present), expected)
+  expect_equal(keep_features(ft, that_are_present), expected)
+  expect_equal(keep_features(ft, that_were_present), expected)
+
+  expected <- FeatureTable$new(
+    matrix(
+      c(
+        0,
+        0,
+        0
+      ),
+      nrow = 3, ncol = 1,
+      byrow = TRUE
+    )
+  )
+
+  expect_equal(ft$keep("features", absent), expected)
+  expect_equal(ft$keep("features", if_absent), expected)
+  expect_equal(ft$keep("features", that_are_absent), expected)
+  expect_equal(ft$keep("features", that_were_absent), expected)
+
+  expect_equal(ft$keep_features(absent), expected)
+  expect_equal(ft$keep_features(if_absent), expected)
+  expect_equal(ft$keep_features(that_are_absent), expected)
+  expect_equal(ft$keep_features(that_were_absent), expected)
+
+  expect_equal(keep(ft, "features", absent), expected)
+  expect_equal(keep(ft, "features", if_absent), expected)
+  expect_equal(keep(ft, "features", that_are_absent), expected)
+  expect_equal(keep(ft, "features", that_were_absent), expected)
+
+  expect_equal(keep_features(ft, absent), expected)
+  expect_equal(keep_features(ft, if_absent), expected)
+  expect_equal(keep_features(ft, that_are_absent), expected)
+  expect_equal(keep_features(ft, that_were_absent), expected)
+})
