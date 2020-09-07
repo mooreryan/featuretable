@@ -311,127 +311,123 @@ FeatureTable <- R6::R6Class(
     ################################################################################
 
     # TODO what if the predicate attempts to get a column not in the feature/sample data?
-    keep = function(margin, predicate, ...) {
+    keep = function(margin, ...) {
       if (margin == "features" || margin == 2) {
-        # Let the user have access to the feature_data
-        predicate <- rlang::eval_tidy(rlang::enquo(predicate), self$feature_data)
-
-        if (isTRUE(inherits(predicate, "function"))) {
-          predicate_result <- self$apply(2, predicate, ...)
-        } else {
-          predicate_result <- predicate
-        }
-
-        if (isFALSE(inherits(predicate_result, "logical"))) {
-          rlang::abort("Predicate result was not logical.  Check your predicate function.",
-                       class = Error$NonPredicateFunctionError)
-        }
-
-        if (length(predicate_result) != self$num_features()) {
-          rlang::abort(
-            sprintf(
-              "Predicate result should have length %s. Got %s. Check your predicate!",
-              self$num_features(),
-              length(predicate_result)
-            ),
-            class = Error$IncorrectLengthError
-          )
-        }
-
-        # Change all NA to FALSE.
-        predicate_result <- ifelse(is.na(predicate_result), FALSE, predicate_result)
-
-        if (sum(predicate_result) == 0) {
-          rlang::abort("No features remaining after filtering",
-                       class = Error$NoFeaturesRemainingError)
-        } else if (sum(predicate_result) == 1) {
-          # Note that this can be NULL if there are no colnames.
-          feature_name <- colnames(self$data)[predicate_result]
-          stopifnot(length(feature_name) == 1 || is.null(feature_name))
-
-          result <- self$data[, predicate_result]
-
-          # If the input data does NOT have dimnames, and we keep only a single result,
-          # we don't want to add new dimnames.
-          #
-          # TODO need some test for this in the keep samples section, I'm pretty sure.
-          if (is.null(dimnames(self$data))) {
-            new_dimnames <- NULL
-          } else {
-            new_dimnames <- list(Samples = rownames(self$data),
-                                 Features = feature_name)
-          }
-
-          result <- matrix(result, nrow = self$num_samples(), ncol = 1,
-                           dimnames = new_dimnames)
-        } else {
-          result <- self$data[, predicate_result]
-        }
-
-        FeatureTable$new(result, self$feature_data, self$sample_data)
+        self$keep_features(...)
       } else if (margin == "samples" || margin == 1) {
-        # Let the user have access to the sample_data
-        predicate <- rlang::eval_tidy(rlang::enquo(predicate), self$sample_data)
-
-        if (isTRUE(inherits(predicate, "function"))) {
-          predicate_result <- self$apply(1, predicate, ...)
-        } else {
-          predicate_result <- predicate
-        }
-
-        if (isFALSE(inherits(predicate_result, "logical"))) {
-          rlang::abort("Predicate result was not logical.  Check your predicate function.",
-                       class = Error$NonPredicateFunctionError)
-        }
-
-        if (length(predicate_result) != self$num_samples()) {
-          rlang::abort(
-            sprintf(
-              "Predicate result should have length %s. Got %s. Check your predicate!",
-              self$num_samples(),
-              length(predicate_result)
-            ),
-            class = Error$IncorrectLengthError
-          )
-        }
-
-        # Change all NA to FALSE.
-        predicate_result <- ifelse(is.na(predicate_result), FALSE, predicate_result)
-
-        if (sum(predicate_result) == 0) {
-          rlang::abort("No samples remaining after filtering",
-                       class = Error$NoSamplesRemainingError)
-        } else if (sum(predicate_result) == 1) {
-          sample_name <- rownames(self$data)[predicate_result]
-          stopifnot(length(sample_name) == 1)
-
-          result <- self$data[predicate_result, ]
-
-          # TODO see the section on features for how to deal with NOT adding dimnames
-          # for data that didn't already have them.
-          result <- matrix(result, nrow = 1, ncol = self$num_features(),
-                           dimnames = list(Samples = sample_name,
-                                           Features = colnames(self$data)))
-        } else {
-          result <- self$data[predicate_result, ]
-        }
-
-        FeatureTable$new(result, self$feature_data, self$sample_data)
+        self$keep_samples(...)
       } else {
         stop("todo")
       }
     },
 
     keep_features = function(predicate, ...) {
+      # Let the user have access to the feature_data
       predicate <- rlang::eval_tidy(rlang::enquo(predicate), self$feature_data)
 
-      self$keep(2, predicate, ...)
+      if (isTRUE(inherits(predicate, "function"))) {
+        predicate_result <- self$apply(2, predicate, ...)
+      } else {
+        predicate_result <- predicate
+      }
+
+      if (isFALSE(inherits(predicate_result, "logical"))) {
+        rlang::abort("Predicate result was not logical.  Check your predicate function.",
+                     class = Error$NonPredicateFunctionError)
+      }
+
+      if (length(predicate_result) != self$num_features()) {
+        rlang::abort(
+          sprintf(
+            "Predicate result should have length %s. Got %s. Check your predicate!",
+            self$num_features(),
+            length(predicate_result)
+          ),
+          class = Error$IncorrectLengthError
+        )
+      }
+
+      # Change all NA to FALSE.
+      predicate_result <- ifelse(is.na(predicate_result), FALSE, predicate_result)
+
+      if (sum(predicate_result) == 0) {
+        rlang::abort("No features remaining after filtering",
+                     class = Error$NoFeaturesRemainingError)
+      } else if (sum(predicate_result) == 1) {
+        # Note that this can be NULL if there are no colnames.
+        feature_name <- colnames(self$data)[predicate_result]
+        stopifnot(length(feature_name) == 1 || is.null(feature_name))
+
+        result <- self$data[, predicate_result]
+
+        # If the input data does NOT have dimnames, and we keep only a single result,
+        # we don't want to add new dimnames.
+        #
+        # TODO need some test for this in the keep samples section, I'm pretty sure.
+        if (is.null(dimnames(self$data))) {
+          new_dimnames <- NULL
+        } else {
+          new_dimnames <- list(Samples = rownames(self$data),
+                               Features = feature_name)
+        }
+
+        result <- matrix(result, nrow = self$num_samples(), ncol = 1,
+                         dimnames = new_dimnames)
+      } else {
+        result <- self$data[, predicate_result]
+      }
+
+      FeatureTable$new(result, self$feature_data, self$sample_data)
     },
 
     keep_samples = function(predicate, ...) {
+      # Let the user have access to the sample_data
       predicate <- rlang::eval_tidy(rlang::enquo(predicate), self$sample_data)
 
-      self$keep(1, predicate, ...)
+      if (isTRUE(inherits(predicate, "function"))) {
+        predicate_result <- self$apply(1, predicate, ...)
+      } else {
+        predicate_result <- predicate
+      }
+
+      if (isFALSE(inherits(predicate_result, "logical"))) {
+        rlang::abort("Predicate result was not logical.  Check your predicate function.",
+                     class = Error$NonPredicateFunctionError)
+      }
+
+      if (length(predicate_result) != self$num_samples()) {
+        rlang::abort(
+          sprintf(
+            "Predicate result should have length %s. Got %s. Check your predicate!",
+            self$num_samples(),
+            length(predicate_result)
+          ),
+          class = Error$IncorrectLengthError
+        )
+      }
+
+      # Change all NA to FALSE.
+      predicate_result <- ifelse(is.na(predicate_result), FALSE, predicate_result)
+
+      if (sum(predicate_result) == 0) {
+        rlang::abort("No samples remaining after filtering",
+                     class = Error$NoSamplesRemainingError)
+      } else if (sum(predicate_result) == 1) {
+        sample_name <- rownames(self$data)[predicate_result]
+        stopifnot(length(sample_name) == 1)
+
+        result <- self$data[predicate_result, ]
+
+        # TODO see the section on features for how to deal with NOT adding dimnames
+        # for data that didn't already have them.
+        result <- matrix(result, nrow = 1, ncol = self$num_features(),
+                         dimnames = list(Samples = sample_name,
+                                         Features = colnames(self$data)))
+      } else {
+        result <- self$data[predicate_result, ]
+      }
+
+      FeatureTable$new(result, self$feature_data, self$sample_data)
     },
 
     shared_features = function(method, other) {

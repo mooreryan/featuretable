@@ -298,7 +298,7 @@ keep.FeatureTable <- function(ft, ...) {
 #' @family filtering functions
 #'
 #' @export
-keep_features <- function(ft, predicate, ...) {
+keep_features <- function(ft, ...) {
   UseMethod("keep_features")
 }
 
