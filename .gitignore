@@ -4,4 +4,6 @@
 .Ruserdata
 *.Rproj
 
+scratch
+
 tests/testthat/Rplots.pdf
