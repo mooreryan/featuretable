@@ -142,15 +142,15 @@ test_that("keep raises error if function (or vec) isn't a predicate", {
                          feature_data = testdata$feature_data,
                          sample_data = testdata$sample_data)
 
-    expect_error(ft$keep(1, function(x) x), class = Error$NonPredicateFunctionError)
-    expect_error(ft$keep(2, function(x) x), class = Error$NonPredicateFunctionError)
-    expect_error(ft$keep(1, 1:4), class = Error$NonPredicateFunctionError)
-    expect_error(ft$keep(2, 1:5), class = Error$NonPredicateFunctionError)
+  expect_error(ft$keep(1, function(x) x), class = Error$NonPredicateFunctionError)
+  expect_error(ft$keep(2, function(x) x), class = Error$NonPredicateFunctionError)
+  expect_error(ft$keep(1, 1:4), class = Error$NonPredicateFunctionError)
+  expect_error(ft$keep(2, 1:5), class = Error$NonPredicateFunctionError)
 
-    expect_error(keep(ft, 1, function(x) x), class = Error$NonPredicateFunctionError)
-    expect_error(keep(ft, 2, function(x) x), class = Error$NonPredicateFunctionError)
-    expect_error(keep(ft, 1, 1:4), class = Error$NonPredicateFunctionError)
-    expect_error(keep(ft, 2, 1:5), class = Error$NonPredicateFunctionError)
+  expect_error(keep(ft, 1, function(x) x), class = Error$NonPredicateFunctionError)
+  expect_error(keep(ft, 2, function(x) x), class = Error$NonPredicateFunctionError)
+  expect_error(keep(ft, 1, 1:4), class = Error$NonPredicateFunctionError)
+  expect_error(keep(ft, 2, 1:5), class = Error$NonPredicateFunctionError)
 })
 
 test_that("keep raises error if a vec of incorrect length is predicate", {
@@ -367,3 +367,4 @@ test_that("keep can use the presence/absence wordy helpers", {
   expect_equal(keep_features(ft, that_are_absent), expected)
   expect_equal(keep_features(ft, that_were_absent), expected)
 })
+
