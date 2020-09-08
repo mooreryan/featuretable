@@ -322,6 +322,108 @@ FeatureTable <- R6::R6Class(
     },
 
     keep_features = function(predicate, ...) {
+      # Helpers.
+
+      keep_helpers <- rlang::env(
+        query = function(qry, restrict = NULL) {
+          restrict_given <- !rlang::quo_is_null(rlang::enquo(restrict))
+
+          if (restrict_given) {
+            # Any errors that this would call will just bubble up.
+            #
+            # TODO may be good to catch them here to give a better error msg?
+            dat <- self$keep_samples(!!rlang::enquo(restrict))$data
+          } else {
+            dat <- self$data
+          }
+
+          qry_eval <- rlang::eval_tidy(rlang::enquo(qry), self$feature_data)
+
+          if (rlang::is_function(qry_eval)) {
+            result <- apply(dat, 2, qry_eval)
+          } else {
+            if (restrict_given) {
+              rlang::abort("'restrict' was passed with a query that doesn't apply on the actual data.  I'm guessing you want to restrict features to those matching your query AND that are present in certain samples.  If that is the case, you should do something like ft$keep_features(query(function(feature) sum(feature) > 0, restrict = Season == 'Winter'))",
+                           class = Error$ArgumentError)
+            }
+            result <- qry_eval
+          }
+
+          if (!rlang::is_logical(result)) {
+            stop("TODO the thingy didn't give a logical result")
+          }
+
+          if (length(result) != self$num_features()) {
+            stop("TODO not the right length")
+          }
+
+          ifelse(is.na(result), FALSE, result)
+        },
+
+        quo_is_query = function(quo) {
+          if (!rlang::is_quosure(quo)) {
+            stop("TODO NEEDED A QUOSURE")
+          }
+
+          rlang::quo_is_call(quo) && rlang::quo_get_expr(quo)[[1]] == "query"
+        },
+
+        expr_has_query_function = function(ex) {
+          if (!rlang::is_expression(ex)) {
+            stop("TODO NEEDED AN EXPRESSION")
+          }
+
+          # TODO what happens if user has 'query' in their calling env?
+          any(
+            unlist(
+              lapply(ex, function(x) {
+                grepl("query", x, fixed = TRUE)
+              })
+            )
+          )
+        }
+      )
+
+      # First off, did the user pass a query?  If so, we deal with that and recurse.
+      # if (keep_helpers$quo_is_query(rlang::enquo(predicate))) {
+      if (keep_helpers$expr_has_query_function(rlang::enexpr(predicate))) {
+        # First, we need to check if the calling environment also has a query function.
+        #
+        # Note that this is the user's calling environment, so we can't just remove 'query' from it.
+        pred_env <- rlang::quo_get_env(rlang::enquo(predicate))
+
+
+        if (exists("query", pred_env)) {
+          # TODO either we could drop the users from a list and rebuild, or try the pronoun?
+          #stop("TODO bad things.  'query' is defined in the calling environment. You need to remove it from calling environment.")
+
+          rlang::warn("A function named 'query' was found in the calling environment. Your 'query' function will be shadowed by an internal 'query' function inside the 'keep' functions! If this is NOT the behavior you want, please open an issue on the GitHub page.")
+
+          pred_env_list <- as.list(pred_env)
+          pred_env_list$query <- NULL
+        } else {
+          pred_env_list <- as.list(pred_env)
+        }
+
+        silly_env <- rlang::new_environment(
+          c(
+            pred_env_list,
+            # TODO technically we need to check if anything in the pred helpers is defined in calling env
+            as.list(keep_helpers),
+            # You also need to include feature data so users can mix queries and raw exprs.
+            as.list(self$feature_data)
+          ),
+          parent = rlang::caller_env()
+        )
+
+        evaluated_predicate <- rlang::eval_tidy(
+          rlang::enexpr(predicate),
+          env = silly_env
+        )
+
+        return(self$keep_features(evaluated_predicate))
+      }
+
       # Let the user have access to the feature_data
       predicate <- rlang::eval_tidy(rlang::enquo(predicate), self$feature_data)
 

@@ -368,3 +368,14 @@ test_that("keep can use the presence/absence wordy helpers", {
   expect_equal(keep_features(ft, that_were_absent), expected)
 })
 
+
+test_that("you can join expressions with & and |", {
+  ft <- otu_feature_table()
+
+  # You have to wrap this in `query`.  See test_keep_restricted.R
+  expect_equal(ft$keep_features(Shape == "circle" & Color == "red"),
+               ft$keep_features(c(FALSE, TRUE, FALSE, FALSE, FALSE)))
+
+  expect_equal(ft$keep_features(Shape == "circle" | Color == "red"),
+               ft$keep_features(c(TRUE, TRUE, TRUE, FALSE, TRUE)))
+})

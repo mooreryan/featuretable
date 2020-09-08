@@ -485,7 +485,7 @@ Convert FeatureTable to phyloseq object.
 \if{latex}{\out{\hypertarget{method-keep}{}}}
 \subsection{Method \code{keep()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$keep(margin, predicate, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$keep(margin, ...)}\if{html}{\out{</div>}}
 }
 
 }
