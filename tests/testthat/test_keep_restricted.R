@@ -114,7 +114,40 @@ test_that("you can use functions over data in queries", {
   expect_equal(keep_features(ft, query(function(feature) sum(feature) > 5)), expected)
 })
 
-# Finally we get to the point....restricting queries to subsets of the data based on sample_data!
+# Finally we get to the point....mixing data and metadata, as well as
+# restricting queries to subsets of the data based on sample_data!
+
+test_that("you can combine predicates that work on data and metadata", {
+  ft <- otu_feature_table()
+
+  expected <- ft$keep_features(c(FALSE, FALSE, FALSE, FALSE, TRUE))
+
+  # Both wrapped in query.
+  expect_equal(ft$keep("features", query(Shape == "circle") & query(function(feature) sum(feature) > 5)),
+               expected)
+  expect_equal(ft$keep_features(query(Shape == "circle") & query(function(feature) sum(feature) > 5)),
+               expected)
+  expect_equal(keep(ft, "features", query(Shape == "circle") & query(function(feature) sum(feature) > 5)),
+               expected)
+  expect_equal(keep_features(ft, query(Shape == "circle") & query(function(feature) sum(feature) > 5)),
+               expected)
+
+  # Only data function wrapped in query
+  expect_equal(ft$keep("features", Shape == "circle" & query(function(feature) sum(feature) > 5)),
+               expected)
+  expect_equal(ft$keep_features(Shape == "circle" & query(function(feature) sum(feature) > 5)),
+               expected)
+  expect_equal(keep(ft, "features", Shape == "circle" & query(function(feature) sum(feature) > 5)),
+               expected)
+  expect_equal(keep_features(ft, Shape == "circle" & query(function(feature) sum(feature) > 5)),
+               expected)
+
+  # Only metadata expression wrapped in query DOES NOT WORK
+  expect_error(ft$keep("features", query(Shape == "circle") & function(feature) sum(feature) > 5))
+  expect_error(ft$keep_features(query(Shape == "circle") & function(feature) sum(feature) > 5))
+  expect_error(keep(ft, "features", query(Shape == "circle") & function(feature) sum(feature) > 5))
+  expect_error(keep_features(ft, query(Shape == "circle") & function(feature) sum(feature) > 5))
+})
 
 test_that("you can restrict samples to which a query function over features is applied", {
   ft <- otu_feature_table()

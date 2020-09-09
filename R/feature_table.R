@@ -343,7 +343,7 @@ FeatureTable <- R6::R6Class(
             result <- apply(dat, 2, qry_eval)
           } else {
             if (restrict_given) {
-              rlang::abort("'restrict' was passed with a query that doesn't apply on the actual data.  I'm guessing you want to restrict features to those matching your query AND that are present in certain samples.  If that is the case, you should do something like ft$keep_features(query(function(feature) sum(feature) > 0, restrict = Season == 'Winter'))",
+              rlang::abort("'restrict' was passed with a query that doesn't apply on the actual data.  I'm guessing you want to restrict features to those matching your query AND that are present in certain samples.  If that is the case, you should do something like ft$keep_features(query(Shape == 'circle') & query(function(feature) sum(feature) > 0, restrict = Season == 'Winter'))",
                            class = Error$ArgumentError)
             }
             result <- qry_eval
@@ -627,7 +627,6 @@ FeatureTable <- R6::R6Class(
 
     #' Replacing zeros.
     #'
-    #' @param ft
     #' @param replacement (Ignored if \code{use_cmultRepl = TRUE})
     #' @param tol (Ignored if \code{use_cmultRepl = TRUE})
     #' @param use_cmultRepl TRUE/FALSE whether to use \code{cmultRepl} function.
@@ -1057,12 +1056,12 @@ FeatureTable <- R6::R6Class(
     },
 
     map_wrapper = function(apply_fn, margin, fn, ...) {
-      if (margin == 1) {
-        result <- t(apply_fn(margin, fn, ...))
-      } else if (margin == 2) {
-        result <- apply_fn(margin, fn, ...)
+      if (margin == 1 || margin == "samples") {
+        result <- t(apply_fn(1, fn, ...))
+      } else if (margin == 2 || margin == "features") {
+        result <- apply_fn(2, fn, ...)
       } else {
-        rlang::abort(sprintf("margin should be 1 or 2.  Got %s.", margin),
+        rlang::abort(sprintf("margin should be 1, 'samples', 2, or 'features'.  Got %s.", margin),
                      class = Error$ArgumentError)
       }
 

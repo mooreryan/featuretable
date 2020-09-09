@@ -500,8 +500,10 @@ test_that("map returns a new FT with the same data, but feature table mapped", {
     feature_data = testdata$feature_data,
     sample_data = testdata$sample_data
   )
+  expect_equal(ft$map("features", function(x) x / max(x)), expected)
   expect_equal(ft$map(2, function(x) x / max(x)), expected)
   expect_equal(ft$map_features(function(x) x / max(x)), expected)
+  expect_equal(ft$map("features", function(x, y) x / max(x) * y, y = 10), expected_times_10)
   expect_equal(ft$map(2, function(x, y) x / max(x) * y, y = 10), expected_times_10)
   expect_equal(ft$map_features(function(x, y) x / max(x) * y, y = 10), expected_times_10)
 
@@ -515,8 +517,10 @@ test_that("map returns a new FT with the same data, but feature table mapped", {
     feature_data = testdata$feature_data,
     sample_data = testdata$sample_data
   )
+  expect_equal(ft$map("samples", function(x) x / max(x)), expected)
   expect_equal(ft$map(1, function(x) x / max(x)), expected)
   expect_equal(ft$map_samples(function(x) x / max(x)), expected)
+  expect_equal(ft$map("samples", function(x, y) x / max(x) * y, y = 10), expected_times_10)
   expect_equal(ft$map(1, function(x, y) x / max(x) * y, y = 10), expected_times_10)
   expect_equal(ft$map_samples(function(x, y) x / max(x) * y, y = 10), expected_times_10)
 })
@@ -526,9 +530,11 @@ test_that("map raises error if the output dimensions aren't correct", {
                          feature_data = testdata$feature_data,
                          sample_data = testdata$sample_data)
 
+  expect_error(ft$map("samples", sum), class = Error$BadFunctionError)
   expect_error(ft$map(1, sum), class = Error$BadFunctionError)
   expect_error(ft$map_samples(sum), class = Error$BadFunctionError)
 
+  expect_error(ft$map("features", sum), class = Error$BadFunctionError)
   expect_error(ft$map(2, sum), class = Error$BadFunctionError)
   expect_error(ft$map_features(sum), class = Error$BadFunctionError)
 })
@@ -538,6 +544,7 @@ test_that("map raises error if the margin isn't correct", {
                          feature_data = testdata$feature_data,
                          sample_data = testdata$sample_data)
 
+  expect_error(ft$map("apples", sum), class = Error$ArgumentError)
   expect_error(ft$map(0, sum), class = Error$ArgumentError)
   expect_error(ft$map(3, sum), class = Error$ArgumentError)
 })
@@ -547,6 +554,7 @@ test_that("basic map_with_index margin 2 works", {
                          feature_data = testdata$feature_data,
                          sample_data = testdata$sample_data)
 
+  result <- ft$map_with_index("features", function(x, i, y) (x + i) * y, y = 10)
   result <- ft$map_with_index(2, function(x, i, y) (x + i) * y, y = 10)
 
   mm <- matrix(
@@ -577,6 +585,7 @@ test_that("basic map_with_index margin 1 works", {
                          feature_data = testdata$feature_data,
                          sample_data = testdata$sample_data)
 
+  result <- ft$map_with_index("samples", function(x, i) x)
   result <- ft$map_with_index(1, function(x, i) x)
   expect_equal(result, ft)
 
@@ -588,3 +597,6 @@ test_that("apply_with raises if dim(X) != 2", {
   expect_error(apply_with_wrapper("index", array(1:27, dim = c(3, 3, 3)), 2, identity),
                class = Error$ArgumentError)
 })
+
+# TODO looks like there aren't map_with_name tests
+# TODO add 'features' and 'samples' to the apply tests
