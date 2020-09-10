@@ -832,12 +832,20 @@ FeatureTable <- R6::R6Class(
       if (margin == "features" || margin == 2) {
         self$collapse_features(...)
       } else {
-        stop("TODO implement margin = 'samples'")
+        self$collapse_samples(...)
       }
     },
 
     collapse_features = function(by, keep_na = FALSE) {
       by_expr <- rlang::enexpr(by)
+
+      if (rlang::is_null(by_expr)) {
+        rlang::abort("'by' was NULL!", class = Error$ArgumentError)
+      }
+
+      if (rlang::is_na(by_expr)) {
+        rlang::abort("'by' was NULL!", class = Error$ArgumentError)
+      }
 
       if (inherits(by_expr, "name")) {
         by <- as.character(by_expr)
@@ -904,6 +912,89 @@ FeatureTable <- R6::R6Class(
         )
       } else {
         rlang::abort("Not all data categories passed to the 'by' argument were present in feature_data!",
+                     class = Error$ArgumentError)
+      }
+    },
+
+    collapse_samples = function(by, keep_na = FALSE) {
+      by_expr <- rlang::enexpr(by)
+
+      if (rlang::is_null(by_expr)) {
+        rlang::abort("'by' was NULL!", class = Error$ArgumentError)
+      }
+
+      if (rlang::is_na(by_expr)) {
+        rlang::abort("'by' was NULL!", class = Error$ArgumentError)
+      }
+
+      if (inherits(by_expr, "name")) {
+        by <- as.character(by_expr)
+      }
+
+      if (all(by %in% colnames(self$sample_data))) {
+        # TODO This is a bad variable name!
+        categories <- self$sample_data[, by]
+
+        if (any(is.na(categories)) && isTRUE(keep_na)) {
+          # We have NAs and we want to keep them!
+          #
+          # Note: If we don't want to keep them, we don't have to do anything
+          # as it will be taken care of later!
+
+          # We will make a new category called "NA".  First check if any "NA" string already there.
+          #
+          # Note na.rm = TRUE because we want to check all the non-NA values to see if there
+          # are any NA character/factor type things in the data.  Shouldn't be, but just a
+          # sanity check.
+          if (any(categories == "NA", na.rm = TRUE)) {
+            stop("TODO test me implement me")
+          }
+
+          # Replace real NAs with the fake "NA" level.
+          categories <- `levels<-`(addNA(categories), c(levels(categories), "NA"))
+        }
+
+        category_levels <- levels(categories)
+
+        if (is.null(category_levels)) {
+          stop("TODO category_levels was NULL")
+        }
+
+        new_names <- paste(by, category_levels, sep = "_")
+
+        # Note that this one needs the transpose!
+        collapsed <- t(sapply(category_levels, function(level) {
+          keep_these <- categories == level
+          keep_these <- ifelse(is.na(keep_these), FALSE, keep_these)
+
+          if (sum(keep_these) == 0) {
+            # TODO you can get here if a user manually changes a column in the sample
+            # data and that change eliminates all occurences of a factor level from
+            # the data frame.
+            stop("TODO test me can you even get here?")
+          } else if (sum(keep_these) == 1) {
+            # Only a single feature in this category.
+            self$data[keep_these, ]
+          } else {
+            # Multiple features are present for this category.
+            colSums(self$data[keep_these, ])
+          }
+        }))
+
+        dimnames(collapsed) <- list(Samples = new_names,
+                                    Features = self$feature_names())
+
+        new_data <- data.frame(X = category_levels)
+        colnames(new_data) <- c(by)
+        rownames(new_data) <- new_names
+
+        FeatureTable$new(
+          feature_table = collapsed,
+          feature_data = self$feature_data,
+          sample_data = new_data
+        )
+      } else {
+        rlang::abort("Not all data categories passed to the 'by' argument were present in sample_data!",
                      class = Error$ArgumentError)
       }
     },

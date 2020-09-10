@@ -70,6 +70,7 @@ A FeatureTable has a feature_table, sample_data, and feature_data.
 \item \href{#method-core_microbiome}{\code{FeatureTable$core_microbiome()}}
 \item \href{#method-collapse}{\code{FeatureTable$collapse()}}
 \item \href{#method-collapse_features}{\code{FeatureTable$collapse_features()}}
+\item \href{#method-collapse_samples}{\code{FeatureTable$collapse_samples()}}
 \item \href{#method-max}{\code{FeatureTable$max()}}
 \item \href{#method-min}{\code{FeatureTable$min()}}
 \item \href{#method-non_zero_min}{\code{FeatureTable$non_zero_min()}}
@@ -666,6 +667,15 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 \subsection{Method \code{collapse_features()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$collapse_features(by, keep_na = FALSE)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-collapse_samples"></a>}}
+\if{latex}{\out{\hypertarget{method-collapse_samples}{}}}
+\subsection{Method \code{collapse_samples()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$collapse_samples(by, keep_na = FALSE)}\if{html}{\out{</div>}}
 }
 
 }
