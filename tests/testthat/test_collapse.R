@@ -37,7 +37,6 @@ ft_for_collapse_testing <- function() {
 
 # TODO method={sum,mean}
 # TODO is_hierarchical={TRUE, FALSE}
-# TODO test when feature has NA for by
 # TODO multiple "by" categories
 
 #### Checking if 'by' is valid
@@ -403,6 +402,50 @@ test_that("s3 collapse raises when passed weird args", {
   expect_error(collapse_samples(ft, apple = 3, pie = "yum"))
 })
 
+test_that("multiple 'by' categories can be used for sample data", {
+  #     c(
+  #       0, 0, 0, 1, 10,
+  #       0, 0, 1, 2, 20,
+  #       0, 1, 2, 3, 30,
+  #       1, 2, 3, 4, 40
+  #     ),
+
+  # sample_data <- data.frame(
+  #   Location = c("Spain", "Spain", "Portugal", "Spain"),
+  #   Season = c("Summer", "Summer", "Winter", "Winter"),
+  #   Silliness = c("Silly", "Silly", "Silly", "Silly"),
+  #   SnazzyFactor = c(10, 12, 25, 3),
+  #   row.names = paste0("Sample_", 1:4)
+  # )
+
+  # Location then Season
+  # TODO test that Season then Location gives the same thing.
+
+  # expected <- FeatureTable$new(
+  #   matrix(
+  #     c(
+  #       0, 1, 2, 3, 30,
+  #       1, 2, 4, 7, 70
+  #     ),
+  #     byrow = TRUE,
+  #     nrow = 2,
+  #     ncol = 5,
+  #     dimnames = list(Samples = c("Location_Portugal", "Location_Spain"),
+  #                     Features = ft$feature_names())
+  #   ),
+  #   feature_data = ft$feature_data,
+  #   sample_data = data.frame(
+  #     Location = c("Portugal", "Spain"),
+  #     row.names = c("Location_Portugal", "Location_Spain")
+  #   )
+  # )
+  #
+  # expect_equal(ft$collapse("samples", "Location"), expected)
+  # expect_equal(collapse(ft, "samples", "Location"), expected)
+  # expect_equal(ft$collapse_samples("Location"), expected)
+  # expect_equal(collapse_samples(ft, "Location"), expected)
+})
+
 ################################################################################
 #### handling NAs in feature data ##############################################
 ################################################################################
@@ -484,7 +527,6 @@ test_that("collapse features combines all NAs into single category if keep_na=TR
       dimnames = list(Samples = ft$sample_names(),
                       Features = paste("Color", c("blue", "green", "red", "NA"), sep = "_"))
     ),
-    # TODO write in documentation that NA will be a factor level now!
     feature_data = data.frame(
       Color = c("blue", "green", "red", "NA"),
       row.names = paste("Color", c("blue", "green", "red", "NA"), sep = "_")
@@ -517,7 +559,6 @@ test_that("collapse features combines all NAs into single category if keep_na=TR
       dimnames = list(Samples = ft$sample_names(),
                       Features = paste("Color", c("blue", "green", "red", "NA"), sep = "_"))
     ),
-    # TODO write in documentation that NA will be a factor level now!
     feature_data = data.frame(
       Color = c("blue", "green", "red", "NA"),
       row.names = paste("Color", c("blue", "green", "red", "NA"), sep = "_")
@@ -624,7 +665,6 @@ test_that("collapse samples combines all NAs into single category if keep_na=TRU
       dimnames = list(Samples = paste("Location", c("Portugal", "Spain", "NA"), sep = "_"),
                       Features = ft$feature_names())
     ),
-    # TODO write in documentation that NA will be a factor level now!
     feature_data = ft$feature_data,
     sample_data = data.frame(
       Location = c("Portugal", "Spain", "NA"),
@@ -656,7 +696,6 @@ test_that("collapse samples combines all NAs into single category if keep_na=TRU
       dimnames = list(Samples = paste("Location", c("Portugal", "Spain", "NA"), sep = "_"),
                       Features = ft$feature_names())
     ),
-    # TODO write in documentation that NA will be a factor level now!
     feature_data = ft$feature_data,
     sample_data = data.frame(
       Location = c("Portugal", "Spain", "NA"),
