@@ -12,5 +12,6 @@ Error <- list(
   zCompositionsUnavailableError = "zCompositionsUnavailableError",
   DomainError = "DomainError",
   PackageUnavailableError = "PackageUnavailableError",
-  MissingFeatureNamesError = "MissingFeatureNamesError"
+  MissingFeatureNamesError = "MissingFeatureNamesError",
+  NonFactorDataError = "NonFactorDataError"
 )

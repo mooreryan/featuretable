@@ -874,11 +874,14 @@ FeatureTable <- R6::R6Class(
           categories <- `levels<-`(addNA(categories), c(levels(categories), "NA"))
         }
 
-        # TODO what if it doesn't have levels? ie is character vector?  assert that it has levels
         category_levels <- levels(categories)
 
         if (is.null(category_levels)) {
-          stop("TODO category_levels was NULL")
+          # TODO better error message would mention the `by` argument.
+          rlang::abort(
+            "category_levels was NULL.  Did you a column of the feature_data from a factor into a character?",
+            class = Error$NonFactorDataError
+          )
         }
 
         new_feature_names <- paste(by, category_levels, sep = "_")
@@ -957,7 +960,11 @@ FeatureTable <- R6::R6Class(
         category_levels <- levels(categories)
 
         if (is.null(category_levels)) {
-          stop("TODO category_levels was NULL")
+          # TODO better error message would mention the `by` argument.
+          rlang::abort(
+            "category_levels was NULL.  Did you a column of the sample_data from a factor into a character?",
+            class = Error$NonFactorDataError
+          )
         }
 
         new_names <- paste(by, category_levels, sep = "_")

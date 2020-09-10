@@ -236,13 +236,27 @@ test_that("collapse features works even if a feature data col is the same for al
   expect_equal(collapse_features(ft, "Shape"), expected)
 })
 
+test_that("raiseseif the user changes things so that a column in metadata isn't a factor", {
+  ft <- ft_for_collapse_testing()
+  ft$feature_data[, "Color"] <- rep("Green", 5)
+
+  expect_error(ft$collapse("features", "Color"), class = Error$NonFactorDataError)
+  expect_error(collapse(ft, "features", "Color"), class = Error$NonFactorDataError)
+  expect_error(ft$collapse_features("Color"), class = Error$NonFactorDataError)
+  expect_error(collapse_features(ft, "Color"), class = Error$NonFactorDataError)
+
+  ft <- ft_for_collapse_testing()
+  ft$sample_data[, "Location"] <- rep("Spain", 4)
+
+  expect_error(ft$collapse("samples", "Location"), class = Error$NonFactorDataError)
+  expect_error(collapse(ft, "samples", "Location"), class = Error$NonFactorDataError)
+  expect_error(ft$collapse_samples("Location"), class = Error$NonFactorDataError)
+  expect_error(collapse_samples(ft, "Location"), class = Error$NonFactorDataError)
+})
+
 test_that("collapse samples works even if a feature data col is the same for all features", {
   ft <- ft_for_collapse_testing()
   # Set them to all be the same
-
-  # TODO turn this into a test.  this will actually break things...leads to the
-  # category_levels was NULL.....
-  # ft$sample_data[, "Location"] <- rep("Spain", 4)
 
   # This keeps it a factor though.  But it triggers a different bug! TODO add a test for it.
   # ft$sample_data[3, "Location"] <- "Spain"
