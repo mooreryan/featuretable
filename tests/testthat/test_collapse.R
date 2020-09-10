@@ -254,12 +254,33 @@ test_that("raiseseif the user changes things so that a column in metadata isn't 
   expect_error(collapse_samples(ft, "Location"), class = Error$NonFactorDataError)
 })
 
+test_that("it raises if user drops a factor level out by accident", {
+  ft <- ft_for_collapse_testing()
+
+  # This will cause the 'Portugal' level to not be present in the column.
+  ft$feature_data[3, "Color"] <- "blue"
+
+  expect_error(ft$collapse("features", "Color"), class = Error$MissingFactorLevelError)
+  expect_error(collapse(ft, "features", "Color"), class = Error$MissingFactorLevelError)
+  expect_error(ft$collapse_features("Color"), class = Error$MissingFactorLevelError)
+  expect_error(collapse_features(ft, "Color"), class = Error$MissingFactorLevelError)
+
+  ####
+
+  ft <- ft_for_collapse_testing()
+
+  # This will cause the 'Portugal' level to not be present in the column.
+  ft$sample_data[3, "Location"] <- "Spain"
+
+  expect_error(ft$collapse("samples", "Location"), class = Error$MissingFactorLevelError)
+  expect_error(collapse(ft, "samples", "Location"), class = Error$MissingFactorLevelError)
+  expect_error(ft$collapse_samples("Location"), class = Error$MissingFactorLevelError)
+  expect_error(collapse_samples(ft, "Location"), class = Error$MissingFactorLevelError)
+})
+
 test_that("collapse samples works even if a feature data col is the same for all features", {
   ft <- ft_for_collapse_testing()
   # Set them to all be the same
-
-  # This keeps it a factor though.  But it triggers a different bug! TODO add a test for it.
-  # ft$sample_data[3, "Location"] <- "Spain"
 
   #     c(
   #       0, 0, 0, 1, 10,

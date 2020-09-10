@@ -891,7 +891,13 @@ FeatureTable <- R6::R6Class(
           keep_these <- ifelse(is.na(keep_these), FALSE, keep_these)
 
           if (sum(keep_these) == 0) {
-            stop("TODO test me")
+            # You can get here if a user manually changes a column in the sample
+            # data and that change eliminates all occurences of a factor level from
+            # the data frame.
+            rlang::abort(
+              "One of the factor levels has dropped out of the 'by' data col(s).  Did you manually change the data in sample_data?",
+              class = Error$MissingFactorLevelError
+            )
           } else if (sum(keep_these) == 1) {
             # Only a single feature in this category.
             self$data[, keep_these]
@@ -975,10 +981,13 @@ FeatureTable <- R6::R6Class(
           keep_these <- ifelse(is.na(keep_these), FALSE, keep_these)
 
           if (sum(keep_these) == 0) {
-            # TODO you can get here if a user manually changes a column in the sample
+            # You can get here if a user manually changes a column in the sample
             # data and that change eliminates all occurences of a factor level from
             # the data frame.
-            stop("TODO test me can you even get here?")
+            rlang::abort(
+              "One of the factor levels has dropped out of the 'by' data col(s).  Did you manually change the data in sample_data?",
+              class = Error$MissingFactorLevelError
+            )
           } else if (sum(keep_these) == 1) {
             # Only a single feature in this category.
             self$data[keep_these, ]

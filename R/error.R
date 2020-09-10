@@ -13,5 +13,6 @@ Error <- list(
   DomainError = "DomainError",
   PackageUnavailableError = "PackageUnavailableError",
   MissingFeatureNamesError = "MissingFeatureNamesError",
-  NonFactorDataError = "NonFactorDataError"
+  NonFactorDataError = "NonFactorDataError",
+  MissingFactorLevelError = "MissingFactorLevelError"
 )
