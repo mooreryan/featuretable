@@ -1,5 +1,10 @@
 # Version updates and changes
 
+## featuretable v0.0.4
+
+- Add `collapse_samples`.
+- Add help docs for `collapse` functions.
+
 ## featuretable v0.0.3
 
 - Add lots of docs and examples!

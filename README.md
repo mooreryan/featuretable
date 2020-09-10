@@ -9,7 +9,8 @@
   methods as well
 - [ ] hierarchical `feature_data`
 - [ ] how to handle collapse for numeric data?
-- [ ] handle user manually changing data and getting things in an incosistent state (e.g., if you have a factor, and user changes things around and it's no longer a factor, or if you have a factor and the user changes one of the entries in `feature_data` or `sample_data` and a factor level drops out, `collapse` will break)
+- [ ] multi-variable collapse
+- [ ] handle user manually changing data and getting things in an incosistent state (e.g., if you have a factor, and user changes things around and it's no longer a factor, or if you have a factor and the user changes one of the entries in `feature_data` or `sample_data` and a factor level drops out, `collapse` will break) (checked in `collapse` but not in others)
 
 ### Keep
 

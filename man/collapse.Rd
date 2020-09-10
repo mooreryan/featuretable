@@ -61,7 +61,7 @@ collapse(ft, "samples", Location)
 collapse_samples(ft, Location)
 
 collapse(ft, "features", Shape)
-collapse_featuse(ft, Shape)
+collapse_features(ft, Shape)
 
 # For now, you can't do more than one variable at a time.  Sorry!
 \dontrun{
