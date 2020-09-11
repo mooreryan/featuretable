@@ -1,4 +1,8 @@
-feature_table <- FeatureTable$new(testdata$count_table, testdata$feature_data, testdata$sample_data)
+feature_table <- FeatureTable$new(
+  testdata$count_table,
+  testdata$feature_data,
+  testdata$sample_data
+)
 
 expect_attribute <- function(thing, attr) {
   expect_true(exists(attr, thing))
@@ -16,6 +20,13 @@ test_that("FeatureTable has the right attributes", {
   expect_attribute(feature_table, "data")
   expect_attribute(feature_table, "feature_data")
   expect_attribute(feature_table, "sample_data")
+})
+
+test_that("NAs in the data are no problem", {
+  d <- testdata$count_table
+  d[1, 1] <- NA
+
+  expect_error(FeatureTable$new(d, testdata$feature_data, testdata$sample_data), NA)
 })
 
 test_that("$new sets all the attributes correctly", {

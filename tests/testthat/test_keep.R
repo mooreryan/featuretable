@@ -379,3 +379,42 @@ test_that("you can join expressions with & and |", {
   expect_equal(ft$keep_features(Shape == "circle" | Color == "red"),
                ft$keep_features(c(TRUE, TRUE, TRUE, FALSE, TRUE)))
 })
+
+test_that("keep raises if the thing doesn't exist", {
+  ft <- otu_feature_table()
+
+  # It just gives a simple error.  Would be nicer to have a FeatureTable error class though.
+
+  expect_error(ft$keep("features", Beep == "boop"))
+  expect_error(ft$keep_features(Beep == "boop"))
+  expect_error(keep(ft, "features", Beep == "boop"))
+  expect_error(keep_features(ft, Beep == "boop"))
+
+  expect_error(ft$keep("samples", Beep == "boop"))
+  expect_error(ft$keep_samples(Beep == "boop"))
+  expect_error(keep(ft, "samples", Beep == "boop"))
+  expect_error(keep_samples(ft, Beep == "boop"))
+
+  # With query
+
+  expect_error(ft$keep("features", query(Beep == "boop")))
+  expect_error(ft$keep_features(query(Beep == "boop")))
+  expect_error(keep(ft, "features", query(Beep == "boop")))
+  expect_error(keep_features(ft, query(Beep == "boop")))
+
+  expect_error(ft$keep("samples", query(Beep == "boop")))
+  expect_error(ft$keep_samples(query(Beep == "boop")))
+  expect_error(keep(ft, "samples", query(Beep == "boop")))
+  expect_error(keep_samples(ft, query(Beep == "boop")))
+})
+
+test_that("keep raises with bad margin", {
+  ft <- otu_feature_table()
+
+  expect_error(ft$keep("beep", Location == "Spain"), class = Error$ArgumentError)
+  expect_error(keep(ft, "beep", Location == "Spain"), class = Error$ArgumentError)
+  expect_error(ft$keep(0, Location == "Spain"), class = Error$ArgumentError)
+  expect_error(keep(ft, 0, Location == "Spain"), class = Error$ArgumentError)
+  expect_error(ft$keep(3, Location == "Spain"), class = Error$ArgumentError)
+  expect_error(keep(ft, 3, Location == "Spain"), class = Error$ArgumentError)
+})

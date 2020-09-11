@@ -317,7 +317,10 @@ FeatureTable <- R6::R6Class(
       } else if (margin == "samples" || margin == 1) {
         self$keep_samples(...)
       } else {
-        stop("todo")
+        rlang::abort(
+          paste("'margin' must be 'samples' (or 1), or 'features' (or 2).  Got", margin),
+          class = Error$ArgumentError
+        )
       }
     },
 
@@ -831,8 +834,13 @@ FeatureTable <- R6::R6Class(
     collapse = function(margin, ...) {
       if (margin == "features" || margin == 2) {
         self$collapse_features(...)
-      } else {
+      } else if (margin == "samples" || margin == 1) {
         self$collapse_samples(...)
+      } else {
+        rlang::abort(
+          paste("'margin' must be 'samples' (or 1), or 'features' (or 2).  Got", margin),
+          class = Error$ArgumentError
+        )
       }
     },
 

@@ -7,3 +7,4 @@
 scratch
 
 tests/testthat/Rplots.pdf
+tests/testthat/test_tmp.R

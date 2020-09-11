@@ -711,3 +711,28 @@ test_that("collapse samples combines all NAs into single category if keep_na=TRU
   expect_equal(collapse_samples(ft, Location, keep_na = TRUE), expected)
 })
 
+test_that("collapse raises if the thing doesn't exist", {
+  ft <- otu_feature_table()
+
+  # It just gives a simple error.  Would be nicer to have a FeatureTable error class though.
+  expect_error(ft$collapse("features", Beep), class = Error$ArgumentError)
+  expect_error(ft$collapse_features(Beep), class = Error$ArgumentError)
+  expect_error(collapse(ft, "features", Beep), class = Error$ArgumentError)
+  expect_error(collapse_features(ft, Beep), class = Error$ArgumentError)
+
+  expect_error(ft$collapse("samples", Beep), class = Error$ArgumentError)
+  expect_error(ft$collapse_samples(Beep), class = Error$ArgumentError)
+  expect_error(collapse(ft, "samples", Beep), class = Error$ArgumentError)
+  expect_error(collapse_samples(ft, Beep), class = Error$ArgumentError)
+})
+
+test_that("collapse raises with bad margin", {
+  ft <- otu_feature_table()
+
+  expect_error(ft$collapse("beep", Location), class = Error$ArgumentError)
+  expect_error(collapse(ft, "beep", Location), class = Error$ArgumentError)
+  expect_error(ft$collapse(0, Location), class = Error$ArgumentError)
+  expect_error(collapse(ft, 0, Location), class = Error$ArgumentError)
+  expect_error(ft$collapse(3, Location), class = Error$ArgumentError)
+  expect_error(collapse(ft, 3, Location), class = Error$ArgumentError)
+})
