@@ -418,3 +418,45 @@ test_that("keep raises with bad margin", {
   expect_error(ft$keep(3, Location == "Spain"), class = Error$ArgumentError)
   expect_error(keep(ft, 3, Location == "Spain"), class = Error$ArgumentError)
 })
+
+test_that("extra args are ignored with non-function predicate", {
+  ft <- otu_feature_table()
+
+  expect_equal(ft$keep("features", Color == "blue", "apple", "pie"),
+               ft$keep("features", Color == "blue"))
+  expect_equal(ft$keep_features(Color == "blue", "apple", "pie"),
+               ft$keep_features(Color == "blue"))
+  expect_equal(keep(ft, "features", Color == "blue", "apple", "pie"),
+               keep(ft, "features", Color == "blue"))
+  expect_equal(keep_features(ft, Color == "blue", "apple", "pie"),
+               keep_features(ft, Color == "blue"))
+
+  expect_equal(ft$keep("features", query(Color == "blue"), "apple", "pie"),
+               ft$keep("features", query(Color == "blue")))
+  expect_equal(ft$keep_features(query(Color == "blue"), "apple", "pie"),
+               ft$keep_features(query(Color == "blue")))
+  expect_equal(keep(ft, "features", query(Color == "blue"), "apple", "pie"),
+               keep(ft, "features", query(Color == "blue")))
+  expect_equal(keep_features(ft, query(Color == "blue"), "apple", "pie"),
+               keep_features(ft, query(Color == "blue")))
+
+  expect_equal(ft$keep("samples", Location == "Spain", "apple", "pie"),
+               ft$keep("samples", Location == "Spain"))
+  expect_equal(ft$keep_samples(Location == "Spain", "apple", "pie"),
+               ft$keep_samples(Location == "Spain"))
+  expect_equal(keep(ft, "samples", Location == "Spain", "apple", "pie"),
+               keep(ft, "samples", Location == "Spain"))
+  expect_equal(keep_samples(ft, Location == "Spain", "apple", "pie"),
+               keep_samples(ft, Location == "Spain"))
+
+  # `query` not yet implemented for samples
+
+  # expect_equal(ft$keep("samples", query(Location == "Spain"), "apple", "pie"),
+  #              ft$keep("samples", query(Location == "Spain")))
+  # expect_equal(ft$keep_samples(query(Location == "Spain"), "apple", "pie"),
+  #              ft$keep_samples(query(Location == "Spain")))
+  # expect_equal(keep(ft, "samples", query(Location == "Spain"), "apple", "pie"),
+  #              keep(ft, "samples", query(Location == "Spain")))
+  # expect_equal(keep_samples(ft, query(Location == "Spain"), "apple", "pie"),
+  #              keep_samples(ft, query(Location == "Spain")))
+})
