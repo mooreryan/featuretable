@@ -892,7 +892,7 @@ FeatureTable <- R6::R6Class(
           )
         }
 
-        new_feature_names <- paste(by, category_levels, sep = "_")
+        new_feature_names <- category_levels
 
         collapsed <- sapply(category_levels, function(level) {
           keep_these <- categories == level
@@ -981,7 +981,7 @@ FeatureTable <- R6::R6Class(
           )
         }
 
-        new_names <- paste(by, category_levels, sep = "_")
+        new_names <- category_levels
 
         # Note that this one needs the transpose!
         collapsed <- t(sapply(category_levels, function(level) {

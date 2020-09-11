@@ -135,11 +135,11 @@ test_that("collapse features works even if one category has only a single featur
       nrow = 4,
       ncol = 3,
       dimnames = list(Samples = paste0("Sample_", 1:4),
-                      Features = c("Color_blue", "Color_green", "Color_red"))
+                      Features = c("blue", "green", "red"))
     ),
     feature_data = data.frame(
       Color = c("blue", "green", "red"),
-      row.names = c("Color_blue", "Color_green", "Color_red")
+      row.names = c("blue", "green", "red")
     ),
     sample_data = ft$sample_data
   )
@@ -178,13 +178,13 @@ test_that("collapse samples works even if one category has only a single feature
       byrow = TRUE,
       nrow = 2,
       ncol = 5,
-      dimnames = list(Samples = c("Location_Portugal", "Location_Spain"),
+      dimnames = list(Samples = c("Portugal", "Spain"),
                       Features = ft$feature_names())
     ),
     feature_data = ft$feature_data,
     sample_data = data.frame(
       Location = c("Portugal", "Spain"),
-      row.names = c("Location_Portugal", "Location_Spain")
+      row.names = c("Portugal", "Spain")
     )
   )
 
@@ -220,11 +220,11 @@ test_that("collapse features works even if a feature data col is the same for al
       nrow = 4,
       ncol = 1,
       dimnames = list(Samples = paste0("Sample_", 1:4),
-                      Features = c("Shape_square"))
+                      Features = "square")
     ),
     feature_data = data.frame(
-      Shape = c("square"),
-      row.names = c("Shape_square")
+      Shape = "square",
+      row.names = "square"
     ),
     sample_data = ft$sample_data
   )
@@ -289,7 +289,7 @@ test_that("collapse samples works even if a feature data col is the same for all
   #     ),
 
   # Before collapse: All Spain
-  # After collapse: Location_Spain (one row)
+  # After collapse: Spain (one row)
 
   expected <- FeatureTable$new(
     matrix(
@@ -299,13 +299,13 @@ test_that("collapse samples works even if a feature data col is the same for all
       byrow = TRUE,
       nrow = 1,
       ncol = 5,
-      dimnames = list(Samples = "Silliness_Silly",
+      dimnames = list(Samples = "Silly",
                       Features = ft$feature_names())
     ),
     feature_data = ft$feature_data,
     sample_data = data.frame(
       Silliness = "Silly",
-      row.names = "Silliness_Silly"
+      row.names = "Silly"
     )
   )
 
@@ -430,13 +430,13 @@ test_that("multiple 'by' categories can be used for sample data", {
   #     byrow = TRUE,
   #     nrow = 2,
   #     ncol = 5,
-  #     dimnames = list(Samples = c("Location_Portugal", "Location_Spain"),
+  #     dimnames = list(Samples = c("Portugal", "Spain"),
   #                     Features = ft$feature_names())
   #   ),
   #   feature_data = ft$feature_data,
   #   sample_data = data.frame(
   #     Location = c("Portugal", "Spain"),
-  #     row.names = c("Location_Portugal", "Location_Spain")
+  #     row.names = c("Portugal", "Spain")
   #   )
   # )
   #
@@ -477,11 +477,11 @@ test_that("collapse features drops features with NA in the category by default",
       nrow = 4,
       ncol = 3,
       dimnames = list(Samples = ft$sample_names(),
-                      Features = paste("Color", c("blue", "green", "red"), sep = "_"))
+                      Features = c("blue", "green", "red"))
     ),
     feature_data = data.frame(
       Color = c("blue", "green", "red"),
-      row.names = paste("Color", c("blue", "green", "red"), sep = "_")
+      row.names = c("blue", "green", "red")
     ),
     sample_data = ft$sample_data
   )
@@ -525,11 +525,11 @@ test_that("collapse features combines all NAs into single category if keep_na=TR
       nrow = 4,
       ncol = 4,
       dimnames = list(Samples = ft$sample_names(),
-                      Features = paste("Color", c("blue", "green", "red", "NA"), sep = "_"))
+                      Features = c("blue", "green", "red", "NA"))
     ),
     feature_data = data.frame(
       Color = c("blue", "green", "red", "NA"),
-      row.names = paste("Color", c("blue", "green", "red", "NA"), sep = "_")
+      row.names = c("blue", "green", "red", "NA")
     ),
     sample_data = ft$sample_data
   )
@@ -557,11 +557,11 @@ test_that("collapse features combines all NAs into single category if keep_na=TR
       nrow = 4,
       ncol = 4,
       dimnames = list(Samples = ft$sample_names(),
-                      Features = paste("Color", c("blue", "green", "red", "NA"), sep = "_"))
+                      Features = c("blue", "green", "red", "NA"))
     ),
     feature_data = data.frame(
       Color = c("blue", "green", "red", "NA"),
-      row.names = paste("Color", c("blue", "green", "red", "NA"), sep = "_")
+      row.names = c("blue", "green", "red", "NA")
     ),
     sample_data = ft$sample_data
   )
@@ -607,16 +607,16 @@ test_that("collapse samples drops samples with NA in the category by default", {
       byrow = TRUE,
       nrow = 2,
       ncol = 5,
-      dimnames = list(Samples = c("Location_Portugal", "Location_Spain"),
+      dimnames = list(Samples = c("Portugal", "Spain"),
                       Features = ft$feature_names())
     ),
     feature_data = ft$feature_data, data.frame(
       Color = c("blue", "green", "red"),
-      row.names = paste("Color", c("blue", "green", "red"), sep = "_")
+      row.names = c("blue", "green", "red")
     ),
     sample_data = data.frame(
       Location = c("Portugal", "Spain"),
-      row.names = c("Location_Portugal", "Location_Spain")
+      row.names = c("Portugal", "Spain")
     )
   )
 
@@ -662,13 +662,13 @@ test_that("collapse samples combines all NAs into single category if keep_na=TRU
       byrow = TRUE,
       nrow = 3,
       ncol = 5,
-      dimnames = list(Samples = paste("Location", c("Portugal", "Spain", "NA"), sep = "_"),
+      dimnames = list(Samples = c("Portugal", "Spain", "NA"),
                       Features = ft$feature_names())
     ),
     feature_data = ft$feature_data,
     sample_data = data.frame(
       Location = c("Portugal", "Spain", "NA"),
-      row.names = c("Location_Portugal", "Location_Spain", "Location_NA")
+      row.names = c("Portugal", "Spain", "NA")
     )
   )
 
@@ -693,13 +693,13 @@ test_that("collapse samples combines all NAs into single category if keep_na=TRU
       byrow = TRUE,
       nrow = 3,
       ncol = 5,
-      dimnames = list(Samples = paste("Location", c("Portugal", "Spain", "NA"), sep = "_"),
+      dimnames = list(Samples = c("Portugal", "Spain", "NA"),
                       Features = ft$feature_names())
     ),
     feature_data = ft$feature_data,
     sample_data = data.frame(
       Location = c("Portugal", "Spain", "NA"),
-      row.names = c("Location_Portugal", "Location_Spain", "Location_NA")
+      row.names = c("Portugal", "Spain", "NA")
     )
   )
 
