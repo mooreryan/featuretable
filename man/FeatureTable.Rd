@@ -75,6 +75,7 @@ A FeatureTable has a feature_table, sample_data, and feature_data.
 \item \href{#method-min}{\code{FeatureTable$min()}}
 \item \href{#method-non_zero_min}{\code{FeatureTable$non_zero_min()}}
 \item \href{#method-size}{\code{FeatureTable$size()}}
+\item \href{#method-plot}{\code{FeatureTable$plot()}}
 \item \href{#method-clone}{\code{FeatureTable$clone()}}
 }
 }
@@ -712,6 +713,26 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 \subsection{Method \code{size()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$size(...)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-plot"></a>}}
+\if{latex}{\out{\hypertarget{method-plot}{}}}
+\subsection{Method \code{plot()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$plot(
+  num_features = 8,
+  fill = TRUE,
+  palette = "kelly",
+  show_legend = TRUE,
+  legend_title = NULL,
+  plot_title = NULL,
+  xlab = NULL,
+  ylab = NULL,
+  axis.text.x = NULL,
+  ...
+)}\if{html}{\out{</div>}}
 }
 
 }
