@@ -203,13 +203,13 @@ plot.FeatureTable <- function(ft,
     fill <- "Feature"
     color = "#333333"
 
-    # TODO don't use tidyverse associated stuff.
-    p <- plot_data %>%
-      as.data.frame %>%
-      tibble::rownames_to_column("Sample") %>%
-      tidyr::pivot_longer(cols = -Sample, names_to = "Feature", values_to = "Value") %>%
-      dplyr::mutate(Feature = factor(Feature, levels = the_levels)) %>%
-      ggplot2::ggplot(ggplot2::aes_string(x = "Sample", y = "Value", fill = fill))
+    pdat <- wide_to_long(plot_data)
+    pdat$Feature <- factor(pdat$Feature, levels = the_levels)
+
+    p <- ggplot2::ggplot(
+      data = pdat,
+      mapping = ggplot2::aes_string(x = "Sample", y = "Value", fill = fill)
+    )
 
     p <- p + ggplot2::geom_bar(stat = "identity", color = color)
   }
