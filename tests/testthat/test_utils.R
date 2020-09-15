@@ -46,6 +46,56 @@ test_that("is_natural_number gives an error with non number input", {
   expect_error(is_natural_number("apple"))
 })
 
+test_that("wide_to_long pivots a df or mat to long format from wide", {
+  ft <- otu_feature_table()
+
+  expected <- data.frame(
+    Sample = paste("Sample", rep(1:4, 5), sep = "_"),
+    Feature = paste("Feature", c(rep(1, 4), rep(2, 4), rep(3, 4), rep(4, 4), rep(5, 4)), sep = "_"),
+    Value = c(ft$data[, "Feature_1"],
+              ft$data[, "Feature_2"],
+              ft$data[, "Feature_3"],
+              ft$data[, "Feature_4"],
+              ft$data[, "Feature_5"])
+  )
+
+  expect_equal(wide_to_long(ft$data), expected)
+  expect_equal(wide_to_long(as.data.frame(ft$data)), expected)
+})
+
+# if blah
+
+if (isTRUE(requireNamespace("tibble", quietly = TRUE)) &&
+    isTRUE(requireNamespace("tidyr", quietly = TRUE)) &&
+    isTRUE(requireNamespace("dplyr", quietly = TRUE))) {
+
+  test_that("wide_to_long matches the pivot_longer function", {
+    ft <- otu_feature_table()
+
+    # Not using the pipe here to avoid the magrittr dep.
+    expected <- as.data.frame(
+      dplyr::arrange(
+        tidyr::pivot_longer(
+          tibble::rownames_to_column(
+            as.data.frame(ft$data),
+            "Sample"
+          ),
+          cols = -Sample,
+          names_to = "Feature",
+          values_to = "Value"
+        ),
+        Feature
+      )
+    )
+    expected$Sample <- as.factor(expected$Sample)
+    expected$Feature <- as.factor(expected$Feature)
+
+    # TODO how will R v4 affect this?
+    expect_equal(wide_to_long(ft$data), expected)
+    expect_equal(wide_to_long(as.data.frame(ft$data)), expected)
+  })
+}
+
 #### Some "wordy" helpers
 
 test_that("present is true if something is there (ie val > 0)", {

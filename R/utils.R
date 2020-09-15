@@ -13,6 +13,15 @@ is_natural_number <- function(x, tol = .Machine$double.eps ^ 0.5) {
   x >= 0 & is_whole_number(x, tol)
 }
 
+wide_to_long <- function(dat) {
+  data.frame(
+    Sample = rep(rownames(dat), times = ncol(dat)),
+    Feature = as.vector(sapply(colnames(dat), function(name) rep(name, times = nrow(dat)))),
+    # TODO pretty sure ft$data should always be a matrix.
+    Value = as.vector(as.matrix(dat))
+  )
+}
+
 #### Wordy helpers
 
 # TODO it may be better to make these local to the keep function, as there will be a lot of them
