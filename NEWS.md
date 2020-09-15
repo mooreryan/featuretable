@@ -1,5 +1,13 @@
 # Version updates and changes
 
+## featuretable v0.0.5
+
+- Add some docs and tests
+- Fix some bugs, imports, and suggests
+- Drop variable prefix in `collapse` function
+- Add `wide_to_long` helper function
+- Add R6 and s3 plotting functions
+
 ## featuretable v0.0.4
 
 - Add `collapse_samples`.

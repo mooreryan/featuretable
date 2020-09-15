@@ -1,7 +1,7 @@
 Package: featuretable
 Type: Package
 Title: FeatureTable -- R6 and s3 classes for feature tables, data, and microbiome analysis
-Version: 0.0.4
+Version: 0.0.5
 Author: Ryan Moore <rmm1047@gmail.com> [aut, cre]
 Maintainer: Ryan Moore <rmm1047@gmail.com>
 Description: The featuretable package provides R6 and s3 classes for feature tables, 
@@ -10,12 +10,15 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
+    R6,
     rlang
 Suggests: 
     biplotr (>= 0.0.13),
     covr,
+    ggplot2,
     phyloseq,
     testthat,
+    vdiffr,
     zCompositions
 RoxygenNote: 7.1.0
 Depends: 
