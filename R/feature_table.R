@@ -1046,7 +1046,6 @@ FeatureTable <- R6::R6Class(
     size = function(...) {
       nrow(self$data) * ncol(self$data)
     }
-
   ),
 
   ################################################################################
