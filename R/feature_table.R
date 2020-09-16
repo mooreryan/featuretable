@@ -1052,6 +1052,7 @@ FeatureTable <- R6::R6Class(
     # TODO doc stuff like this: lee$collapse_features(Family)$collapse_samples(char)$map_samples(function(sample) sample / sum(sample) * 100) %>% plot
     # TODO test num_features being bad
     plot = function(num_features = 8,
+                    other_feature_name = "Other",
                     fill = TRUE,
                     # if NULL use kelly
                     palette = "kelly",
@@ -1062,43 +1063,63 @@ FeatureTable <- R6::R6Class(
                     ylab = NULL,
                     axis.text.x = NULL,
                     ...) {
-      args <- list(...)
+      # args <- list(...)
 
-      num_features_to_show <- ifelse(
-        is.null(num_features) || isFALSE(num_features),
-        # Show all features.
-        self$num_features(),
-        # Show how many the user wants.
-        num_features
-      )
+      prepare_palette <- function(palette_with_gray) {
+        # This palette should have one "extra" gray at the end.
+        end <- length(palette_with_gray) - 1
+        palette_with_gray[1:end]
+
+        list(colors = palette_with_gray[1:end],
+             gray = palette_with_gray[[end + 1]])
+      }
+
+      if (is.null(num_features) ||
+          isFALSE(num_features) ||
+          (rlang::is_scalar_integerish(num_features) &&
+           num_features > self$num_features())) {
+        num_features_to_show <- self$num_features()
+      } else if (!rlang::is_scalar_integerish(num_features) ||
+                 (rlang::is_scalar_integerish(num_features) &&
+                  num_features < 1)) {
+        rlang::abort(
+          "num_features must be NULL, FALSE, or an integer greater than 1",
+          class = Error$ArgumentError
+        )
+      } else {
+        num_features_to_show <- num_features
+      }
+
+      if (num_features_to_show + 1 == self$num_features()) {
+        rlang::inform(
+          "num_features was one less than total number of features. There will be an 'Other' category, but it will only contain 1 feature!"
+        )
+      }
+
+      # num_features_to_show is now guaranteed to be in [1, self$num_features()]
 
       # These all have gray at the end.
       if (palette == "high contrast") {
-        palette <-  ft_palette$pthc[1:(length(ft_palette$pthc) - 1)]
-        palette_gray <- ft_palette$pthc[length(ft_palette$pthc)]
+        palette <- prepare_palette(ft_palette$pthc)
       } else if (palette == "muted") {
-        palette <-  ft_palette$ptm[1:(length(ft_palette$ptm) - 1)]
-        palette_gray <- ft_palette$ptm[length(ft_palette$ptm)]
+        palette <- prepare_palette(ft_palette$ptm)
       } else if (palette == "bright") {
-        palette <-  ft_palette$ptb[1:(length(ft_palette$ptb) - 1)]
-        palette_gray <- ft_palette$ptb[length(ft_palette$ptb)]
+        palette <- prepare_palette(ft_palette$ptb)
       } else if (palette == "vibrant") {
-        palette <-  ft_palette$ptv[1:(length(ft_palette$ptv) - 1)]
-        palette_gray <- ft_palette$ptv[length(ft_palette$ptv)]
+        palette <- prepare_palette(ft_palette$ptv)
       } else { # Kelly
-        palette <-  ft_palette$kelly[1:(length(ft_palette$kelly) - 1)]
-        palette_gray <- ft_palette$kelly[length(ft_palette$kelly)]
+        palette <- prepare_palette(ft_palette$kelly)
       }
 
       # Recycle palette if necessary
-      if (num_features_to_show > length(palette)) {
+      if (num_features_to_show > length(palette$colors)) {
         rlang::inform(
           "You want to plot more features than your palette can handle.  I will recycle the palette to handle this."
         )
 
-        palette <- rep(
-          palette,
-          times = ceiling(num_features_to_show / length(palette))
+        palette$colors <- rep(
+          palette$colors,
+          times = ceiling(num_features_to_show / length(palette$colors))
         )[1:num_features_to_show]
       }
 
@@ -1107,16 +1128,46 @@ FeatureTable <- R6::R6Class(
 
       # Need to make an other category.
       if (self$num_features() > num_features_to_show) {
+        if (!is.character(other_feature_name)) {
+          other_feature_name <- "Other"
+        }
+
         plot_data_other <- plot_data[, (num_features_to_show + 1):ncol(plot_data)]
-        plot_data <- plot_data[, 1:num_features_to_show]
-        # TODO make sure other doesn't already have a name in the plot data
-        plot_data$Other <- rowSums(plot_data_other)
+
+        if (num_features_to_show == 1) {
+          # We only want a single feature (plus other), so we need to force
+          # the plot_data to be a data.frame.
+          new_colname <- colnames(plot_data[[1]])
+          plot_data <- data.frame(X = plot_data[, 1])
+          colnames(plot_data) <- new_colname
+        } else {
+          plot_data <- plot_data[, 1:num_features_to_show]
+        }
+
+        if (other_feature_name %in% colnames(plot_data)) {
+          rlang::abort(
+            paste0(
+              "Your choice for 'other_feature_name' (",
+              other_feature_name,
+              ") is already present in the feature_names.  Choose a different name!"
+            ),
+            class = Error$ArgumentError
+          )
+        }
+
+        if (is.null(dim(plot_data_other))) {
+          # It's already a vector-like object.
+          plot_data$Other <- plot_data_other
+        } else {
+          # Need to reduce it down to a vector, so get sum of each sample across features.
+          plot_data$Other <- rowSums(plot_data_other)
+        }
 
         # The last thing will be other, so make it gray.
-        legend_colors <- rev(c(palette[1:num_features_to_show], palette_gray))
+        legend_colors <- rev(c(palette$colors[1:num_features_to_show], palette$gray))
       } else {
-        # There is no other category, so just use all kelly.
-        legend_colors <- rev(palette[1:num_features_to_show])
+        # There is no other category, so just the regular palette colors.
+        legend_colors <- rev(palette$colors[1:num_features_to_show])
       }
 
       the_levels <- rev(colnames(plot_data))
@@ -1155,15 +1206,13 @@ FeatureTable <- R6::R6Class(
         theme_featuretable()
 
       if (!is.null(axis.text.x)) {
-        print("beep")
         # TODO actually check what's passed in.....
-        if (inherits(ggplot2::element_text(), "element_text")) {
-          print("bop")
+        if (inherits(axis.text.x, "element_text")) {
           p <- p + ggplot2::theme(axis.text.x = axis.text.x)
         } else {
           rlang::abort(
             "You passed axis.text.x, but the argument was not an instance of 'element_text'",
-            class = "TESTME"
+            class = Error$ArgumentError
           )
         }
       } else {
@@ -1411,11 +1460,11 @@ ft_ptv <- list(
 )
 
 ft_palette <- list(
-  kelly = `names<-`(sapply(ft_kelly, identity, USE.NAMES = FALSE), NULL),
-  pthc = `names<-`(sapply(ft_pthc, identity, USE.NAMES = FALSE), NULL),
-  ptm = `names<-`(sapply(ft_ptm, identity, USE.NAMES = FALSE), NULL),
-  ptb = `names<-`(sapply(ft_ptb, identity, USE.NAMES = FALSE), NULL),
-  ptv = `names<-`(sapply(ft_ptv, identity, USE.NAMES = FALSE), NULL)
+  kelly = `names<-`(sapply(ft_kelly, identity), NULL),
+  pthc = `names<-`(sapply(ft_pthc, identity), NULL),
+  ptm = `names<-`(sapply(ft_ptm, identity), NULL),
+  ptb = `names<-`(sapply(ft_ptb, identity), NULL),
+  ptv = `names<-`(sapply(ft_ptv, identity), NULL)
 )
 
 

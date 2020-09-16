@@ -61,3 +61,82 @@ if (isTRUE(requireNamespace("ggplot2", quietly = TRUE)) &&
     plot(lfam, plot_title = title, fill = "anything else")
   )
 }
+
+if (isTRUE(requireNamespace("ggplot2", quietly = TRUE)) &&
+    isTRUE(requireNamespace("vdiffr", quietly = TRUE))) {
+
+  ft <- otu_feature_table()
+
+  # DOUBLE CHECK
+  title <- "num_features > actual number of features"
+  vdiffr::expect_doppelganger(
+    title,
+    plot(ft, plot_title = title, num_features = 10)
+  )
+
+  # DOUBLE CHECK
+  title <- "manually pass axis.text.x as a parameter"
+  vdiffr::expect_doppelganger(
+    title,
+    plot(ft, plot_title = title, axis.text.x = ggplot2::element_text(angle = 0))
+  )
+
+  title <- "hide legend with show_legend = NULL"
+  vdiffr::expect_doppelganger(
+    title,
+    plot(ft, plot_title = title, show_legend = NULL)
+  )
+
+  title <- "hide legend with show_legend = FALSE"
+  vdiffr::expect_doppelganger(
+    title,
+    plot(ft, plot_title = title, show_legend = FALSE)
+  )
+
+  title <- "custom legend title"
+  vdiffr::expect_doppelganger(
+    title,
+    plot(ft, plot_title = title, legend_title = "CUSTOM LEGEND TITLE")
+  )
+
+  title <- "custom xlab"
+  vdiffr::expect_doppelganger(
+    title,
+    plot(ft, plot_title = title, xlab = "CUSTOM X LABEL")
+  )
+
+  title <- "custom ylab"
+  vdiffr::expect_doppelganger(
+    title,
+    plot(ft, plot_title = title, ylab = "CUSTOM Y LABEL")
+  )
+}
+
+if (isTRUE(requireNamespace("ggplot2", quietly = TRUE))) {
+  test_that("axis.text.x raises if it isn't an element_text", {
+    ft <- otu_feature_table()
+
+    expect_error(plot(ft, axis.text.x = "apple"), class = Error$ArgumentError)
+    expect_error(plot(ft, axis.text.x = 1:10), class = Error$ArgumentError)
+  })
+
+  test_that("num_features must be at least 1", {
+    ft <- otu_feature_table()
+
+    expect_error(plot(ft, num_features = 0), class = Error$ArgumentError)
+    expect_error(plot(ft, num_features = "pie"), class = Error$ArgumentError)
+  })
+
+  test_that("all reasonable options for num_features work", {
+    ft <- otu_feature_table()
+
+    for (i in 1:15) {
+      expect_error(plot(ft, num_features = i), NA)
+    }
+  })
+
+  test_that("num_features one fewer than actual num_features gives a message", {
+    expect_message(plot(ft, num_features = 4),
+                   regex = "num_features")
+  })
+}
