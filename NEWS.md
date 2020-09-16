@@ -1,5 +1,10 @@
 # Version updates and changes
 
+## featuretable v0.0.6
+
+- Fix some bugs in the `plot` function
+- Add `other_feature_name` parameter to `plot` function
+
 ## featuretable v0.0.5
 
 - Add some docs and tests

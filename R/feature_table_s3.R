@@ -535,6 +535,8 @@ shared_feature_names.FeatureTable <- function(ft, other) {
 #' @param num_features How many features to show on the plot? The rest of the
 #'   features get put into an "Other" category. "Other" will always be gray if
 #'   you use one of the built in palettes.
+#' @param other_feature_name Name to use if features need to be combined into
+#'   an 'Other' category. By default, will be 'Other'.
 #' @param fill If FALSE, don't show the features, if anything else, show the
 #'   features.
 #' @param palette Which palette to use? ("kelly", "muted", "bright", "vibrant",

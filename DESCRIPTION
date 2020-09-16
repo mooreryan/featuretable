@@ -1,7 +1,7 @@
 Package: featuretable
 Type: Package
 Title: FeatureTable -- R6 and s3 classes for feature tables, data, and microbiome analysis
-Version: 0.0.5
+Version: 0.0.6
 Author: Ryan Moore <rmm1047@gmail.com> [aut, cre]
 Maintainer: Ryan Moore <rmm1047@gmail.com>
 Description: The featuretable package provides R6 and s3 classes for feature tables, 

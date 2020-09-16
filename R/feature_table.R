@@ -1050,7 +1050,6 @@ FeatureTable <- R6::R6Class(
     # TODO add ... to end of samples and feature names if they're too long
     # TODO proportions? options for grouping? add docs about how you do that before calling plot
     # TODO doc stuff like this: lee$collapse_features(Family)$collapse_samples(char)$map_samples(function(sample) sample / sum(sample) * 100) %>% plot
-    # TODO test num_features being bad
     plot = function(num_features = 8,
                     other_feature_name = "Other",
                     fill = TRUE,
@@ -1144,7 +1143,10 @@ FeatureTable <- R6::R6Class(
           plot_data <- plot_data[, 1:num_features_to_show]
         }
 
-        if (other_feature_name %in% colnames(plot_data)) {
+        # Check if it is in any of the features names, not just the kept ones.
+        #
+        # Do this to keep it from being confusing for the user.
+        if (other_feature_name %in% self$feature_names()) {
           rlang::abort(
             paste0(
               "Your choice for 'other_feature_name' (",
@@ -1157,10 +1159,10 @@ FeatureTable <- R6::R6Class(
 
         if (is.null(dim(plot_data_other))) {
           # It's already a vector-like object.
-          plot_data$Other <- plot_data_other
+          plot_data[[other_feature_name]] <- plot_data_other
         } else {
           # Need to reduce it down to a vector, so get sum of each sample across features.
-          plot_data$Other <- rowSums(plot_data_other)
+          plot_data[[other_feature_name]] <- rowSums(plot_data_other)
         }
 
         # The last thing will be other, so make it gray.
@@ -1203,7 +1205,7 @@ FeatureTable <- R6::R6Class(
       }
 
       p <- p +
-        theme_featuretable()
+        default_theme()
 
       if (!is.null(axis.text.x)) {
         # TODO actually check what's passed in.....

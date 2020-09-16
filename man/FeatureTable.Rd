@@ -723,6 +723,7 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$plot(
   num_features = 8,
+  other_feature_name = "Other",
   fill = TRUE,
   palette = "kelly",
   show_legend = TRUE,

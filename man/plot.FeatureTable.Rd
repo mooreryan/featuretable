@@ -15,6 +15,9 @@
 features get put into an "Other" category. "Other" will always be gray if
 you use one of the built in palettes.}
 
+\item{other_feature_name}{Name to use if features need to be combined into
+an 'Other' category. By default, will be 'Other'.}
+
 \item{fill}{If FALSE, don't show the features, if anything else, show the
 features.}
 

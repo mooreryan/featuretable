@@ -136,7 +136,58 @@ if (isTRUE(requireNamespace("ggplot2", quietly = TRUE))) {
   })
 
   test_that("num_features one fewer than actual num_features gives a message", {
+    ft <- otu_feature_table()
+
     expect_message(plot(ft, num_features = 4),
                    regex = "num_features")
+  })
+
+  test_that("other_feature_name will be 'Other' by default", {
+    ft <- otu_feature_table()
+
+    p <- plot(ft, num_features = 3)
+    expect_true("Other" %in% p$data$Feature)
+  })
+
+  test_that("other_feature_name will be 'Other' if arg is bad", {
+    ft <- otu_feature_table()
+
+    p <- plot(ft, num_features = 3, other_feature_name = 234)
+    expect_true("Other" %in% p$data$Feature)
+
+    p <- plot(ft, num_features = 3, other_feature_name = 23.4)
+    expect_true("Other" %in% p$data$Feature)
+
+    p <- plot(ft, num_features = 3, other_feature_name = NULL)
+    expect_true("Other" %in% p$data$Feature)
+
+    p <- plot(ft, num_features = 3, other_feature_name = FALSE)
+    expect_true("Other" %in% p$data$Feature)
+  })
+
+  test_that("other_feature_name will be what user sets", {
+    ft <- otu_feature_table()
+
+    p <- plot(ft, num_features = 3, other_feature_name = "silly thing")
+    p$data$Feature
+    expect_true("silly thing" %in% p$data$Feature)
+  })
+
+  test_that("plot will raise if other_feature_name is already a feature name and other cat. is needed", {
+    ft <- otu_feature_table()
+
+    # Feature_1 will be dropped
+    expect_error(plot(ft, num_features = 3, other_feature_name = "Feature_1"),
+                 class = Error$ArgumentError)
+
+    # Feature_5 will be kept
+    expect_error(plot(ft, num_features = 3, other_feature_name = "Feature_5"),
+                 class = Error$ArgumentError)
+  })
+
+  test_that("plot will NOT raise if other_feature_name is already a feature name and other cat. is NOT needed", {
+    ft <- otu_feature_table()
+
+    expect_error(plot(ft, num_features = 10, other_feature_name = "Feature_1"), NA)
   })
 }
