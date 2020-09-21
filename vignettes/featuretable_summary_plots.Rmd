@@ -1,0 +1,177 @@
+---
+title: "FeatureTable Summary Plots"
+author: "Ryan M. Moore"
+date: 2020-09-20
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{featuretable_summary_plots}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5.5
+)
+```
+
+*Note: This vignette uses `s3` style functions.  `R6` methods are also avaiable.  See [this vignette](TODO) to see examples of how to use them.*
+
+## Set up
+
+First, import the libraries and data that we want to use.  We import `magrittr` so we can use the pipe, but you don't actually need it.
+
+```{r setup}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+library(magrittr)
+library(ggplot2)
+library(featuretable)
+
+data(lee)
+```
+
+## Basic summary plots
+
+To start, let's plot the total count for each sample.  To do that, we use the `plot` function and pass in `fill = FALSE`.
+
+```{r}
+plot(lee, fill = FALSE)
+```
+
+
+Next, let's see how to color the bars so that we can see how abundant individual ASVs are.  For that we just call the `plot` function with no additional arguments.
+
+```{r}
+plot(lee)
+```
+
+As you can see, a barplot is shown to display abundance info for ASVs in the samples.  By default, only the top 8 most abundant features are displayed.  The rest get grouped into the category `Other`.
+
+Looks pretty good, but the default labels don't quite match up with our data.  Let's change them to fit.
+
+```{r}
+plot(lee, ylab = "Abundance", legend_title = "ASV")
+```
+
+Nice! There are a lot of ASVs, so this plot isn't the most interesting.  Let's collapse the features (a.k.a., the ASVs) by their taxanomic class first.  For that, we use the `collapse_features` function.
+
+```{r}
+lee %>% 
+  collapse_features(Class) %>% 
+  plot(ylab = "Abundance", legend_title = "Class")
+```
+
+Hmm, looks like the counts of Alpha and Gammaproteobacteria are pretty high, neat!
+
+Of course, the raw counts don't give the best view of the data, so let's look at relative abundance instead.  Here's how we can do that.
+
+```{r}
+lee %>% 
+  collapse_features(Class) %>% 
+  map_samples(relative_abundance) %>% 
+  plot(ylab = "Relative abundance", legend_title = "Class")
+```
+
+Whoa! Samples `BW1` and `R11BF` look quite different from the others.  Let's see what the data looks like if we group samples by `Char`.
+
+Since there are only five levels in the `Char` variable, we can rotate the x axis labels so that they are parallel with the x axis.  To do that, use the `axis.text.x` parameter.  It works like the `axis.text.x` parameter in the `ggplot2::theme` functions: you pass it an `element_text` with the options you want.
+
+And for fun, let's plot a few more of the features.  We do that by passing in `num_features = 12`.
+
+```{r}
+lee %>% 
+  collapse_features(Class) %>% 
+  collapse_samples(Char) %>% 
+  map_samples(relative_abundance) %>% 
+  plot(xlab = "Char", 
+       ylab = "Relative abundance",
+       legend_title = "Class",
+       axis.text.x = element_text(angle = 0),
+       num_features = 12)
+```
+
+Pretty nice looking plot there!
+
+## Custom color palettes
+
+### Picking a different color palette
+
+The `plot` function in `FeatureTable` knows about five different color palettes:
+
+- `kelly`
+- `muted`
+- `bright`
+- `vibrant`
+- `high contrast`
+
+You can pick one of them using the `palette` parameter of the `plot` function.  Here is an example using the `muted` palette.
+
+```{r}
+# Save the data for use in subsequent plots.
+lee_plot_data <- lee %>% 
+  collapse_features(Class) %>% 
+  collapse_samples(Char) %>% 
+  map_samples(relative_abundance)
+
+lee_plot_data %>% 
+  collapse_features(Class) %>% 
+  collapse_samples(Char) %>% 
+  map_samples(relative_abundance) %>% 
+  plot(xlab = "Char", 
+       ylab = "Relative abundance",
+       legend_title = "Class",
+       axis.text.x = element_text(angle = 0),
+       palette = "muted")
+```
+
+### Recycling colors
+
+Sometimes, you want to dispaly data that has more features than colors in the included palette.  In these cases, the colors will be recycled.
+
+```{r}
+lee_plot_data %>% 
+  plot(xlab = "Char", 
+       ylab = "Relative abundance",
+       legend_title = "Class",
+       axis.text.x = element_text(angle = 0),
+       num_features = 7,
+       palette = "high contrast")
+```
+
+In this case, we asked to plot 7 features, but the `high contrast` palette only has 3 colors.  (The gray doesn't count as an official palette color.)  So you can see in the legend that the 3 colors of the palette get repeated to make up the difference.
+
+Also worth noting is that the `Other` category will always be a gray color if you use one of the five built in palettes.
+
+### Using your own palette
+
+If you don't like any of the included palettes, then you can make your own with the `ggplot2` functions.  The `FeatureTable` plotting function returns a `ggplot` object, so you can add whatever you want to it.  To add a custom palette, you need to use one of the `scale_fill_*` functions, as the color is set using the `fill` parameter in the `aes` mapping function.  Something like this:
+
+```{r}
+lee_plot_data %>% 
+  plot(xlab = "Char", 
+       ylab = "Relative abundance",
+       axis.text.x = element_text(angle = 0)) +
+  scale_fill_discrete(name = "Class")
+```
+
+Notice that I dropped the `legend_title` argument and passed `name = Class` to `scale_fill_discrete`.  This is because we're adding a new scale fill to the plot, so the old one gets overridden.
+
+You may also notice that the `Other` category now is just the next color that `scale_fill_discrete` picks.  If you want to have the `Other` category be some gray color, the easiest thing would be to just use one of the built in palettes.  However, you could also make a custom scale like this:
+
+```{r}
+lee_plot_data %>% 
+  plot(xlab = "Char", 
+       ylab = "Relative abundance",
+       legend_title = "Class",
+       num_features = 3,
+       axis.text.x = element_text(angle = 0)) +
+  scale_fill_manual(name = "Class", values = c("#bbbbbb", "#B15928", "#FB9A99", "#1F78B4"))
+```
+
+Keep in mind that the colors you pass to the `values` argument of `scale_fill_manual` will go from top to bottom in the resulting legend.  So the first one should be the gray color you want for the `Other` category.  Finally, the `num_features` needs to be one less than the length of the color vector you pass to the `values` parameter, or it won't work properly.  
+
+So you see, you *can* get the gray `Other` category with a custom color palette, but it is more work than using one of the default palettes.
+

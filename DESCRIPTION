@@ -15,11 +15,18 @@ Imports:
 Suggests: 
     biplotr (>= 0.0.13),
     covr,
+    dplyr,
     ggplot2,
+    hedgehog,
     phyloseq,
     testthat,
+    tibble,
+    tidyr,
     vdiffr,
-    zCompositions
+    zCompositions,
+    knitr,
+    rmarkdown
 RoxygenNote: 7.1.0
 Depends: 
     R (>= 2.10)
+VignetteBuilder: knitr

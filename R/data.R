@@ -11,6 +11,26 @@
 #' }
 "ft"
 
+#' A FeatureTable with data from Lee et al. (2015)
+#'
+#' A FeatureTable with count table, sample data, and taxonomy of an SSU rRNA
+#' study of basalts on the Dorado Outcrop.
+#'
+#' @usage
+#' # Import into the global env.
+#' data(lee)
+#'
+#' # Refer to the FeatureTable directly.
+#' featuretable::lee
+#'
+#' @format A FeatureTable
+#' \describe{
+#'   \item{feature_table}{16 samples X 1490 features table with 16S abundance}
+#'   \item{feature_data}{7 variables, taxonomy}
+#'   \item{sample_data}{4 variables, \code{Temp}, \code{Type}, \code{Char}, \code{Color}}
+#' }
+"lee"
+
 #' Data used for examples and to test the FeatureTable functions.
 #'
 #' A small dataset for testing and making examples for FeatureTable
