@@ -22,6 +22,13 @@ wide_to_long <- function(dat) {
   )
 }
 
+# TODO test me
+#' @export
+relative_abundance <- function(sample, multiplier = 1) {
+  sample / sum(sample, na.rm = TRUE) * multiplier
+}
+
+
 #### Wordy helpers
 
 # TODO it may be better to make these local to the keep function, as there will be a lot of them
