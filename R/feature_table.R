@@ -906,10 +906,7 @@ FeatureTable <- R6::R6Class(
           categories <- `levels<-`(addNA(categories), c(levels(categories), "NA"))
         }
 
-        # Switch this to the ACTUAL present unique ones in case a level has dropped out.
-        # category_levels <- levels(categories)
         category_levels <- levels(categories)
-
 
         # Does this still get hit now with the new_levels check? Pretty sure this can't happen anymore.
         if (is.null(category_levels)) {
@@ -980,6 +977,32 @@ FeatureTable <- R6::R6Class(
         # TODO This is a bad variable name!
         categories <- self$sample_data[, by]
 
+        # TODO pull out this code into a function...it's also used in collapse_features.
+
+        # Calling unique like this will keep any NA in the data.
+        #
+        # Also, this relies on `unique` NOT changing the order...this may be a problem in the future.
+        unique_categories <- unique(categories)
+
+        # If the user has set the levels themselves, then they are going to care about preserving the order, even if some have dropped out due to things like running `keep` first.
+        original_levels <- levels(categories)
+
+        if (is.null(original_levels)) {
+          new_levels <- sort(unique_categories)
+        } else {
+          new_levels <- original_levels[original_levels %in% unique_categories]
+
+          # If the new_levels is NULL or 0 length, then the user probably changed something manually and broke the levels.  Probably not what they really wanted to do or else they would have also changed the levels.
+          #
+          # On the other hand, if the new_levels is NOT but also fewer levels than original, then the user probably ran a `keep` function first.
+
+          if (is.null(new_levels) || length(new_levels) == 0) {
+            rlang::abort("New levels will be NULL or empty.  Did you convert a column of the sample_data from a factor into a character?  Did you manually change one of the factor variables (e.g., trying to change add a new level or remove one)?", class = Error$BadFactorDataError)
+          }
+        }
+
+        categories <- factor(categories, levels = new_levels)
+
         if (any(is.na(categories)) && isTRUE(keep_na)) {
           # We have NAs and we want to keep them!
           #
@@ -1001,10 +1024,11 @@ FeatureTable <- R6::R6Class(
 
         category_levels <- levels(categories)
 
+        # Does this still get hit now with the new_levels check? Pretty sure this can't happen anymore.
         if (is.null(category_levels)) {
           # TODO better error message would mention the `by` argument.
           rlang::abort(
-            "category_levels was NULL.  Did you a column of the sample_data from a factor into a character?",
+            "category_levels was NULL.  Did you convert a column of the sample_data from a factor into a character, or manually adjust one of the factor variables?",
             class = Error$NonFactorDataError
           )
         }
@@ -1016,7 +1040,7 @@ FeatureTable <- R6::R6Class(
           keep_these <- categories == level
           keep_these <- ifelse(is.na(keep_these), FALSE, keep_these)
 
-          if (sum(keep_these) == 0) {
+          if (sum(keep_these) == 0) { # Pretty sure this can't happen anymore.
             # You can get here if a user manually changes a column in the sample
             # data and that change eliminates all occurences of a factor level from
             # the data frame.

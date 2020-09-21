@@ -103,7 +103,6 @@ test_that("collapse_samples works if the user changes an entire column of metada
     feature_data = ft$feature_data
   )
 
-
   expect_equal(ft$collapse("samples", "Location"), expected)
   expect_equal(collapse(ft, "samples", "Location"), expected)
   expect_equal(ft$collapse_samples("Location"), expected)
