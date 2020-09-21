@@ -63,6 +63,95 @@ test_that("wide_to_long pivots a df or mat to long format from wide", {
   expect_equal(wide_to_long(as.data.frame(ft$data)), expected)
 })
 
+#### Testing which columns to keep when treating some as hiearachical
+
+test_that("hierarchical_columns keeps all columns that would be 'above' the current one in a hiearachy as well as the bottom level", {
+  # ie if level = Phylum, then Domain and Phylumn would be TRUE, but Class and Order would be FALSE
+  lee <- featuretable::lee$clone()
+
+  #### Feature data
+
+  # First permute the columns to make sure it doesn't depend on column order.
+  lee$feature_data <- lee$feature_data[, c(2, 7, 4, 3, 6, 5, 1)]
+
+  actual <- hierarchical_columns(lee$feature_data, "Domain")
+  expect_equal(sum(actual), 1)
+  expect_true(actual["Domain"])
+
+  actual <- hierarchical_columns(lee$feature_data, "Phylum")
+  expect_equal(sum(actual), 2)
+  expect_true(actual["Domain"])
+  expect_true(actual["Phylum"])
+
+  actual <- hierarchical_columns(lee$feature_data, "Class")
+  expect_equal(sum(actual), 3)
+  expect_true(actual["Domain"])
+  expect_true(actual["Phylum"])
+  expect_true(actual["Class"])
+
+  actual <- hierarchical_columns(lee$feature_data, "Order")
+  expect_equal(sum(actual), 4)
+  expect_true(actual["Domain"])
+  expect_true(actual["Phylum"])
+  expect_true(actual["Class"])
+  expect_true(actual["Order"])
+
+  actual <- hierarchical_columns(lee$feature_data, "Family")
+  expect_equal(sum(actual), 5)
+  expect_true(actual["Domain"])
+  expect_true(actual["Phylum"])
+  expect_true(actual["Class"])
+  expect_true(actual["Order"])
+  expect_true(actual["Family"])
+
+  actual <- hierarchical_columns(lee$feature_data, "Genus")
+  expect_equal(sum(actual), 6)
+  expect_true(actual["Domain"])
+  expect_true(actual["Phylum"])
+  expect_true(actual["Class"])
+  expect_true(actual["Order"])
+  expect_true(actual["Family"])
+  expect_true(actual["Genus"])
+
+  actual <- hierarchical_columns(lee$feature_data, "Species")
+  expect_equal(sum(actual), 7)
+  expect_true(actual["Domain"])
+  expect_true(actual["Phylum"])
+  expect_true(actual["Class"])
+  expect_true(actual["Order"])
+  expect_true(actual["Family"])
+  expect_true(actual["Genus"])
+  expect_true(actual["Species"])
+
+
+  #### Samples
+
+  lee <- featuretable::lee
+
+  # Sample data already has the hierarchy in two directions so no need to permute it.
+
+  actual <- hierarchical_columns(lee$sample_data, "Temp")
+  expect_equal(sum(actual), 1)
+  expect_true(actual["Temp"])
+
+  actual <- hierarchical_columns(lee$sample_data, "Type")
+  expect_equal(sum(actual), 1)
+  expect_true(actual["Type"])
+
+  actual <- hierarchical_columns(lee$sample_data, "Char")
+  expect_equal(sum(actual), 3)
+  expect_true(actual["Type"])
+  expect_true(actual["Char"])
+  expect_true(actual["Color"])
+
+  actual <- hierarchical_columns(lee$sample_data, "Color")
+  expect_equal(sum(actual), 3)
+  expect_true(actual["Type"])
+  expect_true(actual["Char"])
+  expect_true(actual["Color"])
+})
+
+
 # if blah
 
 if (isTRUE(requireNamespace("tibble", quietly = TRUE)) &&

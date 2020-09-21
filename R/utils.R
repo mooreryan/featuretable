@@ -28,6 +28,25 @@ relative_abundance <- function(sample, multiplier = 1) {
   sample / sum(sample, na.rm = TRUE) * multiplier
 }
 
+# Return TRUE or FALSE for each column.  TRUE if a column has the same value for each unique non-NA entry in bottom_level, FALSE if it doesn't.  TRUE values are essentially "higher up" the hierarchy than the bottom one, so they wouldn't change.  It is possible that all will be FALSE except for the one given as `bottom_level` if the data is NOT hierarchical.
+hierarchical_columns <- function(dat, bottom_level) {
+  bottom_level_entries <- dat[, bottom_level]
+
+  unique_entries <- unique(na.exclude(bottom_level_entries))
+
+  # Transpose to get unique entries as the rows.
+  apply(
+    t(sapply(unique_entries, function(level) {
+      apply(dat[bottom_level_entries == level, ], 2, function(x) {
+        length(unique(na.exclude(x)))
+      })
+    })),
+    2,
+    function(x) all(x == 1)
+  )
+}
+
+
 
 #### Wordy helpers
 
