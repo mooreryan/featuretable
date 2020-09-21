@@ -4,7 +4,7 @@ author: "Ryan M. Moore"
 date: 2020-09-20
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{featuretable_summary_plots}
+  %\VignetteIndexEntry{FeatureTable Summary Plots}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
