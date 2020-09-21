@@ -37,14 +37,14 @@ data(lee)
 
 To start, let's plot the total count for each sample.  To do that, we use the `plot` function and pass in `fill = FALSE`.
 
-```{r}
+```{r Plot with no fill}
 plot(lee, fill = FALSE)
 ```
 
 
 Next, let's see how to color the bars so that we can see how abundant individual ASVs are.  For that we just call the `plot` function with no additional arguments.
 
-```{r}
+```{r Default plot}
 plot(lee)
 ```
 
@@ -52,13 +52,13 @@ As you can see, a barplot is shown to display abundance info for ASVs in the sam
 
 Looks pretty good, but the default labels don't quite match up with our data.  Let's change them to fit.
 
-```{r}
+```{r Plot with adjusted labels}
 plot(lee, ylab = "Abundance", legend_title = "ASV")
 ```
 
 Nice! There are a lot of ASVs, so this plot isn't the most interesting.  Let's collapse the features (a.k.a., the ASVs) by their taxanomic class first.  For that, we use the `collapse_features` function.
 
-```{r}
+```{r Collapse by class}
 lee %>% 
   collapse_features(Class) %>% 
   plot(ylab = "Abundance", legend_title = "Class")
@@ -68,7 +68,7 @@ Hmm, looks like the counts of Alpha and Gammaproteobacteria are pretty high, nea
 
 Of course, the raw counts don't give the best view of the data, so let's look at relative abundance instead.  Here's how we can do that.
 
-```{r}
+```{r Adding relative abundance}
 lee %>% 
   collapse_features(Class) %>% 
   map_samples(relative_abundance) %>% 
@@ -81,7 +81,7 @@ Since there are only five levels in the `Char` variable, we can rotate the x axi
 
 And for fun, let's plot a few more of the features.  We do that by passing in `num_features = 12`.
 
-```{r}
+```{r Show more features}
 lee %>% 
   collapse_features(Class) %>% 
   collapse_samples(Char) %>% 
@@ -94,6 +94,20 @@ lee %>%
 ```
 
 Pretty nice looking plot there!
+
+Just for fun, let's only keep features that are in the three classes at the bottom of the previous chart, `Alphaproteobacteria`, `Gammaproteobacteria`, and `Nitrosopumilales`, since they are highly abundant.  Then we can collapse those features by `Order`, to look at how the relative abundance of some of the most abundant Orders vary by `Char`.
+
+```{r Keep by Class, then collapse by Order}
+lee %>%
+  keep_features(Class %in% c("Alphaproteobacteria", "Gammaproteobacteria", "Nitrosopumilales")) %>%
+  collapse_features(Order) %>% 
+  collapse_samples(Char) %>% 
+  map_samples(relative_abundance) %>% 
+  plot(xlab = "Char",
+       ylab = "Relative abundance",
+       legend_title = "Order",
+       axis.text.x = element_text(angle = 0))
+```
 
 ## Custom color palettes
 
@@ -109,7 +123,7 @@ The `plot` function in `FeatureTable` knows about five different color palettes:
 
 You can pick one of them using the `palette` parameter of the `plot` function.  Here is an example using the `muted` palette.
 
-```{r}
+```{r Using muted palette}
 # Save the data for use in subsequent plots.
 lee_plot_data <- lee %>% 
   collapse_features(Class) %>% 
@@ -131,7 +145,7 @@ lee_plot_data %>%
 
 Sometimes, you want to dispaly data that has more features than colors in the included palette.  In these cases, the colors will be recycled.
 
-```{r}
+```{r Recycling colors}
 lee_plot_data %>% 
   plot(xlab = "Char", 
        ylab = "Relative abundance",
@@ -149,7 +163,7 @@ Also worth noting is that the `Other` category will always be a gray color if yo
 
 If you don't like any of the included palettes, then you can make your own with the `ggplot2` functions.  The `FeatureTable` plotting function returns a `ggplot` object, so you can add whatever you want to it.  To add a custom palette, you need to use one of the `scale_fill_*` functions, as the color is set using the `fill` parameter in the `aes` mapping function.  Something like this:
 
-```{r}
+```{r Using discrete palette}
 lee_plot_data %>% 
   plot(xlab = "Char", 
        ylab = "Relative abundance",
@@ -161,7 +175,7 @@ Notice that I dropped the `legend_title` argument and passed `name = Class` to `
 
 You may also notice that the `Other` category now is just the next color that `scale_fill_discrete` picks.  If you want to have the `Other` category be some gray color, the easiest thing would be to just use one of the built in palettes.  However, you could also make a custom scale like this:
 
-```{r}
+```{r Using scale fill manual}
 lee_plot_data %>% 
   plot(xlab = "Char", 
        ylab = "Relative abundance",

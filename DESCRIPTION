@@ -17,15 +17,16 @@ Suggests:
     covr,
     dplyr,
     ggplot2,
+    knitr,
     hedgehog,
+    magrittr,
     phyloseq,
+    rmarkdown,
     testthat,
     tibble,
     tidyr,
     vdiffr,
-    zCompositions,
-    knitr,
-    rmarkdown
+    zCompositions
 RoxygenNote: 7.1.0
 Depends: 
     R (>= 2.10)
