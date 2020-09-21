@@ -917,8 +917,6 @@ FeatureTable <- R6::R6Class(
           )
         }
 
-        new_feature_names <- category_levels
-
         collapsed <- sapply(category_levels, function(level) {
           keep_these <- categories == level
           keep_these <- ifelse(is.na(keep_these), FALSE, keep_these)
@@ -941,11 +939,12 @@ FeatureTable <- R6::R6Class(
         })
 
         dimnames(collapsed) <- list(Samples = self$sample_names(),
-                                    Features = new_feature_names)
+                                    Features = category_levels)
 
-        new_feature_data <- data.frame(X = category_levels)
+        # Set X as a factor this way to preserve the original levels.
+        new_feature_data <- data.frame(X = factor(category_levels, levels = category_levels))
         colnames(new_feature_data) <- c(by)
-        rownames(new_feature_data) <- new_feature_names
+        rownames(new_feature_data) <- category_levels
 
         FeatureTable$new(
           feature_table = collapsed,
@@ -1060,7 +1059,7 @@ FeatureTable <- R6::R6Class(
         dimnames(collapsed) <- list(Samples = new_names,
                                     Features = self$feature_names())
 
-        new_data <- data.frame(X = category_levels)
+        new_data <- data.frame(X = factor(category_levels, levels = category_levels))
         colnames(new_data) <- c(by)
         rownames(new_data) <- new_names
 

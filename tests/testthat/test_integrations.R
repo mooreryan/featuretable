@@ -74,11 +74,12 @@ test_that("the sorting of factors is stable even when dropping levels", {
 })
 
 # ie original user sorting
-test_that("the sorting of factor levels is stable in collapse_samples", {
+test_that("the sorting of factor levels is stable in collapse_samples even if user changes something", {
   ft <- ft_for_collapse_testing()
 
   orig_season_levels <- levels(ft$sample_data$Season)
 
+  # W comes before S...
   ft$sample_data$Season[1] <- "Winter"
 
   collapsed <- ft$collapse_samples(Season)

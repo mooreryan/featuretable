@@ -121,3 +121,36 @@ test_that("collapse_samples works if the user changes an entire column of metada
   expect_equal(collapse_samples(ft, "Location"), expected)
 })
 
+test_that("factor levels for collapsed samples reflect user level order", {
+  ft <- otu_feature_table()
+
+  # Change the levels of the factor.
+  ft$sample_data$Season <- factor(ft$sample_data$Season, levels = c("Winter", "Summer"))
+  # Just check that they actually changed.
+  expect_equal(levels(ft$sample_data$Season), c("Winter", "Summer"))
+
+  # Collapse by the column that we just changed the levels on.
+  collapsed <- ft$collapse_samples(Season)
+
+  expect_equal(collapsed$sample_names(), c("Winter", "Summer"))
+
+  # Now, the levels reflect the updated ones.
+  expect_equal(levels(collapsed$sample_data$Season), c("Winter", "Summer"))
+})
+
+test_that("factor levels for collapsed features reflect user level order", {
+  ft <- otu_feature_table()
+
+  # Change the levels of the factor.
+  ft$feature_data$Color <- factor(ft$feature_data$Color, levels = c("red", "blue"))
+  # Just check that they actually changed.
+  expect_equal(levels(ft$feature_data$Color), c("red", "blue"))
+
+  # Collapse by the column that we just changed the levels on.
+  collapsed <- ft$collapse_features(Color)
+
+  expect_equal(collapsed$feature_names(), c("red", "blue"))
+
+  # Now, the levels reflect the updated ones.
+  expect_equal(levels(collapsed$feature_data$Color), c("red", "blue"))
+})

@@ -450,7 +450,8 @@ test_that("collapse features combines all NAs into single category if keep_na=TR
                       Features = c("blue", "green", "red", "NA"))
     ),
     feature_data = data.frame(
-      Color = c("blue", "green", "red", "NA"),
+      Color = factor(c("blue", "green", "red", "NA"),
+                     levels = c("blue", "green", "red", "NA")),
       row.names = c("blue", "green", "red", "NA")
     ),
     sample_data = ft$sample_data
@@ -482,7 +483,8 @@ test_that("collapse features combines all NAs into single category if keep_na=TR
                       Features = c("blue", "green", "red", "NA"))
     ),
     feature_data = data.frame(
-      Color = c("blue", "green", "red", "NA"),
+      Color = factor(c("blue", "green", "red", "NA"),
+                     levels = c("blue", "green", "red", "NA")),
       row.names = c("blue", "green", "red", "NA")
     ),
     sample_data = ft$sample_data
@@ -589,7 +591,8 @@ test_that("collapse samples combines all NAs into single category if keep_na=TRU
     ),
     feature_data = ft$feature_data,
     sample_data = data.frame(
-      Location = c("Portugal", "Spain", "NA"),
+      Location = factor(c("Portugal", "Spain", "NA"),
+                        levels = c("Portugal", "Spain", "NA")),
       row.names = c("Portugal", "Spain", "NA")
     )
   )
@@ -620,7 +623,8 @@ test_that("collapse samples combines all NAs into single category if keep_na=TRU
     ),
     feature_data = ft$feature_data,
     sample_data = data.frame(
-      Location = c("Portugal", "Spain", "NA"),
+      Location = factor(c("Portugal", "Spain", "NA"),
+                        levels = c("Portugal", "Spain", "NA")),
       row.names = c("Portugal", "Spain", "NA")
     )
   )
