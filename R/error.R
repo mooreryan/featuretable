@@ -14,5 +14,6 @@ Error <- list(
   PackageUnavailableError = "PackageUnavailableError",
   MissingFeatureNamesError = "MissingFeatureNamesError",
   NonFactorDataError = "NonFactorDataError",
+  BadFactorDataError = "BadFactorDataError",
   MissingFactorLevelError = "MissingFactorLevelError"
 )

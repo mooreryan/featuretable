@@ -102,3 +102,39 @@ otu_feature_table <- function() {
                    sample_data = sample_data)
 }
 
+ft_for_collapse_testing <- function() {
+  count_table <- matrix(
+    c(
+      0, 0, 0, 1, 10,
+      0, 0, 1, 2, 20,
+      0, 1, 2, 3, 30,
+      1, 2, 3, 4, 40
+    ),
+    byrow = TRUE,
+    nrow = 4,
+    ncol = 5,
+    dimnames = list(Samples = paste0("Sample_", 1:4),
+                    Features = paste0("Feature_", 1:5))
+  )
+
+  feature_data <- data.frame(
+    # This has one category with a single thing!
+    Color = c("red", "red", "green", "blue", "blue"),
+    # This has all the same thing!
+    Shape = rep("square", times = 5),
+    Length = c(5, 6, 2.3, 7, 10),
+    row.names = paste0("Feature_", 1:5)
+  )
+
+  sample_data <- data.frame(
+    Location = c("Spain", "Spain", "Portugal", "Spain"),
+    Season = c("Summer", "Summer", "Winter", "Winter"),
+    Silliness = c("Silly", "Silly", "Silly", "Silly"),
+    SnazzyFactor = c(10, 12, 25, 3),
+    row.names = paste0("Sample_", 1:4)
+  )
+
+  FeatureTable$new(count_table,
+                   feature_data = feature_data,
+                   sample_data = sample_data)
+}

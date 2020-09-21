@@ -1,39 +1,3 @@
-ft_for_collapse_testing <- function() {
-  count_table <- matrix(
-    c(
-      0, 0, 0, 1, 10,
-      0, 0, 1, 2, 20,
-      0, 1, 2, 3, 30,
-      1, 2, 3, 4, 40
-    ),
-    byrow = TRUE,
-    nrow = 4,
-    ncol = 5,
-    dimnames = list(Samples = paste0("Sample_", 1:4),
-                    Features = paste0("Feature_", 1:5))
-  )
-
-  feature_data <- data.frame(
-    # This has one category with a single thing!
-    Color = c("red", "red", "green", "blue", "blue"),
-    # This has all the same thing!
-    Shape = rep("square", times = 5),
-    Length = c(5, 6, 2.3, 7, 10),
-    row.names = paste0("Feature_", 1:5)
-  )
-
-  sample_data <- data.frame(
-    Location = c("Spain", "Spain", "Portugal", "Spain"),
-    Season = c("Summer", "Summer", "Winter", "Winter"),
-    Silliness = c("Silly", "Silly", "Silly", "Silly"),
-    SnazzyFactor = c(10, 12, 25, 3),
-    row.names = paste0("Sample_", 1:4)
-  )
-
-  FeatureTable$new(count_table,
-                   feature_data = feature_data,
-                   sample_data = sample_data)
-}
 
 # TODO method={sum,mean}
 # TODO is_hierarchical={TRUE, FALSE}
@@ -233,48 +197,6 @@ test_that("collapse features works even if a feature data col is the same for al
   expect_equal(collapse(ft, "features", "Shape"), expected)
   expect_equal(ft$collapse_features("Shape"), expected)
   expect_equal(collapse_features(ft, "Shape"), expected)
-})
-
-test_that("raiseseif the user changes things so that a column in metadata isn't a factor", {
-  ft <- ft_for_collapse_testing()
-  ft$feature_data[, "Color"] <- rep("Green", 5)
-
-  expect_error(ft$collapse("features", "Color"), class = Error$NonFactorDataError)
-  expect_error(collapse(ft, "features", "Color"), class = Error$NonFactorDataError)
-  expect_error(ft$collapse_features("Color"), class = Error$NonFactorDataError)
-  expect_error(collapse_features(ft, "Color"), class = Error$NonFactorDataError)
-
-  ft <- ft_for_collapse_testing()
-  ft$sample_data[, "Location"] <- rep("Spain", 4)
-
-  expect_error(ft$collapse("samples", "Location"), class = Error$NonFactorDataError)
-  expect_error(collapse(ft, "samples", "Location"), class = Error$NonFactorDataError)
-  expect_error(ft$collapse_samples("Location"), class = Error$NonFactorDataError)
-  expect_error(collapse_samples(ft, "Location"), class = Error$NonFactorDataError)
-})
-
-test_that("it raises if user drops a factor level out by accident", {
-  ft <- ft_for_collapse_testing()
-
-  # This will cause the 'Portugal' level to not be present in the column.
-  ft$feature_data[3, "Color"] <- "blue"
-
-  expect_error(ft$collapse("features", "Color"), class = Error$MissingFactorLevelError)
-  expect_error(collapse(ft, "features", "Color"), class = Error$MissingFactorLevelError)
-  expect_error(ft$collapse_features("Color"), class = Error$MissingFactorLevelError)
-  expect_error(collapse_features(ft, "Color"), class = Error$MissingFactorLevelError)
-
-  ####
-
-  ft <- ft_for_collapse_testing()
-
-  # This will cause the 'Portugal' level to not be present in the column.
-  ft$sample_data[3, "Location"] <- "Spain"
-
-  expect_error(ft$collapse("samples", "Location"), class = Error$MissingFactorLevelError)
-  expect_error(collapse(ft, "samples", "Location"), class = Error$MissingFactorLevelError)
-  expect_error(ft$collapse_samples("Location"), class = Error$MissingFactorLevelError)
-  expect_error(collapse_samples(ft, "Location"), class = Error$MissingFactorLevelError)
 })
 
 test_that("collapse samples works even if a feature data col is the same for all features", {
