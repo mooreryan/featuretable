@@ -676,7 +676,7 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 \if{latex}{\out{\hypertarget{method-collapse_samples}{}}}
 \subsection{Method \code{collapse_samples()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$collapse_samples(by, keep_na = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$collapse_samples(by, keep_na = FALSE, keep_hierarchy = FALSE)}\if{html}{\out{</div>}}
 }
 
 }

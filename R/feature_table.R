@@ -947,17 +947,23 @@ FeatureTable <- R6::R6Class(
           # TODO this will break if you let `by` be more than one column.
           keep_these <- hierarchical_columns(self$feature_data, by)
 
+          # All keep_these columns that are not `by`, will be equal to `by` (even if they are NA)
+
           # Assuming `by` is a single thing.
-          # TODO also, what if we are NOT excluding NA?
+          #
+          # For now, throw out the NA category. We will add it back in later.
           new_feature_data <- unique(na.exclude(self$feature_data[, keep_these]))
           # ^ this will have one row with proper columns for each unique by category
 
           if (sum(keep_these) == 0) {
             stop("should be impossible")
           } else if (sum(keep_these) == 1) {
-            # TODO does this blow up the factor level information? (i don't think it does if the levels are already present)
+
+            # Make sure it's actually a data frame.
             new_feature_data <- as.data.frame(new_feature_data)
-            colnames(new_feature_data) <- c(by)
+            # Again, assuming `by` is a single thing.
+            stopifnot(length(by) == 1) # TODO will this mess up the enexpr?
+            colnames(new_feature_data) <- by
           }
 
           # Now set the proper levels for the by category. And order/sort it by the levels.
@@ -966,9 +972,15 @@ FeatureTable <- R6::R6Class(
           # And the rownames should be whatever the unique things in the by category are
           rownames(new_feature_data) <- new_feature_data[, by]
 
-          # TODO should it really be sorted based on the levels?
-          # And sort the rows based on `by` levels.
-          #new_feature_data <- new_feature_data[order(new_feature_data[, by]), ]
+          # If keep_na is true but there are actually no NA values, we don't want to add them.
+          if (isTRUE(keep_na) && any(is.na(self$feature_data[, keep_these]))) {
+            # Add on a row with all "NA" strings and
+            tmp <- rep("NA", times = ncol(new_feature_data))
+            # Convert it to a 1 X ncol df
+            tmp <- as.data.frame(as.list(tmp), row.names = "NA")
+            colnames(tmp) <- colnames(new_feature_data)
+            new_feature_data <- rbind(new_feature_data, tmp)
+          }
         } else {
           # Set X as a factor this way to preserve the original levels.
           new_feature_data <- data.frame(X = factor(category_levels, levels = category_levels))
@@ -987,7 +999,7 @@ FeatureTable <- R6::R6Class(
       }
     },
 
-    collapse_samples = function(by, keep_na = FALSE) {
+    collapse_samples = function(by, keep_na = FALSE, keep_hierarchy = FALSE) {
       by_expr <- rlang::enexpr(by)
 
       if (rlang::is_null(by_expr)) {
@@ -1089,14 +1101,55 @@ FeatureTable <- R6::R6Class(
         dimnames(collapsed) <- list(Samples = new_names,
                                     Features = self$feature_names())
 
-        new_data <- data.frame(X = factor(category_levels, levels = category_levels))
-        colnames(new_data) <- c(by)
-        rownames(new_data) <- new_names
+        if (isTRUE(keep_hierarchy)) {
+          # TODO this will break if you let `by` be more than one column.
+          keep_these <- hierarchical_columns(self$sample_data, by)
+
+          # All keep_these columns that are not `by`, will be equal to `by` (even if they are NA)
+
+          # Assuming `by` is a single thing.
+          #
+          # For now, throw out the NA category. We will add it back in later.
+          new_sample_data <- unique(na.exclude(self$sample_data[, keep_these]))
+          # ^ this will have one row with proper columns for each unique by category
+
+          if (sum(keep_these) == 0) {
+            stop("should be impossible")
+          } else if (sum(keep_these) == 1) {
+
+            # Make sure it's actually a data frame.
+            new_sample_data <- as.data.frame(new_sample_data)
+            # Again, assuming `by` is a single thing.
+            stopifnot(length(by) == 1) # TODO will this mess up the enexpr?
+            colnames(new_sample_data) <- by
+          }
+
+          # Now set the proper levels for the by category. And order/sort it by the levels.
+          new_sample_data[, by] <- sort(factor(new_sample_data[, by], levels = category_levels))
+
+          # And the rownames should be whatever the unique things in the by category are
+          rownames(new_sample_data) <- new_sample_data[, by]
+
+          # If keep_na is true but there are actually no NA values, we don't want to add them.
+          if (isTRUE(keep_na) && any(is.na(self$sample_data[, keep_these]))) {
+            # Add on a row with all "NA" strings and
+            tmp <- rep("NA", times = ncol(new_sample_data))
+            # Convert it to a 1 X ncol df
+            tmp <- as.data.frame(as.list(tmp), row.names = "NA")
+            colnames(tmp) <- colnames(new_sample_data)
+            new_sample_data <- rbind(new_sample_data, tmp)
+          }
+        } else {
+          # TODO i think there is technically a bug here....levels will have "NA" (as string) if keep_na is true, but the sample_data itself will have an actual NA value for those places.
+          new_sample_data <- data.frame(X = factor(category_levels, levels = category_levels))
+          colnames(new_sample_data) <- c(by)
+          rownames(new_sample_data) <- new_names
+        }
 
         FeatureTable$new(
           feature_table = collapsed,
           feature_data = self$feature_data,
-          sample_data = new_data
+          sample_data = new_sample_data
         )
       } else {
         rlang::abort("Not all data categories passed to the 'by' argument were present in sample_data!",
