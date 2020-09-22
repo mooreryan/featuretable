@@ -844,7 +844,9 @@ FeatureTable <- R6::R6Class(
       }
     },
 
-    collapse_features = function(by, keep_na = FALSE) {
+    # TODO better error message for when you pass multiple `by` columns.
+    # TODO `keep_hiearchical_columns` may be a better param name.
+    collapse_features = function(by, keep_na = FALSE, keep_hierarchy = FALSE) {
       by_expr <- rlang::enexpr(by)
 
       if (rlang::is_null(by_expr)) {
@@ -941,10 +943,38 @@ FeatureTable <- R6::R6Class(
         dimnames(collapsed) <- list(Samples = self$sample_names(),
                                     Features = category_levels)
 
-        # Set X as a factor this way to preserve the original levels.
-        new_feature_data <- data.frame(X = factor(category_levels, levels = category_levels))
-        colnames(new_feature_data) <- c(by)
-        rownames(new_feature_data) <- category_levels
+        if (isTRUE(keep_hierarchy)) {
+          # TODO this will break if you let `by` be more than one column.
+          keep_these <- hierarchical_columns(self$feature_data, by)
+
+          # Assuming `by` is a single thing.
+          # TODO also, what if we are NOT excluding NA?
+          new_feature_data <- unique(na.exclude(self$feature_data[, keep_these]))
+          # ^ this will have one row with proper columns for each unique by category
+
+          if (sum(keep_these) == 0) {
+            stop("should be impossible")
+          } else if (sum(keep_these) == 1) {
+            # TODO does this blow up the factor level information? (i don't think it does if the levels are already present)
+            new_feature_data <- as.data.frame(new_feature_data)
+            colnames(new_feature_data) <- c(by)
+          }
+
+          # Now set the proper levels for the by category. And order/sort it by the levels.
+          new_feature_data[, by] <- sort(factor(new_feature_data[, by], levels = category_levels))
+
+          # And the rownames should be whatever the unique things in the by category are
+          rownames(new_feature_data) <- new_feature_data[, by]
+
+          # TODO should it really be sorted based on the levels?
+          # And sort the rows based on `by` levels.
+          #new_feature_data <- new_feature_data[order(new_feature_data[, by]), ]
+        } else {
+          # Set X as a factor this way to preserve the original levels.
+          new_feature_data <- data.frame(X = factor(category_levels, levels = category_levels))
+          colnames(new_feature_data) <- c(by)
+          rownames(new_feature_data) <- category_levels
+        }
 
         FeatureTable$new(
           feature_table = collapsed,

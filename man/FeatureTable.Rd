@@ -667,7 +667,7 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 \if{latex}{\out{\hypertarget{method-collapse_features}{}}}
 \subsection{Method \code{collapse_features()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$collapse_features(by, keep_na = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$collapse_features(by, keep_na = FALSE, keep_hierarchy = FALSE)}\if{html}{\out{</div>}}
 }
 
 }
