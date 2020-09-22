@@ -1,7 +1,7 @@
 ---
 title: "FeatureTable Summary Plots"
 author: "Ryan M. Moore"
-date: 2020-09-20
+date: 2020-09-21
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{FeatureTable Summary Plots}

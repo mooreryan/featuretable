@@ -15,13 +15,17 @@ collapse_samples(ft, ...)
 \arguments{
 \item{ft}{A FeatureTable.}
 
-\item{margin}{Margin to collapse.  E.g., \code{1} or \code{"samples"} 
+\item{margin}{Margin to collapse.  E.g., \code{1} or \code{"samples"}
 indicates rows, \code{2} or \code{"features"} indicates columns.}
 
 \item{by}{The data column to collapse by.}
 
-\item{keep_na}{Do you want to group all NAs together (TRUE) or drop them 
+\item{keep_na}{Do you want to group all NAs together (TRUE) or drop them
 (FALSE, the defult)?}
+
+\item{keep_hierarchy}{Do you want to keep all data above the level specified
+with the \code{by} argument? Pass \code{TRUE} to this parameter if you
+know some of your data is hierarchical and you want to treat it as such.}
 }
 \value{
 A new FeatureTable with the specified margin collapsed on the

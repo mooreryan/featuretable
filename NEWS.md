@@ -1,5 +1,13 @@
 # Version updates and changes
 
+## featuretable v0.0.7
+
+- Add property and integration tests
+- Add `relative_abundance` helper
+- Add vignette about summarizing `FeatureTables` with plots
+- Handle lots of edge cases involving factors and NAs in the collapse functions
+- Add `keep_hierarchy` parameter to the collapse functions
+
 ## featuretable v0.0.6
 
 - Fix some bugs in the `plot` function
