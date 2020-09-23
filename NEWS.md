@@ -1,5 +1,11 @@
 # Version updates and changes
 
+## featuretable v0.0.8
+
+- Update everything so it works with both R versions 3 and 4.
+- This works by basically treating all strings as factors within `FeatureTable`
+  code and test suite.
+
 ## featuretable v0.0.7
 
 - Add property and integration tests

@@ -23,11 +23,13 @@
   - Some of the tests compare bespoke implementations of certain functions to their counterparts in `dplyr`, `tibble`, and `tidyr`.
   - Property tests require the `hedgehog` package.
   
-## R v4 compatibility
+## R v3 and v4 compatibility
 
-- All the unit tests pass on R v4.0.2.
+- All the unit tests pass on R v3.6.3 (tested with [this](https://hub.docker.com/layers/mooreryan/featuretable_dev/v1--rocker-verse-3.6.3/images/sha256-e67882750a5abadcefe7fb7107ad4dbc924a2014f199a96abdd48c97172131f8?context=repo) Docker image) and v4.0.2 (tested with [this](https://hub.docker.com/layers/mooreryan/featuretable_dev/v1--rocker-verse-4.0.2/images/sha256-08a916b6bda371ffa8571286373a523dc46d14db9129701cc7a1d75d0c209cd6?context=repo) Docker image).
 - Literally every time `data.frame` or `as.data.frame` is called in the `FeatureTable` code and tests , `stringsAsFactors = TRUE` is passed in as an argument.  
   - So, if you need a specific stable sorting of your sringly data, you need to set the factor levels yourself.
   - In theory, you should be fine passing in `data.frame`s that don't have their strings as factors, since `FeatureTable` will convert all strings to factors, but as of 2020-09-22, I haven't tested it.
   - This behavior may change in the future though!
 - One thing to note is that `as.data.frame.FeatureTable` does not have a `stringsAsFactors` parameter.  This shouldn't be a problem as string-esque data is not allowed in the `data` field anyway.
+- Another weird thing for developers...
+  - If you run the `test_phyloseq_interop.R` unit tests in RStudio using the interactive `Run tests` button they fail, but if you run the entire test suite either with `Test package` or `Check package` they pass.  This is a bug in RStudio it seems, as I have gotten the same error in other packages.
