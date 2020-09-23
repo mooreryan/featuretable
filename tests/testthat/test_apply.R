@@ -81,7 +81,8 @@ test_that("apply_with_index margin 1 works", {
   dimnames_zeros_margin_1 <- list(paste0("col", 1:3), paste0("row_", 1:2))
 
   zeros <- as.data.frame(matrix(0, nrow = 2, ncol = 3,
-                                dimnames = dimnames_zeros))
+                                dimnames = dimnames_zeros),
+                         stringsAsFactors = TRUE)
 
   result <- apply_with_index(zeros, 1, function(x, i, y) {
     (x + i) * y
@@ -148,7 +149,8 @@ test_that("apply_with_index margin 2 works", {
   dimnames_zeros <- list(paste0("row_", 1:2),
                          paste0("col", 1:3))
   zeros <- as.data.frame(matrix(0, nrow = 2, ncol = 3,
-                                dimnames = dimnames_zeros))
+                                dimnames = dimnames_zeros),
+                         stringsAsFactors = TRUE)
   ft <- FeatureTable$new(zeros)
 
   result <- apply_with_index(zeros, 2, function(x, i) {
@@ -415,11 +417,13 @@ test_that("apply_with_name raises error without proper dimname", {
 test_that("*_with_name gives correct names", {
   sample_data <- data.frame(
     Count = c(1, 2),
-    row.names = c("Sample_1", "Sample_2")
+    row.names = c("Sample_1", "Sample_2"),
+    stringsAsFactors = TRUE
   )
   feature_data <- data.frame(
     Length = c(1, 10, 100),
-    row.names = paste0("Feature_", 1:3)
+    row.names = paste0("Feature_", 1:3),
+    stringsAsFactors = TRUE
   )
   count_table <- matrix(1, nrow = 2, ncol = 3,
                         dimnames = list(Samples = c("Sample_1", "Sample_2"),

@@ -22,3 +22,12 @@
   - If you want to run the coverage report for yourself, then you will need to install `covr`.  
   - Some of the tests compare bespoke implementations of certain functions to their counterparts in `dplyr`, `tibble`, and `tidyr`.
   - Property tests require the `hedgehog` package.
+  
+## R v4 compatibility
+
+- All the unit tests pass on R v4.0.2.
+- Literally every time `data.frame` or `as.data.frame` is called in the `FeatureTable` code and tests , `stringsAsFactors = TRUE` is passed in as an argument.  
+  - So, if you need a specific stable sorting of your sringly data, you need to set the factor levels yourself.
+  - In theory, you should be fine passing in `data.frame`s that don't have their strings as factors, since `FeatureTable` will convert all strings to factors, but as of 2020-09-22, I haven't tested it.
+  - This behavior may change in the future though!
+- One thing to note is that `as.data.frame.FeatureTable` does not have a `stringsAsFactors` parameter.  This shouldn't be a problem as string-esque data is not allowed in the `data` field anyway.

@@ -19,14 +19,16 @@ make_basic_ft <- function() {
     Color = c("red", "red", "red", "blue", "blue"),
     Shape = c("square", "circle", "square", NA, "circle"),
     Length = c(5, 6, 2.3, 7, 10),
-    row.names = paste0("Feature_", 1:5)
+    row.names = paste0("Feature_", 1:5),
+    stringsAsFactors = TRUE
   )
 
   sample_data <- data.frame(
     Location = c("Spain", "Spain", "Portugal", "Spain"),
     Season = c("Summer", "Summer", "Winter", "Winter"),
     SnazzyFactor = c(10, 12, 25, 3),
-    row.names = paste0("Sample_", 1:4)
+    row.names = paste0("Sample_", 1:4),
+    stringsAsFactors = TRUE
   )
 
   featuretable::FeatureTable$new(count_table,

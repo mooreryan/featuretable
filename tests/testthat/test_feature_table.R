@@ -122,11 +122,13 @@ test_that("$new gives good sample data even if there is only one sample", {
   ## Single covariate
   sample_data <- data.frame(
     Location = c("Portugal"),
-    row.names = c("Sample_2")
+    row.names = c("Sample_2"),
+    stringsAsFactors = TRUE
   )
   expected_sample_data <- data.frame(
     Location = c(NA, "Portugal", NA, NA),
-    row.names = paste0("Sample_", 1:4)
+    row.names = paste0("Sample_", 1:4),
+    stringsAsFactors = TRUE
   )
   ft <- FeatureTable$new(testdata$count_table, sample_data = sample_data)
   expect_equal(ft$sample_data, expected_sample_data)
@@ -135,12 +137,14 @@ test_that("$new gives good sample data even if there is only one sample", {
   sample_data <- data.frame(
     Location = c("Portugal"),
     Season = c("Winter"),
-    row.names = c("Sample_2")
+    row.names = c("Sample_2"),
+    stringsAsFactors = TRUE
   )
   expected_sample_data <- data.frame(
     Location = c(NA, "Portugal", NA, NA),
     Season = c(NA, "Winter", NA, NA),
-    row.names = paste0("Sample_", 1:4)
+    row.names = paste0("Sample_", 1:4),
+    stringsAsFactors = TRUE
   )
   ft <- FeatureTable$new(testdata$count_table, sample_data = sample_data)
   expect_equal(ft$sample_data, expected_sample_data)
@@ -156,12 +160,14 @@ test_that("$new gives good sample data even if there is only one sample", {
 test_that("$new gives good sample data even with single covariate as data frame", {
   sample_data <- data.frame(
     Location = c("Spain", "Portugal", "Spain"),
-    row.names = paste0("Sample_", c(1, 2, 4))
+    row.names = paste0("Sample_", c(1, 2, 4)),
+    stringsAsFactors = TRUE
   )
 
   expected_sample_data <- data.frame(
     Location = c("Spain", "Portugal", NA, "Spain"),
-    row.names = paste0("Sample_", 1:4)
+    row.names = paste0("Sample_", 1:4),
+    stringsAsFactors = TRUE
   )
 
   ft <- FeatureTable$new(testdata$count_table, sample_data = sample_data)
@@ -176,7 +182,8 @@ test_that("$new gives good sample data even with single covariate as a vector wi
   # The colnames is just X since it has to pick something.
   expected_sample_data <- data.frame(
     X = c("Spain", "Portugal", NA, "Spain"),
-    row.names = paste0("Sample_", 1:4)
+    row.names = paste0("Sample_", 1:4),
+    stringsAsFactors = TRUE
   )
 
   ft <- FeatureTable$new(testdata$count_table, sample_data = sample_data)
@@ -202,7 +209,9 @@ test_that("$new raises error with 1d sample data that have no matches in feature
 })
 
 test_that("$new gives a error if none of the samples have data in sample_data", {
-  sample_data <- data.frame(Silly = c(TRUE, FALSE, TRUE), row.names = c("apple", "gie", "good"))
+  sample_data <- data.frame(Silly = c(TRUE, FALSE, TRUE), 
+                            row.names = c("apple", "gie", "good"),
+                            stringsAsFactors = TRUE)
 
   expect_error(FeatureTable$new(testdata$count_table, sample_data = sample_data),
                class = Error$ArgumentError)
@@ -243,11 +252,13 @@ test_that("$new gives good feature data even if there is only one feature", {
   ## Single covariate
   feature_data <- data.frame(
     Color = c("red"),
-    row.names = c("Feature_3")
+    row.names = c("Feature_3"),
+    stringsAsFactors = TRUE
   )
   expected_feature_data <- data.frame(
     Color = c(NA, NA, "red", NA, NA),
-    row.names = paste0("Feature_", 1:5)
+    row.names = paste0("Feature_", 1:5),
+    stringsAsFactors = TRUE
   )
   ft <- FeatureTable$new(testdata$count_table, feature_data = feature_data)
   expect_equal(ft$feature_data, expected_feature_data)
@@ -256,12 +267,14 @@ test_that("$new gives good feature data even if there is only one feature", {
   feature_data <- data.frame(
     Color = c("red"),
     Shape = c("circle"),
-    row.names = c("Feature_3")
+    row.names = c("Feature_3"),
+    stringsAsFactors = TRUE
   )
   expected_feature_data <- data.frame(
     Color = c(NA, NA, "red", NA, NA),
     Shape = c(NA, NA, "circle", NA, NA),
-    row.names = paste0("Feature_", 1:5)
+    row.names = paste0("Feature_", 1:5),
+    stringsAsFactors = TRUE
   )
   ft <- FeatureTable$new(testdata$count_table, feature_data = feature_data)
   expect_equal(ft$feature_data, expected_feature_data)
@@ -276,12 +289,14 @@ test_that("$new gives good feature data even if there is only one feature", {
 test_that("$new gives good feature data even with single covariate as data frame", {
   feature_data <- data.frame(
     Color = c("red", "red", "blue"),
-    row.names = paste0("Feature_", c(1, 3, 5))
+    row.names = paste0("Feature_", c(1, 3, 5)),
+    stringsAsFactors = TRUE
   )
 
   expected_feature_data <- data.frame(
     Color = c("red", NA, "red", NA, "blue"),
-    row.names = paste0("Feature_", 1:5)
+    row.names = paste0("Feature_", 1:5),
+    stringsAsFactors = TRUE
   )
 
   ft <- FeatureTable$new(testdata$count_table, feature_data = feature_data)
@@ -296,7 +311,8 @@ test_that("$new gives good feature data even with single covariate as a vector w
   # The colnames is just X since it has to pick something.
   expected_feature_data <- data.frame(
     X = c("red", NA, "red", NA, "blue"),
-    row.names = paste0("Feature_", 1:5)
+    row.names = paste0("Feature_", 1:5),
+    stringsAsFactors = TRUE
   )
 
   ft <- FeatureTable$new(testdata$count_table, feature_data = feature_data)
@@ -322,7 +338,9 @@ test_that("$new raises error with 1d sample data that have no matches in feature
 })
 
 test_that("$new gives a error if none of the features have data in feature_data", {
-  feature_data <- data.frame(Silly = c(TRUE, FALSE, TRUE), row.names = c("apple", "gie", "good"))
+  feature_data <- data.frame(Silly = c(TRUE, FALSE, TRUE), 
+                             row.names = c("apple", "gie", "good"),
+                             stringsAsFactors = TRUE)
 
   expect_error(FeatureTable$new(testdata$count_table, feature_data = feature_data),
                class = Error$ArgumentError)

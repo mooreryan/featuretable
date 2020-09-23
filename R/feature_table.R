@@ -960,7 +960,7 @@ FeatureTable <- R6::R6Class(
           } else if (sum(keep_these) == 1) {
 
             # Make sure it's actually a data frame.
-            new_feature_data <- as.data.frame(new_feature_data)
+            new_feature_data <- as.data.frame(new_feature_data, stringsAsFactors = TRUE)
             # Again, assuming `by` is a single thing.
             stopifnot(length(by) == 1) # TODO will this mess up the enexpr?
             colnames(new_feature_data) <- by
@@ -977,13 +977,14 @@ FeatureTable <- R6::R6Class(
             # Add on a row with all "NA" strings and
             tmp <- rep("NA", times = ncol(new_feature_data))
             # Convert it to a 1 X ncol df
-            tmp <- as.data.frame(as.list(tmp), row.names = "NA")
+            tmp <- as.data.frame(as.list(tmp), row.names = "NA", stringsAsFactors = TRUE)
             colnames(tmp) <- colnames(new_feature_data)
             new_feature_data <- rbind(new_feature_data, tmp)
           }
         } else {
           # Set X as a factor this way to preserve the original levels.
-          new_feature_data <- data.frame(X = factor(category_levels, levels = category_levels))
+          new_feature_data <- data.frame(X = factor(category_levels, levels = category_levels),
+                                         stringsAsFactors = TRUE)
           colnames(new_feature_data) <- c(by)
           rownames(new_feature_data) <- category_levels
         }
@@ -1118,7 +1119,7 @@ FeatureTable <- R6::R6Class(
           } else if (sum(keep_these) == 1) {
 
             # Make sure it's actually a data frame.
-            new_sample_data <- as.data.frame(new_sample_data)
+            new_sample_data <- as.data.frame(new_sample_data, stringsAsFactors = TRUE)
             # Again, assuming `by` is a single thing.
             stopifnot(length(by) == 1) # TODO will this mess up the enexpr?
             colnames(new_sample_data) <- by
@@ -1135,13 +1136,14 @@ FeatureTable <- R6::R6Class(
             # Add on a row with all "NA" strings and
             tmp <- rep("NA", times = ncol(new_sample_data))
             # Convert it to a 1 X ncol df
-            tmp <- as.data.frame(as.list(tmp), row.names = "NA")
+            tmp <- as.data.frame(as.list(tmp), row.names = "NA", stringsAsFactors = TRUE)
             colnames(tmp) <- colnames(new_sample_data)
             new_sample_data <- rbind(new_sample_data, tmp)
           }
         } else {
           # TODO i think there is technically a bug here....levels will have "NA" (as string) if keep_na is true, but the sample_data itself will have an actual NA value for those places.
-          new_sample_data <- data.frame(X = factor(category_levels, levels = category_levels))
+          new_sample_data <- data.frame(X = factor(category_levels, levels = category_levels), 
+                                        stringsAsFactors = TRUE)
           colnames(new_sample_data) <- c(by)
           rownames(new_sample_data) <- new_names
         }
@@ -1257,7 +1259,8 @@ FeatureTable <- R6::R6Class(
       }
 
       # TODO technically don't need this step if fill is false.
-      plot_data <- as.data.frame(self$data[, order(colSums(self$data), decreasing = TRUE)])
+      plot_data <- as.data.frame(self$data[, order(colSums(self$data), decreasing = TRUE)], 
+                                 stringsAsFactors = TRUE)
 
       # Need to make an other category.
       if (self$num_features() > num_features_to_show) {
@@ -1271,7 +1274,7 @@ FeatureTable <- R6::R6Class(
           # We only want a single feature (plus other), so we need to force
           # the plot_data to be a data.frame.
           new_colname <- colnames(plot_data[[1]])
-          plot_data <- data.frame(X = plot_data[, 1])
+          plot_data <- data.frame(X = plot_data[, 1], stringsAsFactors = TRUE)
           colnames(plot_data) <- new_colname
         } else {
           plot_data <- plot_data[, 1:num_features_to_show]
@@ -1317,7 +1320,8 @@ FeatureTable <- R6::R6Class(
         p <- ggplot2::ggplot(
           # We just need the row sums and nothing else.
           data = data.frame(Sample = rownames(plot_data),
-                            Value = rowSums(plot_data)),
+                            Value = rowSums(plot_data),
+                            stringsAsFactors = TRUE),
           mapping = ggplot2::aes_string(x = "Sample", y = "Value")
         )
 
@@ -1411,7 +1415,8 @@ FeatureTable <- R6::R6Class(
 
         # Create a data frame from the 1d data.
         self$feature_data <- data.frame(X = feature_data[self$feature_names()],
-                                        row.names = seq_len(self$num_features()))
+                                        row.names = seq_len(self$num_features()),
+                                        stringsAsFactors = TRUE)
       }
       # At least we have a 3d structure....
       else {
@@ -1435,7 +1440,8 @@ FeatureTable <- R6::R6Class(
 
         # Even if it is a data frame, it still may have 1 covariate, which needs special treatment.
         if (ncol(feature_data) == 1) {
-          self$feature_data <- data.frame(X = feature_data[self$feature_names(), ])
+          self$feature_data <- data.frame(X = feature_data[self$feature_names(), ],
+                                          stringsAsFactors = TRUE)
           colnames(self$feature_data) <- colnames(feature_data)[[1]]
         } else if (ncol(feature_data) > 1) {
           self$feature_data <- feature_data[self$feature_names(), ]
@@ -1468,7 +1474,8 @@ FeatureTable <- R6::R6Class(
         self$sample_data <- data.frame(X = sample_data[self$sample_names()],
                                        # Need to set this manually.  If more samples in feature_table
                                        # than in sample_data, you will get some missing row names here.
-                                       row.names = 1:self$num_samples())
+                                       row.names = 1:self$num_samples(),
+                                       stringsAsFactors = TRUE)
       } else {
         # At least we have a 2d structure.
 
@@ -1491,7 +1498,8 @@ FeatureTable <- R6::R6Class(
         }
 
         if (ncol(sample_data) == 1) {
-          self$sample_data <- data.frame(X = sample_data[self$sample_names(), ])
+          self$sample_data <- data.frame(X = sample_data[self$sample_names(), ],
+                                         stringsAsFactors = TRUE)
           colnames(self$sample_data) <- colnames(sample_data)[[1]]
         } else if (ncol(sample_data) > 1) {
           self$sample_data <- sample_data[self$sample_names(), ]
