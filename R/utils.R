@@ -18,7 +18,8 @@ wide_to_long <- function(dat) {
     Sample = rep(rownames(dat), times = ncol(dat)),
     Feature = as.vector(sapply(colnames(dat), function(name) rep(name, times = nrow(dat)))),
     # TODO pretty sure ft$data should always be a matrix.
-    Value = as.vector(as.matrix(dat))
+    Value = as.vector(as.matrix(dat)),
+    stringsAsFactors = TRUE
   )
 }
 

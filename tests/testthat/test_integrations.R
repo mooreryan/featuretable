@@ -14,7 +14,8 @@ test_that("using keep_features followed by collapse features on the same data co
                            Features = "blue")),
     feature_data = data.frame(
       Color = "blue",
-      row.names = "blue"
+      row.names = "blue",
+      stringsAsFactors = TRUE
     ),
     sample_data = ft$sample_data
   )
@@ -33,7 +34,8 @@ test_that("using keep_samples followed by collapse features on the same data col
                            Features = ft$feature_names())),
     sample_data = data.frame(
       Season = "Summer",
-      row.names = "Summer"
+      row.names = "Summer",
+      stringsAsFactors = TRUE
     ),
     feature_data = ft$feature_data
   )
@@ -65,7 +67,8 @@ test_that("the sorting of factors is stable even when dropping levels", {
                            Features = c("blue", "green"))),
     feature_data = data.frame(
       Color = c("blue", "green"),
-      row.names = c("blue", "green")
+      row.names = c("blue", "green"),
+      stringsAsFactors = TRUE
     ),
     sample_data = ft$sample_data
   )

@@ -56,11 +56,12 @@ test_that("wide_to_long pivots a df or mat to long format from wide", {
               ft$data[, "Feature_2"],
               ft$data[, "Feature_3"],
               ft$data[, "Feature_4"],
-              ft$data[, "Feature_5"])
+              ft$data[, "Feature_5"]),
+    stringsAsFactors = TRUE
   )
 
   expect_equal(wide_to_long(ft$data), expected)
-  expect_equal(wide_to_long(as.data.frame(ft$data)), expected)
+  expect_equal(wide_to_long(as.data.frame(ft$data, stringsAsFactors = TRUE)), expected)
 })
 
 #### Testing which columns to keep when treating some as hiearachical
@@ -174,14 +175,15 @@ if (isTRUE(requireNamespace("tibble", quietly = TRUE)) &&
           values_to = "Value"
         ),
         Feature
-      )
+      ),
+      stringsAsFactors = TRUE
     )
     expected$Sample <- as.factor(expected$Sample)
     expected$Feature <- as.factor(expected$Feature)
 
     # TODO how will R v4 affect this?
     expect_equal(wide_to_long(ft$data), expected)
-    expect_equal(wide_to_long(as.data.frame(ft$data)), expected)
+    expect_equal(wide_to_long(as.data.frame(ft$data, stringsAsFactors = TRUE)), expected)
   })
 }
 

@@ -13,7 +13,8 @@ test_that("collapse_features works if the user changes an entire column of metad
                            Features = "green")),
     feature_data = data.frame(
       Color = "green",
-      row.names = "green"
+      row.names = "green",
+      stringsAsFactors = TRUE
     ),
     sample_data = ft$sample_data
   )
@@ -35,7 +36,8 @@ test_that("collapse_features works if the user changes an entire column of metad
                            Features = "Green")),
     feature_data = data.frame(
       Color = "Green",
-      row.names = "Green"
+      row.names = "Green",
+      stringsAsFactors = TRUE
     ),
     sample_data = ft$sample_data
   )
@@ -74,7 +76,8 @@ test_that("collapse features it works fine if user drops a factor level out by a
                            Features = c("blue", "red"))),
     feature_data = data.frame(
       Color = c("blue", "red"),
-      row.names = c("blue", "red")
+      row.names = c("blue", "red"),
+      stringsAsFactors = TRUE
     ),
     sample_data = ft$sample_data
   )
@@ -98,7 +101,8 @@ test_that("collapse_samples works if the user changes an entire column of metada
                            Features = ft$feature_names())),
     sample_data = data.frame(
       Location = "Spain",
-      row.names = "Spain"
+      row.names = "Spain",
+      stringsAsFactors = TRUE
     ),
     feature_data = ft$feature_data
   )
