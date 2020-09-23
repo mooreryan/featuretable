@@ -23,4 +23,7 @@ featuretable::lee
 A FeatureTable with count table, sample data, and taxonomy of an SSU rRNA
 study of basalts on the Dorado Outcrop.
 }
+\references{
+Lee, Michael D., et al. 2015. “Microbial Communities on Seafloor Basalts at Dorado Outcrop Reflect Level of Alteration and Highlight Global Lithic Clades.” Frontiers in Microbiology 6 (December): 1470.
+}
 \keyword{datasets}
