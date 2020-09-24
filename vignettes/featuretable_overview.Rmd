@@ -1,0 +1,467 @@
+---
+title: "FeatureTable Microbiome Overview"
+author: Ryan M. Moore
+date: 2020-09-22
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{FeatureTable Microbiome Overview}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5.5
+)
+```
+
+FeatureTable is an R package for dealing with feature tables and their associated data, with a specific focus on helping you deal with microbiome data.  For this overview, we are going to use data from a [recent 16S study](https://doi.org/10.3389/fmicb.2015.01470) looking at microbial communities of seafloor basalts by [Mike Lee](https://astrobiomike.github.io/) and friends.
+
+Before we start, let's import the data set and the libraries that we need.  Note that this vignette uses some of the optional dependencies: `ggplot2`, `ggrepel`, and `biplotr`.
+
+```{r setup}
+library(magrittr)
+library(ggplot2)
+library(featuretable)
+
+data(lee)
+```
+
+## Data overview
+
+First let's take a look at the data and see what we're working with.  To get a summary of a `FeatureTable` object, you can `print` it like so
+
+```{r}
+print(lee)
+```
+
+That outputs a nice little data overview.  As you see there are 16 samples and 1490 features.  In the `FeatureTable` package, `features` can refer to any kind of numeric data.  In this case, the features are [amplicon sequence variants](https://doi.org/10.1038/ismej.2017.119) (ASVs).
+
+While we're on the subject, let's take a look at the data.  The actual feature table data is accessible through the `data` field.  
+
+```{r}
+# Just show the first 5 rows and columns!
+lee$data[1:5, 1:5]
+```
+
+Alright, so the feature table is stored with samples as rows and features as columns.  Okay!  This is similar to how [vegan](https://cran.r-project.org/web/packages/vegan/index.html) stores data.  The OTU tables from [QIIME 1](http://qiime.org/) put OTUs as rows and samples as columns, but `FeatureTable` follows `vegan`, so don't get tripped up by it!
+
+Back in the summary, you may have noticed that this `FeatureTable` has some other data associated with it: `feature_data` and `sample_data`.  These are metadata or covariates that go along with the features and the samples.
+
+In this data set, `feature_data` holds taxonomy info for the features and `sample_data` holds info about the samples.  Have a look at those:
+
+```{r}
+# Just a preview again!
+lee$feature_data[1:5, ]
+
+lee$sample_data
+```
+
+In this data set, the `feature_data` is hierarchical, but it doesn't have to be.  In fact, some of the `sample_data` is hierarchical as well, and certain `FeatureTable` methods can take advantage of that.
+
+Before we leave the data overview section, let's check out a couple of the useful methods for pulling some basic data about your `FeatureTable`.
+
+```{r}
+lee$num_features()
+lee$num_samples()
+head(lee$feature_names())
+head(lee$sample_names())
+```
+
+Whoa! Are those functions you just called there?  This is a good time to mention that `lee` is a `FeatureTable`, which is an [R6 object](https://adv-r.hadley.nz/r6.html).  If you've never encountered an `R6` object in the wild, and you've only really programmed in R before, this might look a little weird to you!  Don't worry though, once you get the hang of R6 objects, you will see that they make for some nice, clean code.  
+
+Alternatively, if you decide you don't like the R6 stuff, and just want to use something more familiar, we've got you covered as well.  All of the R6 `FeatureTable` methods are also available as `s3` methods.  That means you could write the above code block like this:
+
+```{r}
+num_features(lee)
+num_samples(lee)
+head(feature_names(lee))
+head(sample_names(lee))
+```
+
+For the rest of this document, I will mostly be using the `R6` syntax.  If you want to know more about `FeatureTable` and the differences between R6 and S3 syntax, have a look at [this vignette](featuretable_r6_s3_functions.html).
+
+## Data processing
+
+Now that you have seen a bit about the data, it's time to show you how to do some work with it!  To start, let's do some filtering.
+
+One thing you often want to do is to throw out low abundance features.  How about we keep any feature whose total count is at least 50?
+
+```{r}
+lee$keep_features(function(feature) sum(feature) >= 50)
+
+print(paste("Now lee$num_features() is", lee$num_features()))
+```
+
+Hey, what gives...even after running the `keep_features` method, `lee` still reports having 1490 features!  This is because the `keep_features` method returns a *new* `FeatureTable` object rather than editing `lee` "in-place".  This let's us do some really nice method call chaining, similar to what you might do with the [pipe](https://magrittr.tidyverse.org/reference/pipe.html) operator from [magrittr](https://cran.r-project.org/web/packages/magrittr/index.html).  You will find that most of the `FeatureTable` methods work in a similar way.
+
+Let's say you actually want to save the filtered table.  Then you could write something like this:
+
+```{r}
+lee_filtered <- lee$keep_features(function(feature) sum(feature) >= 50)
+
+print(lee)
+print(lee_filtered)
+```
+
+As you see, `lee_filtered` contains the actual filtered table, and the original `lee` remains the same.  Let's see a couple of other ways we might want to filter the data.
+
+If you want to keep features that occur in at least ten samples, you could do something like this:
+
+```{r}
+lee$keep_features(function(feature) sum(feature > 0) >= 10)
+```
+
+If you think that's kind of clunky, I will agree with you.  Instead a better way to do some fancy abundance based filtering of samples is to use the `core_microbiome` method.  But we will get to that later.
+
+### Filtering features using metadata
+
+Another way that you might want to filter features is based on their metadata.  In this case, we have taxonomy information for the features.
+
+Here's how you could keep all of the Alpha and Gammaproteobacteria.
+
+```{r}
+# Keep just the Alphaproteobacteria.
+lee$keep_features(Class == "Alphaproteobacteria")
+
+# Keep just the Gammaproteobacteria.
+lee$keep_features(Class == "Gammaproteobacteria")
+
+# Keep both.
+lee$keep_features(Class == "Alphaproteobacteria" | Class == "Gammaproteobacteria")
+```
+
+What if we want to remove all the Archaea?
+
+```{r}
+lee$keep_features(Domain != "Archaea")
+```
+
+How about something weird, like all the Archaea plus all the Betaproteobacteria.
+
+```{r}
+lee$keep_features(Domain == "Archaea" | Class == "Betaproteobacteria")
+```
+
+
+Just for fun, let's see what happens when we use `&` instead of `|`.
+
+```{r, error=TRUE}
+lee$keep_features(Domain == "Archaea" & Class == "Betaproteobacteria")
+```
+
+Yep, you will get an error because no features matched your query specification!  That's another thing you will notice about the `FeatureTable` package: it raises a lot of errors.  Rather that letting you get something in a weird or unexpected state, `FeatureTable` tries to throw errors sensible errors as early as possible so that you can deal with them and not get confused down the line.
+
+Anyway, there is a **ton** more that we can do with filtering.  Stuff like, "keep all Alphaproteobacteria that occur at least ten times in water samples", or "discard any Archaea that aren't present in both `biofilm` and `rock` samples".  Lot's of wacky combinations.  I tried to make it as simple as possible to build complex queries that take into account abundance (data), covariates (metadata), and sample data.  
+
+To find out more about that, you should check out the "Advanced Filtering" vignette.
+
+Oh and one more thing to mention before I move on.  If you look at the diminsions of the `feature_data` after you run `keep_features`, you will notice that only features that were kept (i.e., those that remain in the table) will have entries in the `feature_data`.  Observe!
+
+```{r}
+dim(lee$keep_features(Class == "Alphaproteobacteria")$feature_data)
+```
+
+
+### Filtering samples
+
+Filtering samples is a lot like filtering features, so I won't say to much about it here.  To learn more about it, check out the "Advanced Filtering" vignette.  There you can also see how to filter using abundance, covariates, and feature data at the same time.
+
+Here are two simple examples.
+
+```{r}
+# Keep the rock samples
+lee$keep_samples(Type == "rock")
+
+# Keep samples with total ASV count of at least 7,500.
+lee$keep_samples(function(sample) sum(sample) >= 7500)
+```
+
+## Core microbiome
+
+The `core_microbiome` method's name might be a little misleading actually.  Really, it provides you with a ergonomic way to filter features based on their abundance.  To show you what I mean, let's revisit that "clunky" example from above.
+
+```{r}
+lee$keep_features(function(feature) sum(feature > 0) >= 10)
+```
+
+Now, here is how you would write that with the `core_microbiome` function:
+
+```{r}
+lee$core_microbiome(min_samples = 10)
+```
+
+That's nice!  We can also do some more fancy stuff, like using sample proportion rather than number of samples, and adjusting the "limit of detection" (i.e., the number of times a feature must be observed for it to be considered "present").
+
+```{r}
+# Keep features in at least 50% of samples.
+lee$core_microbiome(min_sample_proportion = 0.5)
+
+# Keep features seen at least 3 times in at least 5 samples.
+lee$core_microbiome(detection_limit = 3, min_samples = 5)
+
+# Keep features seen at least 10 times in at least 75% of the samples.
+lee$core_microbiome(detection_limit = 10, min_sample_proportion = 0.75)
+```
+
+You can also use the `core_microbiome` method to get the "anti-core" microbiome, or the "rare" microbiome.  In other words, you can filter out the most common features and leave only the rare ones.  For example, this call will keep any feature that is present in less than 50% or fewer of the samples.
+
+```{r}
+lee$core_microbiome(max_sample_proportion = 0.5)
+```
+
+## Collapsing features and samples
+
+A lot of times you may want to merge features or samples based on metadata.  For that you can use the `collapse` functions.  Other packages may refer to this process as "agglomerating".
+
+Let's start with collapsing samples.
+
+### Collapsing samples
+
+Collapse samples by characteristic (a.k.a., `Char`).
+
+```{r}
+lee_collapsed <- lee$collapse_samples(Char)
+
+print(lee_collapsed)
+print(lee_collapsed$data[, 1:8])
+print(lee_collapsed$sample_data)
+```
+
+There are a couple of things to note here.
+
+- You can use [tidy evaluation](https://tidyeval.tidyverse.org) in the `collapse` functions like you could in the `keep` functions.
+- The `data` now only has five rows (i.e., five "samples").  That's because there were five unique levels in the `Char` variable.
+- The `sample_data` only has a single covariate.  That's because we collapsed based on `Char` and by default, `collapse` doesn't assume there is any hierarchical relationship in your data, and thus, shows only the variable that you collapsed on.  You can change this behavior as we shall soon see!
+
+It turns out that the sample data in fact does have some hierarchical relationship.  `Type` is above `Char` in a hierarchy.  In other words, every sample with `glassy` for `Char` has `rock` as its `Type`.  But also, every `altered` sample has `rock` for its type.  So the relationship is only one way.  Given that there every unique level of the `Char` variable will have the same value for `Type`, we can keep that info around in the `sample_data` if we want by passing `keep_hierarchy = TRUE` to the `collapse` function like this:
+
+```{r}
+lee_collapsed <- lee$collapse_samples(Char, keep_hierarchy = TRUE)
+
+print(lee_collapsed)
+print(lee_collapsed$sample_data)
+```
+
+
+Oh, and look at that, `Color` gets kept as well.  It turns out that `Color` and `Char` label the samples in exactly the same way, so there is no ambiguity in keeping that as well as `Type`.  However, `Temp` is not kept.  This is because not all the levels of `Char` have the same value for `Temp`.  For example, some `altered` samples have a `Temp` of `12.7`, whereas others have `8.6`.  Thus, `Temp` could not be included without introducing some ambiguity and that is *not* what we want!
+
+Now that we've gone through that potentially confusing explanation of the `keep_hierarchy` parameter let's look at collapsing features next.
+
+### Collapsing features
+
+Now that I think of it, I should really have presented this one first, taxonomy is a more natural example of a hierarchical relationship in the metadata.  Oh well, I will get around to changing it eventually! :)
+
+Let's collapse features based on their `Phylum`.  As before, we start with the default settings.  
+
+```{r}
+# Note the use of `by = ` here.  It isn't necessary, but I will add it sometimes
+# since it make it read more nicely!
+lee_collapsed_phylum <- lee$collapse_features(by = Phylum)
+
+print(lee_collapsed_phylum)
+```
+
+Check out how the `feature_data` now reports as having only a single covariate.  Again, the `collapse` functions don't assume any hierarchical relationship in your data, and including non-hierarchical data in the `feature_data` after collapsing by one of the covariates would introduce ambiguities in the data.  But again, we can tell `FeatureTable` to check for any columns that are hierarcical by passing `keep_hierarchy = TRUE` into the `collapse` function.
+
+```{r}
+lee_collapsed_phylum <- lee$collapse_features(by = Phylum, keep_hierarchy = TRUE)
+
+print(lee_collapsed_phylum)
+
+print(lee_collapsed_phylum$feature_data[1:5, ])
+```
+
+As you can see, now there are two variables in the `feature_data`: `Domain` and `Phylum`.  `Phylum` is there because that is the variable we collapsed by, and `Domain` is there because it is "above" `Phylum` in the taxonomic hierarchy.  Make sense?
+
+## Applying functions to your data
+
+Let's switch gears a little bit and talk about manipulating the actual data present in the `FeatureTable`.  For that, we have the `map` and `apply` methods.  
+
+`apply` is very similar to the `apply` function you know and "love" from base R.  Basically whatever you think `apply` would do, the `FeatureTable` apply method will do to the data that is help in the `data` field.
+
+The `map` functions are a bit different.  They will apply a function over samples or features and then return a new `FeatureTable` with the result of the function application.
+
+Let's take a look.  First let's convert the counts to relative abundance.
+
+```{r}
+lee_rabund <- lee$map_samples(function(sample) sample / sum(sample))
+
+print(lee_rabund)
+
+rowSums(lee_rabund$data)
+
+print(lee_rabund$data[1:5, 1:5])
+```
+
+(Since this is a common enough thing, you can use the helper function `relative_abundance` like this: `lee$map_samples(relative_abundance)` instead).
+
+Let's break that down a little bit:
+
+- `map_samples` applies the function argument to each sample in `data`.  
+- The function we gave was `function(sample) sample / sum(sample)`.  
+  - It's parameter was `sample`.
+  - In this case that will be a vector of feature counts (aka ASV counts) for that sample.
+  - It takes the count for each feature and divides it by the total count for that sample (aka relative abundance!)
+- `map` functions return a new `FeatureTable` with the result of applying the function to the data, so `lee_rabund` holds relative abundance instead of counts now.  (You can see now that the sums of all rows (aka samples) is `1`.)
+- The `feature_data` and `sample_data` are exactly the same as in the original `lee` table.
+
+The `map_features` function works in an analagous way to `map_samples`.  If you want to see more about it, check out the "Advanced Map and Apply" vignette.
+
+Let's see now how `apply` is different from `map`.
+
+```{r}
+lee_rabund <- lee$apply_samples(function(sample) sample / sum(sample))
+
+print(dim(lee_rabund))
+print(lee_rabund[1:5, 1:5])
+```
+
+There are some potentially weird things going on depending on how used to R's quirks you are.
+
+The data returned is a matrix, but it's dimensions are swapped from the original `data` field.  This is because that is how `apply` works in base R.  Since our mapping function returns a value whose length is `> 1`, then the output dimensions of the array will be `c(n, dim(X)[MARGIN])`, where `n` is the length of the output (in this case, the number of features), `X` is the data in the `data` field whose `dim` is `16 X 1490` and `MARGIN` is 1, because the samples are rows, and we asked to apply the function over the samples.  So that means the output will be `1490 X 16`.
+
+I don't blame you if you think that's a little peculiar.  But in practice, you will probably be using `map` way more than `apply` so you won't have to worry about it too much.
+
+There are more cool things you can do with `map` and `apply` that I talk about in the "Advanced Map and Apply" vignette.  For example there is are `map_with_index` and `map_with_name` functions that help you include metadata information in your map function.  For example, you can more easily write a function to weight all the feature counts by gene length or stuff like that.
+
+## Summarizing data through plots
+
+### Basic summaries
+
+You can find more about this in the "FeatureTable Summary Plots" vignette, but I will give you a little taste of it here.
+
+These are like the taxonomic summary barplots you all know and "love", but hopefully a little nicer looking.  Remember how I mentioned method chaining earlier?  Well, here is where we finally get to see it!
+
+```{r}
+lee$
+  collapse_samples(Char)$
+  collapse_features(Class)$
+  map_samples(relative_abundance)$
+  plot(xlab = "Char",
+       ylab = "Relative abundance",
+       legend_title = "Class",
+       axis.text.x = element_text(angle = 0))
+```
+
+Given that you've made it through a couple hundred lines of "very entertaining" prose, let's assume you know me a little bit now.  So of course you know that we gotta break down what's going on in that code!
+
+- If you've ever programmed in an [object oriented language](https://en.wikipedia.org/wiki/Object-oriented_programming), you're probably feeling all warm and fuzzy inside!
+- Here is the order that things are happening:
+  - You start with `lee`,
+  - then `collapse_samples` based on the `Char` variable, 
+  - then you `collapse_features` based on their taxonomic class,
+  - then you take the relative abundance of the Classes in the five `Char` groups,
+  - then, beep bop boop, you plot the result!
+- You'll notice that only the top 8 most abundant features are shown, and the rest are grouped into an `Other` category.  You can adjust the number of features that are shown with the `num_features` parameter.
+- I passed in a `ggplot2::element_text` to the `axis.x.text` parameter.  The plot function has lots of options like this.
+
+Again, if you don't like the R6 syntax, you can just treat `lee` as if it were an S3 class.  Here is how you would rewrite the above code block using the pipe from magrittr:
+
+```{r}
+lee %>% 
+  collapse_samples(Char) %>% 
+  collapse_features(Class) %>% 
+  map_samples(relative_abundance) %>% 
+  plot(xlab = "Char",
+       ylab = "Relative abundance",
+       legend_title = "Class",
+       axis.text.x = element_text(angle = 0))
+```
+
+
+There are a few different built in color palettes for these plots.  Here is one of them:
+
+```{r}
+# This time I will save the FeatureTable so I can use it below.
+lee_for_plot <- lee$
+  collapse_samples(Char)$
+  collapse_features(Class)$
+  map_samples(relative_abundance)
+
+lee_for_plot$
+  plot(xlab = "Char",
+       ylab = "Relative abundance",
+       legend_title = "Class",
+       axis.text.x = element_text(angle = 0),
+       palette = "muted")
+```
+
+Notice how the `Other` category is gray again?  All of the included palettes are like this.  If there are more features and an `Other` category is needed, then that category will be a nice gray color that goes with palette.  You see how this one is a bit lighter than the first?
+
+Let me show you one other thing with these plots.  You get back a `ggplot` object, so you can do whatever you want with it just like any old `ggplot` object.  Let's make a custom palette.  I will even add in a nice gray color to the palette for you, free of charge!
+
+```{r}
+lee_for_plot$
+  plot(xlab = "Char", 
+       ylab = "Relative abundance",
+       legend_title = "Class",
+       # Only show the top 3 features, group the rest into the `Other` category.
+       num_features = 3,
+       axis.text.x = element_text(angle = 0)) +
+  scale_fill_manual(name = "Class", values = c("#bbbbbb", "#B15928", "#FB9A99", "#1F78B4"))
+```
+
+Check that out! Just slap another call to `scale_fill_manual` function onto the end and you've got yourself a little custom color palette.  One thing to keep in mind is that the `Other` category will show up if there are more features in the table than you have asked to display.  Thus, you will (in most cases) need one extra color in your palette.  In this case I chose `#bbbbbb` (that gray color), and put it at the start of the palette so that the `Other` category will get the gray color.
+
+### Ordinations
+
+Everybody loves ordinations right?  You will often see them when people are talking about beta diversity.
+
+If you weren't aware, [microbiome datasets are compositional](https://doi.org/10.3389/fmicb.2017.02224).  So `FeatureTable` gives you a couple of methods to help out with that.  So without further ado, let's make a [CoDA friendly ordination plot](https://doi.org/10.1111/1467-9876.00275).
+
+```{r}
+ordination <- lee$
+  core_microbiome(min_sample_proportion = 0.50)$
+  replace_zeros()$
+  clr()$
+  pca_biplot(use_biplotr = TRUE, 
+             include_sample_data = TRUE, 
+             arrows = FALSE, 
+             chart_title = "",
+             point_color = "Char", 
+             point_labels = TRUE,
+             use_ggrepel = TRUE)
+
+plot(ordination$biplot)
+```
+
+Alright, so there are no arrows on this thing, so it's not *really* a biplot, but it would have had **way** to many arrows anyway had we not passed `arrows = FALSE`.  With that out of the way, let's break it down (you know the drill).
+
+- First, we get rid of the lower abundance features.  It's not really necessary, but I wanted to show you how you can build up a more complicated set of method calls.
+- Next replace zeros.  
+  - Compositional data analysis (CoDA) hates zeros; you've go to replace them before continuing on.
+  - If you have `[zCompositions](https://CRAN.R-project.org/package=zCompositions)` installed, you can use `cmultRepl` to do a more robust zero replacement by passing `use_cmultRepl = TRUE` to the `replace_zeros` method.
+- Then transform the data.  Here we use the [centered log-ratio transformation](https://en.wikipedia.org/wiki/Compositional_data#Center_logratio_transform).
+- Finally make the PCA plot.
+  - We pass `use_biplotr = TRUE` to use the [biplotr](https://github.com/mooreryan/biplotr) package to do the PCA and plot it.
+  - We also use `include_sample_data = TRUE` to ensure that the `pca_biplot` function has access to the `sample_data` so we can do stuff like color dots based on metadata.
+  - All the subsequent arguments are passed on to the `biplotr::pca_biplot` function.
+  
+There you go!  If you want to know more about how `FeatureTable` can help you with compositional data analysis, check out the `Compositional Data Analysis With FeaturTable` vignette.
+
+## Wrap up
+
+Wow, that turned out to be a lot of stuff!  I had meant for this to be a *brief* introduction, but it got pretty packed with stuff by the end.  Hopefully this gives you an idea of the kind of things that `FeatureTable` tries to help you out with:  managing your data.
+
+For more information see the other `FeatureTable` vignettes and the individual function help screens (e.g., `?collapse_samples`).
+
+If you have any problems while using `FeatureTable` or find any bugs, please report them on the [FeatureTable GitHub page](https://github.com/mooreryan/featuretable).  
+
+
+Thanks, and have fun analyzing your data!!!
+
+## Citations
+
+H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
+
+Kamil Slowikowski (2020). ggrepel: Automatically Position Non-OverlappingText Labels with 'ggplot2'. R package version 0.8.2. https://CRAN.R-project.org/package=ggrepel
+
+Stefan Milton Bache and Hadley Wickham (2014). magrittr: A Forward-Pipe Operator for R. R package version 1.5. https://CRAN.R-project.org/package=magrittr
+
+Palarea-Albaladejo J, Martin-Fernandez J (2015). “zCompositions – R package for multivariate imputation of left-censored data under a compositional approach.” Chemometrics and Intelligent Laboratory Systems, 143, 85–96. http://dx.doi.org/10.1016/j.chemolab.2015.02.019.
+
+Lee, M. D., Walworth, N. G., Sylvan, J. B., Edwards, K. J., & Orcutt, B. N. (2015). Microbial Communities on Seafloor Basalts at Dorado Outcrop Reflect Level of Alteration and Highlight Global Lithic Clades. Frontiers in microbiology, 6, 1470. https://doi.org/10.3389/fmicb.2015.01470
