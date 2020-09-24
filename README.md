@@ -31,5 +31,3 @@
   - In theory, you should be fine passing in `data.frame`s that don't have their strings as factors, since `FeatureTable` will convert all strings to factors, but as of 2020-09-22, I haven't tested it.
   - This behavior may change in the future though!
 - One thing to note is that `as.data.frame.FeatureTable` does not have a `stringsAsFactors` parameter.  This shouldn't be a problem as string-esque data is not allowed in the `data` field anyway.
-- Another weird thing for developers...
-  - If you run the `test_phyloseq_interop.R` unit tests in RStudio using the interactive `Run tests` button they fail, but if you run the entire test suite either with `Test package` or `Check package` they pass.  This is a bug in RStudio it seems, as I have gotten the same error in other packages.

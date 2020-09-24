@@ -6,6 +6,7 @@
 - Update data and add Lee citation
 - Add some microbiome overview, plotting, and R6/S3 function vignettes
 - Add `ggrepel` to suggests
+- Fix some of the plot unit tests so that it takes in package data rather than depend on `DivNet`
 
 ## featuretable v0.0.8
 
