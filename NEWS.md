@@ -1,5 +1,12 @@
 # Version updates and changes
 
+## featuretable v0.0.9
+
+- Fix the S3 function exporting
+- Update data and add Lee citation
+- Add some microbiome overview, plotting, and R6/S3 function vignettes
+- Add `ggrepel` to suggests
+
 ## featuretable v0.0.8
 
 - Update everything so it works with both R versions 3 and 4.
