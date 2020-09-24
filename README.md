@@ -9,7 +9,7 @@
 
 ### Suggested
 
-- If you want nice plots, I suggest you also install `ggplot2` and `biplotr`.
+- If you want nice plots, I suggest you also install `ggplot2`, `ggrepel`, and `biplotr`.
 - If you want fancy zero replacement, you should install `zCompositions`.
 - If you need to import or export `phyloseq` objects, then you need to install `phyloseq`.
 - If you want to build the vignettes yourself, you will need `knitr` and `rmarkdown`.  Also, some of the vignettes use `magrittr` to keep things clean.
