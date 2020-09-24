@@ -49,3 +49,8 @@
 #'   \item{expected_sample_data}{what the samples data looks like after making the FeatureTable}
 #' }
 "testdata"
+
+#' Lee data as a phyloseq object.
+#'
+#' Mainly for testing.
+"lee_phyloseq"
