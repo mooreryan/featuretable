@@ -1,11 +1,9 @@
 context("Basic bar plots")
 
 if (isTRUE(requireNamespace("ggplot2", quietly = TRUE)) &&
-    isTRUE(requireNamespace("vdiffr", quietly = TRUE)) &&
-    isTRUE(requireNamespace("DivNet", quietly = TRUE))) {
+    isTRUE(requireNamespace("vdiffr", quietly = TRUE))) {
 
-
-  lee <- featuretable:::ft_from.phyloseq(DivNet::Lee)
+  lee <- featuretable::ft_from(featuretable::lee_phyloseq)
   lfam <- lee$collapse_features(Family)
 
   vdiffr::expect_doppelganger("All defaults", plot(lfam))

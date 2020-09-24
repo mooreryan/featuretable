@@ -1,41 +1,51 @@
+#' @export
 as.data.frame.FeatureTable <- function(ft) {
   ft$data
 }
 
+#' @export
 is.FeatureTable <- function(ft) {
   inherits(ft, "FeatureTable")
 }
 
 
 # Generic `reduce`
+#' @export
 reduce <- function(ft, ...) {
   UseMethod("reduce")
 }
 
+#' @export
 reduce.FeatureTable <- function(ft, margin, fn, ...) {
   ft$reduce(margin, fn, ...)
 }
 
+#' @export
 reduce_features <- function(ft, ...) {
   UseMethod("reduce_features")
 }
 
+#' @export
 reduce_features.FeatureTable <- function(ft, fn, ...) {
   ft$reduce_features(fn, ...)
 }
 
+#' @export
 reduce_samples <- function(ft, ...) {
   UseMethod("reduce_samples")
 }
 
+#' @export
 reduce_samples.FeatureTable <- function(ft, fn, ...) {
   ft$reduce_samples(fn, ...)
 }
 
+#' @export
 reduce_all <- function(ft, ...) {
   UseMethod("reduce_all")
 }
 
+#' @export
 reduce_all.FeatureTable <- function(ft, fn, ...) {
   ft$reduce_all(fn, ...)
 }
@@ -63,6 +73,7 @@ num_samples <- function(ft) {
   UseMethod("num_samples")
 }
 
+#' @export
 num_samples.FeatureTable <- function(ft) {
   ft$num_samples()
 }
@@ -83,6 +94,7 @@ nsamples <- function(ft) {
   UseMethod("nsamples")
 }
 
+#' @export
 nsamples.FeatureTable <- function(ft) {
   ft$nsamples()
 }
@@ -103,6 +115,7 @@ num_observations <- function(ft) {
   UseMethod("num_observations")
 }
 
+#' @export
 num_observations.FeatureTable <- function(ft) {
   ft$num_observations()
 }
@@ -123,6 +136,7 @@ nobservations <- function(ft) {
   UseMethod("nobservations")
 }
 
+#' @export
 nobservations.FeatureTable <- function(ft) {
   ft$nobservations()
 }
@@ -145,6 +159,7 @@ num_features <- function(ft) {
   UseMethod("num_features")
 }
 
+#' @export
 num_features.FeatureTable <- function(ft) {
   ft$num_features()
 }
@@ -165,6 +180,7 @@ nfeatures <- function(ft) {
   UseMethod("nfeatures")
 }
 
+#' @export
 nfeatures.FeatureTable <- function(ft) {
   ft$nfeatures()
 }
@@ -294,6 +310,7 @@ is_count_table <- function(ft) {
   UseMethod("is_count_table")
 }
 
+#' @export
 is_count_table.FeatureTable <- function(ft) {
   ft$is_count_table()
 }
@@ -302,6 +319,7 @@ is_count_table.FeatureTable <- function(ft) {
 #### basic CoDA ################################################################
 ################################################################################
 
+#' @export
 replace_zeros <- function(ft, ...) {
   UseMethod("replace_zeros")
 }
@@ -337,6 +355,7 @@ clr <- function(ft, base = 2) {
   UseMethod("clr")
 }
 
+#' @export
 clr.FeatureTable <- function(ft, base = 2) {
   ft$clr(base)
 }
@@ -388,7 +407,7 @@ ft_from.phyloseq <- function(x, numeric_feature_data_columns = NULL, ...) {
   feature_dat <- as.data.frame(
     apply(feature_dat, 2, function(x) {
       attr(x, "names") <- NULL
-      
+
       x
     }),
     stringsAsFactors = TRUE
@@ -426,6 +445,7 @@ ft_from.phyloseq <- function(x, numeric_feature_data_columns = NULL, ...) {
 #### core microbiome ###########################################################
 ################################################################################
 
+#' @export
 core_microbiome <- function(ft, ...) {
   UseMethod("core_microbiome")
 }
@@ -451,6 +471,8 @@ core_microbiome <- function(ft, ...) {
 #'   error will be raised. If \code{min_sample_proportion} is not a proportion,
 #'   an error will be raised.  If \code{min_samples} looks like a proportion, a
 #'    warning will be given.
+#'
+#' @export
 core_microbiome.FeatureTable <- function(ft,
                                          detection_limit = 1,
                                          min_sample_proportion = NULL,
@@ -571,10 +593,12 @@ plot.FeatureTable <- function(ft, ...) {
 #### ordination ################################################################
 ################################################################################
 
+#' @export
 pca_biplot <- function(ft, use_biplotr = FALSE, include_sample_data = FALSE, ...) {
   UseMethod("pca_biplot")
 }
 
+#' @export
 pca_biplot.FeatureTable <- function(ft, use_biplotr = FALSE, include_sample_data = FALSE, ...) {
   ft$pca_biplot(use_biplotr = use_biplotr, include_sample_data = include_sample_data, ...)
 }

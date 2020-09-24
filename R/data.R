@@ -29,6 +29,8 @@
 #'   \item{feature_data}{7 variables, taxonomy}
 #'   \item{sample_data}{4 variables, \code{Temp}, \code{Type}, \code{Char}, \code{Color}}
 #' }
+#'
+#' @references Lee, Michael D., et al. 2015. “Microbial Communities on Seafloor Basalts at Dorado Outcrop Reflect Level of Alteration and Highlight Global Lithic Clades.” Frontiers in Microbiology 6 (December): 1470.
 "lee"
 
 #' Data used for examples and to test the FeatureTable functions.
@@ -47,3 +49,8 @@
 #'   \item{expected_sample_data}{what the samples data looks like after making the FeatureTable}
 #' }
 "testdata"
+
+#' Lee data as a phyloseq object.
+#'
+#' Mainly for testing.
+"lee_phyloseq"

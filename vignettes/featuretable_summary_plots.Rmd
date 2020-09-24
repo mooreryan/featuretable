@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-*Note: This vignette uses `s3` style functions.  `R6` methods are also avaiable.  See [this vignette](TODO) to see examples of how to use them.*
+*Note: This vignette uses `S3` style functions.  `R6` methods are also avaiable.  See [this vignette](featuretable_r6_s3_functions.html) to see examples of how to use them.*
 
 ## Set up
 
