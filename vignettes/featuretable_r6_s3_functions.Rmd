@@ -1,0 +1,96 @@
+---
+title: "FeatureTable R6 and S3 Style Functions"
+author: Ryan M. Moore
+date: 2020-09-23
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{FeatureTable R6 and S3 Style Functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5.5
+)
+```
+
+R has multiple object systems.  You don't have to worry about the details too much to use `FeatureTable`, but a little info might help clear some stuff up for you.  We're going to talk just a bit about [S3](https://adv-r.hadley.nz/s3.html) and [R6](https://adv-r.hadley.nz/r6.html).  If you haven't heard of them at all, feel free to browse those links, but we won't be discussing details here, just what it means for using the package.
+
+## Set up
+
+```{r setup}
+library(magrittr)
+library(featuretable)
+
+data(testdata)
+```
+
+
+## R6
+
+The first thing you need to know is that `FeatureTable` is an R6 class.  So to make a new `FeatureTable` object, you use the `new` method.
+
+```{r}
+# Call the `new` method of the `FeatureTable` class to create a new 
+# `FeatureTable` object.
+FeatureTable$new(matrix(1:12, 3, 4))
+```
+
+Notice the `$` operator?  That is what you use to "access" fields and methods of an R6 object.
+
+`FeatureTable` objects have lots of methods that you can call.  To call a method, use the `$` operator.  Here are a couple examples:
+
+```{r}
+ft <- FeatureTable$new(testdata$count_table, 
+                       feature_data = testdata$feature_data, 
+                       sample_data = testdata$sample_data)
+
+ft$num_features()
+ft$num_samples()
+
+ft$keep_features(function(feature) sum(feature) > 10)
+
+ft$collapse_features(Color)
+
+ft$map_samples(relative_abundance)
+```
+
+One nice thing about R6 methods and the `$` operator is that it is an [infix operator](http://www.cs.man.ac.uk/~pjj/cs212/fix.html).  That means that you can chain methods calls in convenient ways.  Check it out.
+
+```{r}
+ft$
+  keep_features(function(feature) sum(feature) > 10)$
+  collapse_samples(Location)$
+  map_samples(relative_abundance)
+```
+
+If you've ever used the [pipe](https://magrittr.tidyverse.org/reference/pipe.html) operator from [magrittr](https://cran.r-project.org/web/packages/magrittr/index.html), then the above code probably feels familiar to you.
+
+## S3
+
+Speaking of the pipe operator, it turns out that you can also use the magrittr pipe with `FeatureTable` objects.
+
+```{r}
+ft %>% 
+  keep_features(function(feature) sum(feature) > 10) %>% 
+  collapse_samples(Location) %>% 
+  map_samples(relative_abundance)
+```
+
+Check that out!  If you don't like the R6 style, you can more or less just ignore the fact that `FeatureTable` is an R6 class and just treat it as if it were an S3 class instead.  Here is the same code from above, but written in a more "traditional" R style.
+
+```{r}
+num_features(ft)
+num_samples(ft)
+
+keep_features(ft, function(feature) sum(feature) > 10)
+
+collapse_features(ft, Color)
+
+map_samples(ft, relative_abundance)
+```
+
