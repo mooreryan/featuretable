@@ -483,11 +483,12 @@ test_that("*_with_name gives correct names", {
   expect_equal(result, expected)
 })
 
-#### Map uses apply under the hood.
-####
-####
+################################################################################
+#### map #######################################################################
+################################################################################
 
-# maps are a lot like applies, but they return a FeatureTable, so the functions they work with are a bit different.
+# Map uses apply under the hood.  Maps are a lot like applies, but they return a
+# FeatureTable, so the functions they work with are a bit different.
 
 test_that("map returns a new FT with the same data, but feature table mapped", {
   ft <- FeatureTable$new(testdata$count_table,
@@ -595,6 +596,94 @@ test_that("basic map_with_index margin 1 works", {
 
   result <- ft$map_samples_with_index(function(x, i) x)
   expect_equal(result, ft)
+})
+
+map_test_fn <- function(x) x / max(x)
+map_with_fn <- function(x, y) x / max(x)
+
+test_that("the s3 map function matches the R6 version", {
+  ft <- basic_feature_table()
+
+  expect_equal(
+    map(ft, 2, map_test_fn),
+    ft$map(2, map_test_fn)
+  )
+})
+
+test_that("the s3 map_with_index function matches the R6 version", {
+  ft <- basic_feature_table()
+
+  expect_equal(
+    map_with_index(ft, 2, map_with_fn),
+    ft$map_with_index(2, map_with_fn)
+  )
+})
+
+test_that("the s3 map_with_name function matches the R6 version", {
+  ft <- basic_feature_table()
+
+  expect_equal(
+    map_with_name(ft, 2, map_with_fn),
+    ft$map_with_name(2, map_with_fn)
+  )
+})
+
+#### map_features
+
+test_that("the s3 map_features function matches the R6 version", {
+  ft <- basic_feature_table()
+
+  expect_equal(
+    map_features(ft, map_test_fn),
+    ft$map_features(map_test_fn)
+  )
+})
+
+test_that("the s3 map_features_with_index function matches the R6 version", {
+  ft <- basic_feature_table()
+
+  expect_equal(
+    map_features_with_index(ft, map_with_fn),
+    ft$map_features_with_index(map_with_fn)
+  )
+})
+
+test_that("the s3 map_features_with_name function matches the R6 version", {
+  ft <- basic_feature_table()
+
+  expect_equal(
+    map_features_with_name(ft, map_with_fn),
+    ft$map_features_with_name(map_with_fn)
+  )
+})
+
+#### map_samples
+
+test_that("the s3 map_samples function matches the R6 version", {
+  ft <- basic_feature_table()
+
+  expect_equal(
+    map_samples(ft, map_test_fn),
+    ft$map_samples(map_test_fn)
+  )
+})
+
+test_that("the s3 map_samples_with_index function matches the R6 version", {
+  ft <- basic_feature_table()
+
+  expect_equal(
+    map_samples_with_index(ft, map_with_fn),
+    ft$map_samples_with_index(map_with_fn)
+  )
+})
+
+test_that("the s3 map_samples_with_name function matches the R6 version", {
+  ft <- basic_feature_table()
+
+  expect_equal(
+    map_samples_with_name(ft, map_with_fn),
+    ft$map_samples_with_name(map_with_fn)
+  )
 })
 
 test_that("apply_with raises if dim(X) != 2", {
