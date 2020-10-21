@@ -8,49 +8,6 @@ is.FeatureTable <- function(ft) {
   inherits(ft, "FeatureTable")
 }
 
-
-# Generic `reduce`
-#' @export
-reduce <- function(ft, ...) {
-  UseMethod("reduce")
-}
-
-#' @export
-reduce.FeatureTable <- function(ft, margin, fn, ...) {
-  ft$reduce(margin, fn, ...)
-}
-
-#' @export
-reduce_features <- function(ft, ...) {
-  UseMethod("reduce_features")
-}
-
-#' @export
-reduce_features.FeatureTable <- function(ft, fn, ...) {
-  ft$reduce_features(fn, ...)
-}
-
-#' @export
-reduce_samples <- function(ft, ...) {
-  UseMethod("reduce_samples")
-}
-
-#' @export
-reduce_samples.FeatureTable <- function(ft, fn, ...) {
-  ft$reduce_samples(fn, ...)
-}
-
-#' @export
-reduce_all <- function(ft, ...) {
-  UseMethod("reduce_all")
-}
-
-#' @export
-reduce_all.FeatureTable <- function(ft, fn, ...) {
-  ft$reduce_all(fn, ...)
-}
-
-
 ################################################################################
 #### attribute type things #####################################################
 ################################################################################

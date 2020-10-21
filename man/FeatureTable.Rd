@@ -43,10 +43,6 @@ A FeatureTable has a feature_table, sample_data, and feature_data.
 \item \href{#method-apply_samples}{\code{FeatureTable$apply_samples()}}
 \item \href{#method-apply_samples_with_index}{\code{FeatureTable$apply_samples_with_index()}}
 \item \href{#method-apply_samples_with_name}{\code{FeatureTable$apply_samples_with_name()}}
-\item \href{#method-reduce}{\code{FeatureTable$reduce()}}
-\item \href{#method-reduce_features}{\code{FeatureTable$reduce_features()}}
-\item \href{#method-reduce_samples}{\code{FeatureTable$reduce_samples()}}
-\item \href{#method-reduce_all}{\code{FeatureTable$reduce_all()}}
 \item \href{#method-map}{\code{FeatureTable$map()}}
 \item \href{#method-map_with_index}{\code{FeatureTable$map_with_index()}}
 \item \href{#method-map_with_name}{\code{FeatureTable$map_with_name()}}
@@ -362,42 +358,6 @@ Convert FeatureTable to phyloseq object.
 \subsection{Method \code{apply_samples_with_name()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$apply_samples_with_name(fn, ...)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reduce"></a>}}
-\if{latex}{\out{\hypertarget{method-reduce}{}}}
-\subsection{Method \code{reduce()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$reduce(margin, fn, ...)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reduce_features"></a>}}
-\if{latex}{\out{\hypertarget{method-reduce_features}{}}}
-\subsection{Method \code{reduce_features()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$reduce_features(fn, ...)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reduce_samples"></a>}}
-\if{latex}{\out{\hypertarget{method-reduce_samples}{}}}
-\subsection{Method \code{reduce_samples()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$reduce_samples(fn, ...)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reduce_all"></a>}}
-\if{latex}{\out{\hypertarget{method-reduce_all}{}}}
-\subsection{Method \code{reduce_all()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$reduce_all(fn, ...)}\if{html}{\out{</div>}}
 }
 
 }

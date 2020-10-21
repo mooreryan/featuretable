@@ -233,43 +233,6 @@ FeatureTable <- R6::R6Class(
       self$apply_with_name(margin = 1, fn, ...)
     },
 
-    reduce = function(margin, fn, ...) {
-      if (length(margin) != 1 ||
-          (margin != 1 && margin != 2)) {
-        rlang::abort(sprintf("margin must be 1 or 2.  Got %s.", margin),
-                     class = Error$ArgumentError)
-      }
-
-      # TODO: Some special reducers will be slow: sum, prod, length, etc.
-      result <- apply(X = self$data, MARGIN = margin, FUN = function(x) Reduce(fn, x, ...))
-
-      if (length(result) != self$dim()[margin]) {
-        rlang::abort("something bad happened", class = Error$ImpossibleConditionError)
-      } else {
-        result
-      }
-    },
-
-    reduce_features = function(fn, ...) {
-      self$reduce(2, fn, ...)
-    },
-
-    # TODO add an alias called `reduce_observations`.
-    reduce_samples = function(fn, ...) {
-      self$reduce(1, fn, ...)
-    },
-
-    reduce_all = function(fn, ...) {
-      result <- Reduce(fn, self$data, ...)
-
-      if (length(result) != 1) {
-        rlang::abort(sprintf("Length of result should be 1. Got %d", length(result)),
-                     class = Error$Error)
-      } else {
-        result
-      }
-    },
-
     map = function(margin, fn, ...) {
       private$map_wrapper(self$apply, margin, fn, ...)
     },
@@ -1142,7 +1105,7 @@ FeatureTable <- R6::R6Class(
           }
         } else {
           # TODO i think there is technically a bug here....levels will have "NA" (as string) if keep_na is true, but the sample_data itself will have an actual NA value for those places.
-          new_sample_data <- data.frame(X = factor(category_levels, levels = category_levels), 
+          new_sample_data <- data.frame(X = factor(category_levels, levels = category_levels),
                                         stringsAsFactors = TRUE)
           colnames(new_sample_data) <- c(by)
           rownames(new_sample_data) <- new_names
@@ -1259,7 +1222,7 @@ FeatureTable <- R6::R6Class(
       }
 
       # TODO technically don't need this step if fill is false.
-      plot_data <- as.data.frame(self$data[, order(colSums(self$data), decreasing = TRUE)], 
+      plot_data <- as.data.frame(self$data[, order(colSums(self$data), decreasing = TRUE)],
                                  stringsAsFactors = TRUE)
 
       # Need to make an other category.
