@@ -474,12 +474,12 @@ ft$keep_features(
 \item \href{#method-keep_shared_features}{\code{FeatureTable$keep_shared_features()}}
 \item \href{#method-shared_feature_names}{\code{FeatureTable$shared_feature_names()}}
 \item \href{#method-core_microbiome}{\code{FeatureTable$core_microbiome()}}
-\item \href{#method-as_phyloseq}{\code{FeatureTable$as_phyloseq()}}
 \item \href{#method-is_count_table}{\code{FeatureTable$is_count_table()}}
 \item \href{#method-replace_zeros}{\code{FeatureTable$replace_zeros()}}
 \item \href{#method-clr}{\code{FeatureTable$clr()}}
 \item \href{#method-pca_biplot}{\code{FeatureTable$pca_biplot()}}
 \item \href{#method-plot}{\code{FeatureTable$plot()}}
+\item \href{#method-as_phyloseq}{\code{FeatureTable$as_phyloseq()}}
 \item \href{#method-clone}{\code{FeatureTable$clone()}}
 }
 }
@@ -1242,7 +1242,7 @@ If you to keep features/samples with \code{NA} for the \code{by} category,
 pass \code{keep_na = TRUE}.  Then the NA will become a new factor in the
 collapsed data.
 
-Currently, you can only collapse on one metadata column at a time :(
+Currently, you can only collapse on one metadata column at a time.
 }
 
 \subsection{Returns}{
@@ -1631,27 +1631,6 @@ If both \code{min_sample_proportion} and \code{min_samples} are given, an
 
 \subsection{Returns}{
 A new FeatureTable with only the specified "core" features.
-Convert FeatureTable to phyloseq object.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-as_phyloseq"></a>}}
-\if{latex}{\out{\hypertarget{method-as_phyloseq}{}}}
-\subsection{Method \code{as_phyloseq()}}{
-If the 'phyloseq' package is not installed, it raises an Error.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$as_phyloseq()}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{ft}}{A FeatureTable}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-a phyloseq object
 }
 }
 \if{html}{\out{<hr>}}
@@ -1757,6 +1736,30 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 )}\if{html}{\out{</div>}}
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-as_phyloseq"></a>}}
+\if{latex}{\out{\hypertarget{method-as_phyloseq}{}}}
+\subsection{Method \code{as_phyloseq()}}{
+Convert FeatureTable to phyloseq object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$as_phyloseq()}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{ft}}{A FeatureTable}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+If the 'phyloseq' package is not installed, it raises an Error.
+}
+
+\subsection{Returns}{
+a phyloseq object
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

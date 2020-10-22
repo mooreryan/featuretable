@@ -2,6 +2,12 @@
 #### exporting data ############################################################
 ################################################################################
 
+#' Return FeatureTable data field as a data.frame.
+#'
+#' @param ft A FeatureTable
+#'
+#' @return The \code{data} field of the \code{FeatureTable} as a \code{data.frame}.
+#'
 #' @export
 as.data.frame.FeatureTable <- function(ft) {
   ft$data
@@ -21,6 +27,7 @@ as.phyloseq <- function(ft) {
   UseMethod("as.phyloseq")
 }
 
+#' @rdname as.phyloseq
 #' @export
 as.phyloseq.FeatureTable <- function(ft) {
   ft$as_phyloseq()
@@ -30,12 +37,34 @@ as.phyloseq.FeatureTable <- function(ft) {
 #### importing data ############################################################
 ################################################################################
 
+#' Create a FeatureTable from other types of objects.
+#'
 #' @export
 ft_from <- function(x, ...) {
   UseMethod("ft_from")
 }
 
-# normally from a phyloseq object, the tax table wouldn't have numeric values.  BUT if it comes from FT => phy => FT it could.  but phyloseq taxtable does NOT play well with numebrs.  So user must specify any numeric feature_data columns manually :(
+#
+#' Create a FeatureTable from a phyloseq object.
+#'
+#' @details
+#' The \code{phyloseq::otu_table} becomes the \code{data}.
+#'
+#' The \code{phyloseq::tax_table} becomes the \code{feature_data}.
+#'
+#' The \code{phyloseq::sample_data} becomes the \code{sample_data}.
+#'
+#' Normally from a phyloseq object, the tax table wouldn't have numeric values.
+#' BUT if it comes from FT => phy => FT it could.  Since phyloseq taxtable does
+#' NOT play well with numbers, the user must specify any numeric
+#' feature_data columns manually :(
+#'
+#' @param x A \code{phyloseq} object.
+#' @param numeric_feature_data_columns A vector specifying which of the data
+#'   columns are numeric.  See details.
+#'
+#' @return A FeatureTable
+#'
 #' @export
 ft_from.phyloseq <- function(x, numeric_feature_data_columns = NULL, ...) {
   factor_to_numeric <- function(f) as.numeric(levels(f))[f]
