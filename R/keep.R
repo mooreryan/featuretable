@@ -245,33 +245,60 @@ keep_samples.FeatureTable <- function(ft, ...) {
 #### shared data ###############################################################
 ################################################################################
 
-# TODO docs: if you just have a list of feature names, you don't need these, you'd use keep directly.
-
+#' Merging FeatureTables by shared features.
+#'
+#' @description
+#' Merge FeatureTables by keeping only features that are shared between them
+#' (base on feature names).
+#'
+#' @details
+#' If you just have a list of feature names, you don't need these, you'd use
+#' \code{\link{keep}} directly.
+#'
+#' Consider this API pretty unstable.  I haven't decided the on how I want these
+#' functions to behave in the end.
+#'
+#' @param ft A FeatureTable
+#' @param method One of "keep" or "names".
+#' @param other Another FeatureTable
+#'
+#' @return
+#' If \code{method = "keep"}, return a new FeatureTable containing only features
+#' shared between \code{ft} (or \code{self} for the R6 method) and \code{other}.
+#'
+#' If \code{method = "names"}, return the shared feature names between \code{ft}
+#' (or \code{self} for the R6 method) and \code{other}.
+#'
 #' @export
 shared_features <- function(ft, method, other) {
   UseMethod("shared_features")
 }
 
+#' @rdname shared_features
 #' @export
 shared_features.FeatureTable <- function(ft, method, other) {
   ft$shared_features(method, other)
 }
 
+#' @rdname shared_features
 #' @export
 keep_shared_features <- function(ft, other) {
   UseMethod("keep_shared_features")
 }
 
+#' @rdname shared_features
 #' @export
 keep_shared_features.FeatureTable <- function(ft, other) {
   ft$keep_shared_features(other)
 }
 
+#' @rdname shared_features
 #' @export
 shared_feature_names <- function(ft, other) {
   UseMethod("shared_feature_names")
 }
 
+#' @rdname shared_features
 #' @export
 shared_feature_names.FeatureTable <- function(ft, other) {
   ft$shared_feature_names(other)

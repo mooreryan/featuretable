@@ -1562,15 +1562,46 @@ See \code{FeatureTable$keep}.
 \if{html}{\out{<a id="method-shared_features"></a>}}
 \if{latex}{\out{\hypertarget{method-shared_features}{}}}
 \subsection{Method \code{shared_features()}}{
+Merge FeatureTables by keeping only features that are shared between them
+(base on feature names).
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$shared_features(method, other)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{method}}{One of "keep" or "names".}
+
+\item{\code{other}}{Another FeatureTable}
+
+\item{\code{ft}}{A FeatureTable}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+If you just have a list of feature names, you don't need these, you'd use
+\code{\link{keep}} directly.
+
+Consider this API pretty unstable.  I haven't decided the on how I want these
+functions to behave in the end.
+}
+
+\subsection{Returns}{
+If \code{method = "keep"}, return a new FeatureTable containing only features
+shared between \code{ft} (or \code{self} for the R6 method) and \code{other}.
+
+If \code{method = "names"}, return the shared feature names between \code{ft}
+(or \code{self} for the R6 method) and \code{other}.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-keep_shared_features"></a>}}
 \if{latex}{\out{\hypertarget{method-keep_shared_features}{}}}
 \subsection{Method \code{keep_shared_features()}}{
+Alias for \code{FeatureTable$shared_features("keep", ...)}.
+
+See \code{FeatureTable$shared_features}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$keep_shared_features(other)}\if{html}{\out{</div>}}
 }
@@ -1580,6 +1611,9 @@ See \code{FeatureTable$keep}.
 \if{html}{\out{<a id="method-shared_feature_names"></a>}}
 \if{latex}{\out{\hypertarget{method-shared_feature_names}{}}}
 \subsection{Method \code{shared_feature_names()}}{
+Alias for \code{FeatureTable$shared_features("names", ...)}.
+
+See \code{FeatureTable$shared_features}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$shared_feature_names(other)}\if{html}{\out{</div>}}
 }

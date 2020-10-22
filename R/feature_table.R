@@ -1399,6 +1399,27 @@ FeatureTable <- R6::R6Class(
       FeatureTable$new(result, self$feature_data, self$sample_data)
     },
 
+    #' @description
+    #' Merge FeatureTables by keeping only features that are shared between them
+    #' (base on feature names).
+    #'
+    #' @details
+    #' If you just have a list of feature names, you don't need these, you'd use
+    #' \code{\link{keep}} directly.
+    #'
+    #' Consider this API pretty unstable.  I haven't decided the on how I want these
+    #' functions to behave in the end.
+    #'
+    #' @param ft A FeatureTable
+    #' @param method One of "keep" or "names".
+    #' @param other Another FeatureTable
+    #'
+    #' @return
+    #' If \code{method = "keep"}, return a new FeatureTable containing only features
+    #' shared between \code{ft} (or \code{self} for the R6 method) and \code{other}.
+    #'
+    #' If \code{method = "names"}, return the shared feature names between \code{ft}
+    #' (or \code{self} for the R6 method) and \code{other}.
     shared_features = function(method, other) {
       if (method == "keep") {
         self$keep_shared_features(other)
@@ -1412,6 +1433,10 @@ FeatureTable <- R6::R6Class(
       }
     },
 
+    #' @description
+    #' Alias for \code{FeatureTable$shared_features("keep", ...)}.
+    #'
+    #' See \code{FeatureTable$shared_features}.
     keep_shared_features = function(other) {
       shared_names <- self$shared_feature_names(other)
 
@@ -1423,6 +1448,10 @@ FeatureTable <- R6::R6Class(
       }
     },
 
+    #' @description
+    #' Alias for \code{FeatureTable$shared_features("names", ...)}.
+    #'
+    #' See \code{FeatureTable$shared_features}.
     shared_feature_names = function(other) {
       if (!inherits(other, "FeatureTable")) {
         rlang::abort(
