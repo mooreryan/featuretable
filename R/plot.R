@@ -3,7 +3,7 @@
 #' @details
 #' If you don't have \code{ggplot2} installed, you will get an error.
 #'
-#' @param ft A FeatureTable
+#' @param x A FeatureTable
 #' @param num_features How many features to show on the plot? The rest of the
 #'   features get put into an "Other" category. "Other" will always be gray if
 #'   you use one of the built in palettes.
@@ -26,8 +26,8 @@
 #' @return A `ggplot2` object.
 #'
 #' @export
-plot.FeatureTable <- function(ft, ...) {
-  ft$plot(...)
+plot.FeatureTable <- function(x, ...) {
+  x$plot(...)
 }
 
 ################################################################################

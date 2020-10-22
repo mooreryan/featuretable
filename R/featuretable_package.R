@@ -46,7 +46,7 @@
 #'
 #' \strong{Keep samples/observations/rows or features/columns using a predicate: } \code{\link{keep}}, \code{\link{keep_features}}, \code{\link{keep_samples}}.
 #'
-#' \strong{Importing, exporting, converting, & copying: } \code{\link{as.phyloseq}}, \code{\link{as_phyloseq}}, \code{\link{clone}}, \code{\link{as.data.frame.FeatureTable}}, \code{\link{is.FeatureTable}}, \code{\link{ft_from}}, \code{\link{ft_from.phyloseq}}.
+#' \strong{Importing, exporting, converting, & copying: } \code{\link{as.phyloseq}}, \code{as_phyloseq}, \code{clone}, \code{\link{as.data.frame.FeatureTable}}, \code{\link{is.FeatureTable}}, \code{\link{ft_from}}, \code{\link{ft_from.phyloseq}}.
 #'
 #' \strong{Merging FeatureTables: } \code{\link{shared_features}}, \code{\link{keep_shared_features}}, \code{\link{shared_feature_names}}.
 #'

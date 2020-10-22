@@ -32,7 +32,8 @@ core_microbiome.FeatureTable <- function(ft,
                                          min_sample_proportion = NULL,
                                          max_sample_proportion = NULL,
                                          min_samples = NULL,
-                                         max_samples = NULL) {
+                                         max_samples = NULL,
+                                         ...) {
   ft$core_microbiome(detection_limit = detection_limit,
                      min_sample_proportion = min_sample_proportion,
                      max_sample_proportion = max_sample_proportion,

@@ -37,5 +37,5 @@ If \code{use_cmultRepl = TRUE} but \code{zCompositions::cmultRepl} is not
 availabel, it will raise an error.
 }
 \seealso{
-\code{\link{cmultRepl}}
+\code{?zCompositions::cmultRepl}
 }

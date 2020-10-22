@@ -147,7 +147,7 @@ FeatureTable <- R6::R6Class(
     #'
     #' @examples
     #' ft <- FeatureTable$new(matrix(1:12, 3, 4))
-    #' stopifnot(ft$dim() == 12)
+    #' stopifnot(ft$dim() == c(3, 4))
     #' stopifnot(ft$nrow() == 3)
     #' stopifnot(ft$ncol() == 4)
     dim = function() {
@@ -307,7 +307,9 @@ FeatureTable <- R6::R6Class(
     #' @examples
     #' ft <- featuretable::ft
     #'
-    #' # `apply_with_index` takes a function of two or more arguments, the first is the data you're working on, the second is the index of that data (e.g., row or column number), and then any other arguments are additional.
+    #' # `apply_with_index` takes a function of two or more arguments, the first
+    #' # is the data you're working on, the second is the index of that data (e.g.,
+    #' # row or column number), and then any other arguments are additional.
     #' ft$apply_with_index(2, function(x, i) sum(x))
     #'
     #' # This could of course be written as

@@ -1,5 +1,11 @@
 # Version updates and changes
 
+## featuretable v0.0.10
+
+- Remove `reduce` functions.  They were more or less redundant with the `apply` 
+  functions.
+- Update a *lot* of documentation!
+
 ## featuretable v0.0.9
 
 - Fix the S3 function exporting

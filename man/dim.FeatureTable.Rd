@@ -17,7 +17,7 @@ Return the dimensions of the FeatureTable \code{data} field.
 }
 \examples{
 ft <- FeatureTable$new(matrix(1:12, 3, 4))
-stopifnot(dimft() == 12)
+stopifnot(ft$dim() == c(3, 4))
 stopifnot(nrow(ft) == 3)
 stopifnot(ncol(ft) == 4)
 

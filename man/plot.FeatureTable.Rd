@@ -4,10 +4,10 @@
 \alias{plot.FeatureTable}
 \title{FeatureTable summary plots}
 \usage{
-\method{plot}{FeatureTable}(ft, ...)
+\method{plot}{FeatureTable}(x, ...)
 }
 \arguments{
-\item{ft}{A FeatureTable}
+\item{x}{A FeatureTable}
 
 \item{...}{Extra args}
 

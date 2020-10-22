@@ -23,7 +23,15 @@ wide_to_long <- function(dat) {
   )
 }
 
-# TODO test me
+#' Calculate relative abundance (proportions).
+#'
+#' @param sample A vector
+#' @param multiplier Multiply the result by this.  E.g., \code{multiplier = 100}
+#'   would convert to percentages.
+#'
+#' @return "TODO"
+#' @examples "TODO"
+#'
 #' @export
 relative_abundance <- function(sample, multiplier = 1) {
   sample / sum(sample, na.rm = TRUE) * multiplier
@@ -33,7 +41,7 @@ relative_abundance <- function(sample, multiplier = 1) {
 hierarchical_columns <- function(dat, bottom_level) {
   bottom_level_entries <- dat[, bottom_level]
 
-  unique_entries <- unique(na.exclude(bottom_level_entries))
+  unique_entries <- unique(stats::na.exclude(bottom_level_entries))
 
   # Transpose to get unique entries as the rows.
   apply(

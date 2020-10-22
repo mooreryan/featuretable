@@ -20,7 +20,7 @@ is.FeatureTable <- function(x) {
 #'
 #' @examples
 #' ft <- FeatureTable$new(matrix(1:12, 3, 4))
-#' stopifnot(dimft() == 12)
+#' stopifnot(ft$dim() == c(3, 4))
 #' stopifnot(nrow(ft) == 3)
 #' stopifnot(ncol(ft) == 4)
 #'
@@ -77,7 +77,7 @@ non_zero_min.FeatureTable <- function(ft, ...) {
 
 #' @rdname max.FeatureTable
 #' @export
-size <- function(ft, ...) {
+size <- function(ft) {
   UseMethod("size")
 }
 

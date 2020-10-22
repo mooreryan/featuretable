@@ -29,7 +29,7 @@ is_count_table.FeatureTable <- function(ft) {
 #'
 #' @return A new FeatureTable with the zeros in \code{data} replaced.
 #'
-#' @seealso \code{\link{cmultRepl}}
+#' @seealso \code{?zCompositions::cmultRepl}
 #'
 #' @export
 replace_zeros <- function(ft, ...) {

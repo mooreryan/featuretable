@@ -17,7 +17,7 @@ non_zero_min(ft, ...)
 
 \method{non_zero_min}{FeatureTable}(ft, ...)
 
-size(ft, ...)
+size(ft)
 
 \method{size}{FeatureTable}(ft)
 }

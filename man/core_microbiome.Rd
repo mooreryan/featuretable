@@ -13,7 +13,8 @@ core_microbiome(ft, ...)
   min_sample_proportion = NULL,
   max_sample_proportion = NULL,
   min_samples = NULL,
-  max_samples = NULL
+  max_samples = NULL,
+  ...
 )
 }
 \arguments{
