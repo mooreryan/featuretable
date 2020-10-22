@@ -44,3 +44,6 @@ A `ggplot2` object.
 \description{
 FeatureTable summary plots
 }
+\details{
+If you don't have \code{ggplot2} installed, you will get an error.
+}

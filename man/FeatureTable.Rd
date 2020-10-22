@@ -477,8 +477,8 @@ ft$keep_features(
 \item \href{#method-is_count_table}{\code{FeatureTable$is_count_table()}}
 \item \href{#method-replace_zeros}{\code{FeatureTable$replace_zeros()}}
 \item \href{#method-clr}{\code{FeatureTable$clr()}}
-\item \href{#method-pca_biplot}{\code{FeatureTable$pca_biplot()}}
 \item \href{#method-plot}{\code{FeatureTable$plot()}}
+\item \href{#method-pca_biplot}{\code{FeatureTable$pca_biplot()}}
 \item \href{#method-as_phyloseq}{\code{FeatureTable$as_phyloseq()}}
 \item \href{#method-clone}{\code{FeatureTable$clone()}}
 }
@@ -1742,18 +1742,10 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-pca_biplot"></a>}}
-\if{latex}{\out{\hypertarget{method-pca_biplot}{}}}
-\subsection{Method \code{pca_biplot()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$pca_biplot(use_biplotr = FALSE, include_sample_data = FALSE, ...)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-plot"></a>}}
 \if{latex}{\out{\hypertarget{method-plot}{}}}
 \subsection{Method \code{plot()}}{
+FeatureTable summary plots
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$plot(
   num_features = 8,
@@ -1768,6 +1760,80 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
   axis.text.x = NULL,
   ...
 )}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{num_features}}{How many features to show on the plot? The rest of the
+features get put into an "Other" category. "Other" will always be gray if
+you use one of the built in palettes.}
+
+\item{\code{other_feature_name}}{Name to use if features need to be combined into
+an 'Other' category. By default, will be 'Other'.}
+
+\item{\code{fill}}{If FALSE, don't show the features, if anything else, show the
+features.}
+
+\item{\code{palette}}{Which palette to use? ("kelly", "muted", "bright", "vibrant",
+"high contrast").  If there are more features than colors in the palette,
+ the colors will be recycled.}
+
+\item{\code{show_legend}}{Show the legend on the right side?}
+
+\item{\code{legend_title}}{Custom legend title}
+
+\item{\code{plot_title}}{Custom plot title}
+
+\item{\code{xlab}}{Custom xlab}
+
+\item{\code{ylab}}{Custom ylab}
+
+\item{\code{axis.text.x}}{Custom \code{axis.text.x}.  Should be an
+\code{element_text}.}
+
+\item{\code{...}}{Extra args}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+If you don't have \code{ggplot2} installed, you will get an error.
+}
+
+\subsection{Returns}{
+A `ggplot2` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-pca_biplot"></a>}}
+\if{latex}{\out{\hypertarget{method-pca_biplot}{}}}
+\subsection{Method \code{pca_biplot()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$pca_biplot(use_biplotr = FALSE, include_sample_data = FALSE, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{use_biplotr}}{Use biplotR for nice biplots.  Must be installed.}
+
+\item{\code{ft}}{A FeatureTable}
+
+\item{\code{incude_sample_data}}{Do you want to include sample data?  If \code{TRUE},
+then you will have access to lots of nice sample data to help annotate your
+plots.  See Examples.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+If installed, you can use \href{https://github.com/mooreryan/biplotr}{biplotR}
+for nice looking biplots!  Be sure that if you use_biplotr = TRUE, not to set
+options for the base::biplot function.
+
+See documentation for \code{?biplotr::pca_biplot} for more info.
+
+If you don't want to use \href{https://github.com/mooreryan/biplotr}{biplotR},
+then this function is a wrapper for \code{base::biplot}.
 }
 
 }

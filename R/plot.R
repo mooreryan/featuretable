@@ -1,5 +1,8 @@
 #' FeatureTable summary plots
 #'
+#' @details
+#' If you don't have \code{ggplot2} installed, you will get an error.
+#'
 #' @param ft A FeatureTable
 #' @param num_features How many features to show on the plot? The rest of the
 #'   features get put into an "Other" category. "Other" will always be gray if
@@ -31,11 +34,33 @@ plot.FeatureTable <- function(ft, ...) {
 #### ordination ################################################################
 ################################################################################
 
+#' PCA Biplot
+#'
+#' @details
+#' If installed, you can use \href{https://github.com/mooreryan/biplotr}{biplotR}
+#' for nice looking biplots!  Be sure that if you use_biplotr = TRUE, not to set
+#' options for the base::biplot function.
+#'
+#' See documentation for \code{?biplotr::pca_biplot} for more info.
+#'
+#' If you don't want to use \href{https://github.com/mooreryan/biplotr}{biplotR},
+#' then this function is a wrapper for \code{base::biplot}.
+#'
+#' @param ft A FeatureTable
+#' @param use_biplotr Use biplotR for nice biplots.  Must be installed.
+#' @param incude_sample_data Do you want to include sample data?  If \code{TRUE},
+#'   then you will have access to lots of nice sample data to help annotate your
+#'   plots.  See Examples.
+#'
+#' @examples
+#' # TODO!
+#'
 #' @export
 pca_biplot <- function(ft, use_biplotr = FALSE, include_sample_data = FALSE, ...) {
   UseMethod("pca_biplot")
 }
 
+#' @rdname pca_biplot
 #' @export
 pca_biplot.FeatureTable <- function(ft, use_biplotr = FALSE, include_sample_data = FALSE, ...) {
   ft$pca_biplot(use_biplotr = use_biplotr, include_sample_data = include_sample_data, ...)

@@ -1686,47 +1686,31 @@ FeatureTable <- R6::R6Class(
     #### plotting ##################################################################
     ################################################################################
 
-    # Be careful if you use_biplotr = TRUE, not to set options for the normal biplot function.
-    pca_biplot = function(use_biplotr = FALSE, include_sample_data = FALSE, ...) {
-      if (isTRUE(use_biplotr)) {
-        # Need to check some things!
-        if (package_unavailable("biplotr")) {
-          rlang::abort("Package 'biplotr' is not available. Try installing it.",
-                       class = Error$PackageUnavailableError)
-        }
-
-        if (isTRUE(include_sample_data)) {
-          if (is.null(self$sample_data)) {
-            rlang::abort("self$sample_data is NULL, but include_sample_data was TRUE. Check your arguments.",
-                         class = Error$ArgumentError)
-          }
-
-          plot_data <- base::merge(self$data, self$sample_data, by = "row.names")
-
-          # plot_data doesn't have rownames correct...fix it!
-          rownames(plot_data) <- plot_data$Row.names
-          plot_data$Row.names <- NULL
-
-          # TODO handle case where na are present in sample_data
-
-          biplotr::pca_biplot(plot_data, data_cols = 1:self$num_features(), ...)
-        } else {
-          biplotr::pca_biplot(self$data, ...)
-        }
-      } else {
-        # Need to check some more things!
-        if (isTRUE(include_sample_data)) {
-          rlang::abort("include_sample_data was TRUE, but use_biplotr was FALSE. Check your arguments.",
-                       class = Error$ArgumentError)
-        }
-
-        biplot(prcomp(self$data), ...)
-      }
-    },
-
-    # TODO add ... to end of samples and feature names if they're too long
-    # TODO proportions? options for grouping? add docs about how you do that before calling plot
-    # TODO doc stuff like this: lee$collapse_features(Family)$collapse_samples(char)$map_samples(function(sample) sample / sum(sample) * 100) %>% plot
+    #' @description FeatureTable summary plots
+    #'
+    #' @details
+    #' If you don't have \code{ggplot2} installed, you will get an error.
+    #'
+    #' @param num_features How many features to show on the plot? The rest of the
+    #'   features get put into an "Other" category. "Other" will always be gray if
+    #'   you use one of the built in palettes.
+    #' @param other_feature_name Name to use if features need to be combined into
+    #'   an 'Other' category. By default, will be 'Other'.
+    #' @param fill If FALSE, don't show the features, if anything else, show the
+    #'   features.
+    #' @param palette Which palette to use? ("kelly", "muted", "bright", "vibrant",
+    #'    "high contrast").  If there are more features than colors in the palette,
+    #'     the colors will be recycled.
+    #' @param show_legend Show the legend on the right side?
+    #' @param legend_title Custom legend title
+    #' @param plot_title Custom plot title
+    #' @param xlab Custom xlab
+    #' @param ylab Custom ylab
+    #' @param axis.text.x Custom \code{axis.text.x}.  Should be an
+    #'    \code{element_text}.
+    #' @param ... Extra args
+    #'
+    #' @return A `ggplot2` object.
     plot = function(num_features = 8,
                     other_feature_name = "Other",
                     fill = TRUE,
@@ -1740,6 +1724,10 @@ FeatureTable <- R6::R6Class(
                     axis.text.x = NULL,
                     ...) {
       # args <- list(...)
+
+      # TODO add ... to end of samples and feature names if they're too long
+      # TODO proportions? options for grouping? add docs about how you do that before calling plot
+      # TODO doc stuff like this: lee$collapse_features(Family)$collapse_samples(char)$map_samples(function(sample) sample / sum(sample) * 100) %>% plot
 
       prepare_palette <- function(palette_with_gray) {
         # This palette should have one "extra" gray at the end.
@@ -1926,6 +1914,58 @@ FeatureTable <- R6::R6Class(
       }
 
       p
+    },
+
+    #' @details
+    #' If installed, you can use \href{https://github.com/mooreryan/biplotr}{biplotR}
+    #' for nice looking biplots!  Be sure that if you use_biplotr = TRUE, not to set
+    #' options for the base::biplot function.
+    #'
+    #' See documentation for \code{?biplotr::pca_biplot} for more info.
+    #'
+    #' If you don't want to use \href{https://github.com/mooreryan/biplotr}{biplotR},
+    #' then this function is a wrapper for \code{base::biplot}.
+    #'
+    #' @param ft A FeatureTable
+    #' @param use_biplotr Use biplotR for nice biplots.  Must be installed.
+    #' @param incude_sample_data Do you want to include sample data?  If \code{TRUE},
+    #'   then you will have access to lots of nice sample data to help annotate your
+    #'   plots.  See Examples.
+    pca_biplot = function(use_biplotr = FALSE, include_sample_data = FALSE, ...) {
+      if (isTRUE(use_biplotr)) {
+        # Need to check some things!
+        if (package_unavailable("biplotr")) {
+          rlang::abort("Package 'biplotr' is not available. Try installing it.",
+                       class = Error$PackageUnavailableError)
+        }
+
+        if (isTRUE(include_sample_data)) {
+          if (is.null(self$sample_data)) {
+            rlang::abort("self$sample_data is NULL, but include_sample_data was TRUE. Check your arguments.",
+                         class = Error$ArgumentError)
+          }
+
+          plot_data <- base::merge(self$data, self$sample_data, by = "row.names")
+
+          # plot_data doesn't have rownames correct...fix it!
+          rownames(plot_data) <- plot_data$Row.names
+          plot_data$Row.names <- NULL
+
+          # TODO handle case where na are present in sample_data
+
+          biplotr::pca_biplot(plot_data, data_cols = 1:self$num_features(), ...)
+        } else {
+          biplotr::pca_biplot(self$data, ...)
+        }
+      } else {
+        # Need to check some more things!
+        if (isTRUE(include_sample_data)) {
+          rlang::abort("include_sample_data was TRUE, but use_biplotr was FALSE. Check your arguments.",
+                       class = Error$ArgumentError)
+        }
+
+        biplot(prcomp(self$data), ...)
+      }
     },
 
     ################################################################################
