@@ -1553,7 +1553,6 @@ See \code{FeatureTable$keep}.
 Convenience wrapper for \code{FeatureTable$keep("samples", fn, ...)}.
 
 See \code{FeatureTable$keep}.
-Convert FeatureTable to phyloseq object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$keep_samples(predicate, ...)}\if{html}{\out{</div>}}
 }
@@ -1590,6 +1589,7 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-core_microbiome"></a>}}
 \if{latex}{\out{\hypertarget{method-core_microbiome}{}}}
 \subsection{Method \code{core_microbiome()}}{
+Core Microbiome
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$core_microbiome(
   detection_limit = 1,
@@ -1600,6 +1600,39 @@ Convert FeatureTable to phyloseq object.
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{detection_limit}}{Limit of detection for a feature to be considered
+present in a sample}
+
+\item{\code{min_sample_proportion}}{Minimum proportion of samples in which a feature
+must be present to be kept.}
+
+\item{\code{max_sample_proportion}}{Maximum proportion of samples in which a feature
+must be present to be kept.}
+
+\item{\code{min_samples}}{Minimum number of samples in which a feature must be
+present to be kept.}
+
+\item{\code{max_samples}}{Maximum number of samples in which a feature must be
+present to be kept.}
+
+\item{\code{ft}}{A FeatureTable}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+If both \code{min_sample_proportion} and \code{min_samples} are given, an
+  error will be raised. If \code{min_sample_proportion} is not a proportion,
+  an error will be raised.  If \code{min_samples} looks like a proportion, a
+   warning will be given.
+}
+
+\subsection{Returns}{
+A new FeatureTable with only the specified "core" features.
+Convert FeatureTable to phyloseq object.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-as_phyloseq"></a>}}

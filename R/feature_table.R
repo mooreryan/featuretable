@@ -1451,7 +1451,27 @@ FeatureTable <- R6::R6Class(
     #### core microbiome ###########################################################
     ################################################################################
 
-    # both are greater than or equal to
+    #' @description Core Microbiome
+    #'
+    #' @details
+    #' If both \code{min_sample_proportion} and \code{min_samples} are given, an
+    #'   error will be raised. If \code{min_sample_proportion} is not a proportion,
+    #'   an error will be raised.  If \code{min_samples} looks like a proportion, a
+    #'    warning will be given.
+    #'
+    #' @param ft A FeatureTable
+    #' @param detection_limit Limit of detection for a feature to be considered
+    #'   present in a sample
+    #' @param min_sample_proportion Minimum proportion of samples in which a feature
+    #'    must be present to be kept.
+    #' @param max_sample_proportion Maximum proportion of samples in which a feature
+    #'    must be present to be kept.
+    #' @param min_samples Minimum number of samples in which a feature must be
+    #'   present to be kept.
+    #' @param max_samples Maximum number of samples in which a feature must be
+    #'   present to be kept.
+    #'
+    #' @return A new FeatureTable with only the specified "core" features.
     core_microbiome = function(detection_limit = 1,
                                min_sample_proportion = NULL,
                                max_sample_proportion = NULL,
