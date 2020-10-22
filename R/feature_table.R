@@ -260,45 +260,156 @@ FeatureTable <- R6::R6Class(
       colnames(self$data)
     },
 
+    #' @description
+    #' Apply functions over FeatureTable data margins.
+    #'
+    #' @details
+    #' This method uses \code{base::apply} to "apply" functions on to the
+    #' \code{data} field of the \code{FeatureTable}.
+    #'
+    #' For details about \code{base::apply}, see \code{\link{apply}}.
+    #'
+    #' @examples
+    #' # `ft` is a dataset included in FeatureTable.
+    #' #
+    #' # The apply method is a convenience wrapper around `base::apply`.
+    #' stopifnot(
+    #'   featuretable::ft$apply(2, sum) == apply(featuretable::ft$data, 2, sum)
+    #' )
+    #'
+    #' @param margin A vector giving the subscripts which the function will be
+    #'   applied over.  See \code{link{apply}} for details.
+    #' @param fn The function to be applied.  See \code{link{apply}} for details.
+    #' @param ... Optional arguments to \code{fn}.
+    #'
+    #' @return
+    #' A vector or array or list of values obtained by applying a function to
+    #' margins of an array or matrix.
     apply = function(margin, fn, ...) {
       base::apply(X = self$data, MARGIN = margin, FUN = fn, ...)
     },
 
     # `fn` takes data and index
+    #' @description
+    #' Apply functions over FeatureTable data margins.
+    #'
+    #' @details
+    #' This method uses \code{base::apply} to "apply" functions on to the
+    #' \code{data} field of the \code{FeatureTable}.  This method will also
+    #' provide the current \code{index} to the applied function (\code{fn}).
+    #'
+    #' For details about \code{base::apply}, see \code{\link{apply}}.
+    #'
+    #' @examples
+    #' ft <- featuretable::ft
+    #'
+    #' # `apply_with_index` takes a function of two or more arguments, the first is the data you're working on, the second is the index of that data (e.g., row or column number), and then any other arguments are additional.
+    #' ft$apply_with_index(2, function(x, i) sum(x))
+    #'
+    #' # This could of course be written as
+    #' ft$apply(2, sum)
+    #'
+    #' stopifnot(
+    #'   ft$apply_with_index(2, function(x, i) sum(x)) ==
+    #'     ft$apply(2, sum)
+    #' )
+    #'
+    #' # But that's a boring example.  Say you had a vector of lengths, one for
+    #' # each feature.
+    #' lengths <- c(10, 15, 12, 25, 13)
+    #'
+    #' # Now you could weight the sum by the length of that feature.
+    #' ft$apply_with_index(2, function(feature, index) {
+    #'   sum(feature) / lengths[[index]]
+    #' })
+    #'
+    #' # This data (`ft`) happens to have a `Length` column in the `feature_data`
+    #' # field.  Let's use that instead.
+    #' ft$apply_with_index(2, function(feature, index) {
+    #'   sum(feature) / ft$featue_data$Length[[index]]
+    #' })
+    #'
+    #' @param margin A vector giving the subscripts which the function will be
+    #'   applied over.  See \code{link{apply}} for details.
+    #' @param fn The function to be applied.  See \code{\link{apply}}. Note that
+    #'   this one is a bit different from \code{base::apply}'s \code{FUN} in
+    #'   that it should take \code{data} and an \code{index}.  See \code{Examples}
+    #'   for details.
+    #' @param ... Optional arguments to \code{fn}.
+    #'
+    #' @return
+    #' A vector or array or list of values obtained by applying a function to
+    #' margins of an array or matrix.
     apply_with_index = function(margin, fn, ...) {
       apply_with_index(self$data, margin, fn, ...)
     },
 
-    # `fn` takes data and name
+    #' @description
+    #' Similar to \code{apply_with_index}, except that \code{fn} takes a
+    #' (row or column) \code{name} rather than an \code{index}.
+    #'
+    #' See \code{FeatureTable$apply_with_index} for details.
+    #'
+    #' @examples
+    #' ft <- featuretable::ft
+    #'
+    #' # Unlike `apply_with_index`, `fn` takes a name.  Its usage is similar.
+    #' ft$apply_with_name(2, function(feature, name) {
+    #'   sum(feature) / ft$feature_data[name, "Length"]
+    #' })
     apply_with_name = function(margin, fn, ...) {
       apply_with_name(self$data, margin, fn, ...)
     },
 
+    #' @description
+    #' Convenience wrapper for \code{FeatureTable$apply(2, fn, ...)}.
+    #'
+    #' See \code{FeatureTable$apply}.
     apply_features = function(fn, ...) {
       base::apply(X = self$data, MARGIN = 2, FUN = fn, ...)
     },
 
+    #' @description
+    #' Convenience wrapper for \code{FeatureTable$apply_with_index(2, fn, ...)}.
+    #'
+    #' See \code{FeatureTable$apply_with_index}.
     apply_features_with_index = function(fn, ...) {
       self$apply_with_index(margin = 2, fn, ...)
     },
 
+    #' @description
+    #' Convenience wrapper for \code{FeatureTable$apply_with_name(2, fn, ...)}.
+    #'
+    #' See \code{FeatureTable$apply_with_name}.
     apply_features_with_name = function(fn, ...) {
       self$apply_with_name(margin = 2, fn, ...)
     },
 
+    #' @description
+    #' Convenience wrapper for \code{FeatureTable$apply(1, fn, ...)}.
+    #'
+    #' See \code{FeatureTable$apply}.
     apply_samples = function(fn, ...) {
       base::apply(X = self$data, MARGIN = 1, FUN = fn, ...)
     },
 
+    #' @description
+    #' Convenience wrapper for \code{FeatureTable$apply_with_index(1, fn, ...)}.
+    #'
+    #' See \code{FeatureTable$apply_with_index}.
     apply_samples_with_index = function(fn, ...) {
       self$apply_with_index(margin = 1, fn, ...)
     },
 
+    #' @description
+    #' Convenience wrapper for \code{FeatureTable$apply_with_name(1, fn, ...)}.
+    #'
+    #' See \code{FeatureTable$apply_with_name}.
     apply_samples_with_name = function(fn, ...) {
       self$apply_with_name(margin = 1, fn, ...)
     },
 
-    #' \code{\link{map}}
+    # \code{\link{map}}
     map = function(margin, fn, ...) {
       private$map_wrapper(self$apply, margin, fn, ...)
     },
@@ -616,6 +727,7 @@ FeatureTable <- R6::R6Class(
     #### Conversion ################################################################
     ################################################################################
 
+    # TODO remove title
     #' Convert FeatureTable to phyloseq object.
     #'
     #' @description

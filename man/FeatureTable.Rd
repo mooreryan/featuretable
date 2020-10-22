@@ -52,6 +52,19 @@ FeatureTable$new(count_table,
                  sample_data = sample_data)
 
 ## ------------------------------------------------
+## Method `FeatureTable$print`
+## ------------------------------------------------
+
+# `lee` is a dataset included in the FeatureTable package.
+featuretable::lee$print()
+# it would print out something like this:
+# FeatureTable:
+#   data         -- 16 samples, 1490 features
+#   feature_data -- 7 covariates
+#   sample_data  -- 4 covariates
+
+
+## ------------------------------------------------
 ## Method `FeatureTable$dim`
 ## ------------------------------------------------
 
@@ -69,6 +82,62 @@ stopifnot(ft$min() == 0)
 stopifnot(ft$non_zero_min() == 1)
 stopifnot(ft$max() == 8)
 stopifnot(ft$size() == 9)
+
+## ------------------------------------------------
+## Method `FeatureTable$apply`
+## ------------------------------------------------
+
+# `ft` is a dataset included in FeatureTable.
+#
+# The apply method is a convenience wrapper around `base::apply`.
+stopifnot(
+  featuretable::ft$apply(2, sum) == apply(featuretable::ft$data, 2, sum)
+)
+
+
+## ------------------------------------------------
+## Method `FeatureTable$apply_with_index`
+## ------------------------------------------------
+
+ft <- featuretable::ft
+
+# `apply_with_index` takes a function of two or more arguments, the first is the data you're working on, the second is the index of that data (e.g., row or column number), and then any other arguments are additional.
+ft$apply_with_index(2, function(x, i) sum(x))
+
+# This could of course be written as
+ft$apply(2, sum)
+
+stopifnot(
+  ft$apply_with_index(2, function(x, i) sum(x)) ==
+    ft$apply(2, sum)
+)
+
+# But that's a boring example.  Say you had a vector of lengths, one for
+# each feature.
+lengths <- c(10, 15, 12, 25, 13)
+
+# Now you could weight the sum by the length of that feature.
+ft$apply_with_index(2, function(feature, index) {
+  sum(feature) / lengths[[index]]
+})
+
+# This data (`ft`) happens to have a `Length` column in the `feature_data`
+# field.  Let's use that instead.
+ft$apply_with_index(2, function(feature, index) {
+  sum(feature) / ft$featue_data$Length[[index]]
+})
+
+
+## ------------------------------------------------
+## Method `FeatureTable$apply_with_name`
+## ------------------------------------------------
+
+ft <- featuretable::ft
+
+# Unlike `apply_with_index`, `fn` takes a name.  Its usage is similar.
+ft$apply_with_name(2, function(feature, name) {
+  sum(feature) / ft$feature_data[name, "Length"]
+})
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -85,6 +154,7 @@ stopifnot(ft$size() == 9)
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{FeatureTable$new()}}
+\item \href{#method-print}{\code{FeatureTable$print()}}
 \item \href{#method-dim}{\code{FeatureTable$dim()}}
 \item \href{#method-nrow}{\code{FeatureTable$nrow()}}
 \item \href{#method-ncol}{\code{FeatureTable$ncol()}}
@@ -101,7 +171,6 @@ stopifnot(ft$size() == 9)
 \item \href{#method-sample_names}{\code{FeatureTable$sample_names()}}
 \item \href{#method-observation_names}{\code{FeatureTable$observation_names()}}
 \item \href{#method-feature_names}{\code{FeatureTable$feature_names()}}
-\item \href{#method-print}{\code{FeatureTable$print()}}
 \item \href{#method-apply}{\code{FeatureTable$apply()}}
 \item \href{#method-apply_with_index}{\code{FeatureTable$apply_with_index()}}
 \item \href{#method-apply_with_name}{\code{FeatureTable$apply_with_name()}}
@@ -204,6 +273,38 @@ sample_data <- data.frame(
 FeatureTable$new(count_table,
                  feature_data = feature_data,
                  sample_data = sample_data)
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
+\subsection{Method \code{print()}}{
+Print FeatureTable
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$print(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Details}{
+Prints \code{self} and returns it invisibly (via \code{invisible(self)}).
+}
+
+\subsection{Returns}{
+\code{invisible(self)}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{# `lee` is a dataset included in the FeatureTable package.
+featuretable::lee$print()
+# it would print out something like this:
+# FeatureTable:
+#   data         -- 16 samples, 1490 features
+#   feature_data -- 7 covariates
+#   sample_data  -- 4 covariates
+
 }
 \if{html}{\out{</div>}}
 
@@ -413,25 +514,52 @@ Return the names of samples/observations/rows in the FeatureTable.
 
 \subsection{Returns}{
 The names of samples/observations/rows in the FeatureTable.
-\code{\link{map}}
-Convert FeatureTable to phyloseq object.
 }
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
-\subsection{Method \code{print()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$print(...)}\if{html}{\out{</div>}}
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-apply"></a>}}
 \if{latex}{\out{\hypertarget{method-apply}{}}}
 \subsection{Method \code{apply()}}{
+Apply functions over FeatureTable data margins.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$apply(margin, fn, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{margin}}{A vector giving the subscripts which the function will be
+applied over.  See \code{link{apply}} for details.}
+
+\item{\code{fn}}{The function to be applied.  See \code{link{apply}} for details.}
+
+\item{\code{...}}{Optional arguments to \code{fn}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+This method uses \code{base::apply} to "apply" functions on to the
+\code{data} field of the \code{FeatureTable}.
+
+For details about \code{base::apply}, see \code{\link{apply}}.
+}
+
+\subsection{Returns}{
+A vector or array or list of values obtained by applying a function to
+margins of an array or matrix.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{# `ft` is a dataset included in FeatureTable.
+#
+# The apply method is a convenience wrapper around `base::apply`.
+stopifnot(
+  featuretable::ft$apply(2, sum) == apply(featuretable::ft$data, 2, sum)
+)
+
+}
+\if{html}{\out{</div>}}
+
 }
 
 }
@@ -439,8 +567,71 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-apply_with_index"></a>}}
 \if{latex}{\out{\hypertarget{method-apply_with_index}{}}}
 \subsection{Method \code{apply_with_index()}}{
+Apply functions over FeatureTable data margins.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$apply_with_index(margin, fn, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{margin}}{A vector giving the subscripts which the function will be
+applied over.  See \code{link{apply}} for details.}
+
+\item{\code{fn}}{The function to be applied.  See \code{\link{apply}}. Note that
+this one is a bit different from \code{base::apply}'s \code{FUN} in
+that it should take \code{data} and an \code{index}.  See \code{Examples}
+for details.}
+
+\item{\code{...}}{Optional arguments to \code{fn}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+This method uses \code{base::apply} to "apply" functions on to the
+\code{data} field of the \code{FeatureTable}.  This method will also
+provide the current \code{index} to the applied function (\code{fn}).
+
+For details about \code{base::apply}, see \code{\link{apply}}.
+}
+
+\subsection{Returns}{
+A vector or array or list of values obtained by applying a function to
+margins of an array or matrix.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{ft <- featuretable::ft
+
+# `apply_with_index` takes a function of two or more arguments, the first is the data you're working on, the second is the index of that data (e.g., row or column number), and then any other arguments are additional.
+ft$apply_with_index(2, function(x, i) sum(x))
+
+# This could of course be written as
+ft$apply(2, sum)
+
+stopifnot(
+  ft$apply_with_index(2, function(x, i) sum(x)) ==
+    ft$apply(2, sum)
+)
+
+# But that's a boring example.  Say you had a vector of lengths, one for
+# each feature.
+lengths <- c(10, 15, 12, 25, 13)
+
+# Now you could weight the sum by the length of that feature.
+ft$apply_with_index(2, function(feature, index) {
+  sum(feature) / lengths[[index]]
+})
+
+# This data (`ft`) happens to have a `Length` column in the `feature_data`
+# field.  Let's use that instead.
+ft$apply_with_index(2, function(feature, index) {
+  sum(feature) / ft$featue_data$Length[[index]]
+})
+
+}
+\if{html}{\out{</div>}}
+
 }
 
 }
@@ -448,8 +639,25 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-apply_with_name"></a>}}
 \if{latex}{\out{\hypertarget{method-apply_with_name}{}}}
 \subsection{Method \code{apply_with_name()}}{
+Similar to \code{apply_with_index}, except that \code{fn} takes a
+(row or column) \code{name} rather than an \code{index}.
+
+See \code{FeatureTable$apply_with_index} for details.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$apply_with_name(margin, fn, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{ft <- featuretable::ft
+
+# Unlike `apply_with_index`, `fn` takes a name.  Its usage is similar.
+ft$apply_with_name(2, function(feature, name) {
+  sum(feature) / ft$feature_data[name, "Length"]
+})
+}
+\if{html}{\out{</div>}}
+
 }
 
 }
@@ -457,6 +665,9 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-apply_features"></a>}}
 \if{latex}{\out{\hypertarget{method-apply_features}{}}}
 \subsection{Method \code{apply_features()}}{
+Convenience wrapper for \code{FeatureTable$apply(2, fn, ...)}.
+
+See \code{FeatureTable$apply}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$apply_features(fn, ...)}\if{html}{\out{</div>}}
 }
@@ -466,6 +677,9 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-apply_features_with_index"></a>}}
 \if{latex}{\out{\hypertarget{method-apply_features_with_index}{}}}
 \subsection{Method \code{apply_features_with_index()}}{
+Convenience wrapper for \code{FeatureTable$apply_with_index(2, fn, ...)}.
+
+See \code{FeatureTable$apply_with_index}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$apply_features_with_index(fn, ...)}\if{html}{\out{</div>}}
 }
@@ -475,6 +689,9 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-apply_features_with_name"></a>}}
 \if{latex}{\out{\hypertarget{method-apply_features_with_name}{}}}
 \subsection{Method \code{apply_features_with_name()}}{
+Convenience wrapper for \code{FeatureTable$apply_with_name(2, fn, ...)}.
+
+See \code{FeatureTable$apply_with_name}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$apply_features_with_name(fn, ...)}\if{html}{\out{</div>}}
 }
@@ -484,6 +701,9 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-apply_samples"></a>}}
 \if{latex}{\out{\hypertarget{method-apply_samples}{}}}
 \subsection{Method \code{apply_samples()}}{
+Convenience wrapper for \code{FeatureTable$apply(1, fn, ...)}.
+
+See \code{FeatureTable$apply}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$apply_samples(fn, ...)}\if{html}{\out{</div>}}
 }
@@ -493,6 +713,9 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-apply_samples_with_index"></a>}}
 \if{latex}{\out{\hypertarget{method-apply_samples_with_index}{}}}
 \subsection{Method \code{apply_samples_with_index()}}{
+Convenience wrapper for \code{FeatureTable$apply_with_index(1, fn, ...)}.
+
+See \code{FeatureTable$apply_with_index}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$apply_samples_with_index(fn, ...)}\if{html}{\out{</div>}}
 }
@@ -502,6 +725,10 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-apply_samples_with_name"></a>}}
 \if{latex}{\out{\hypertarget{method-apply_samples_with_name}{}}}
 \subsection{Method \code{apply_samples_with_name()}}{
+Convenience wrapper for \code{FeatureTable$apply_with_name(1, fn, ...)}.
+
+See \code{FeatureTable$apply_with_name}.
+Convert FeatureTable to phyloseq object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$apply_samples_with_name(fn, ...)}\if{html}{\out{</div>}}
 }
