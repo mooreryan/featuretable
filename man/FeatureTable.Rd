@@ -138,6 +138,69 @@ ft <- featuretable::ft
 ft$apply_with_name(2, function(feature, name) {
   sum(feature) / ft$feature_data[name, "Length"]
 })
+
+## ------------------------------------------------
+## Method `FeatureTable$map`
+## ------------------------------------------------
+
+data(ft)
+
+## Using R6 methods
+
+# Map over features
+ft$map("features", function(feature) feature / sum(feature))
+
+# Map over samples
+ft$map("samples", function(sample) sample / sum(sample))
+
+## Using s3 methods
+
+# Map over features
+map(ft, "features", function(feature) feature / sum(feature))
+
+# Map over samples
+map(ft, "samples", function(sample) sample / sum(sample))
+
+#### map_with_index
+
+# Make up some fake lengths for the features.
+lengths <- 1:ft$num_features()
+
+# Map over features using the index to divide the feature by its length.
+ft$map_with_index("features", function(feature, index) feature / lengths[[index]])
+
+# And of course, the s3 function is also available!
+map_with_index(ft, "features", function(feature, index) feature / lengths[[index]])
+
+#### map_with_name
+
+# This FeatureTable includes a \code{Length} variable in the \code{feature_data}.
+#
+# You can access it like this:
+ft$feature_data$Length
+
+# Let's say you want to divide the count of each feature by its length.
+#
+# To get easy access to that data, you can use map_with_name like so:
+ft$map_with_name("features", function(feature, name) {
+  feature_length <- ft$feature_data[name, "Length"]
+
+  # Some features have an NA for length, so just set those to 1.
+  feature_length <- ifelse(is.na(feature_length), 1, feature_length)
+
+  feature / feature_length
+})
+
+# And of course, the s3 function is also available!
+map_with_name(ft, "features", function(feature, name) {
+  feature_length <- ft$feature_data[name, "Length"]
+
+  # Some features have an NA for length, so just set those to 1.
+  feature_length <- ifelse(is.na(feature_length), 1, feature_length)
+
+  feature / feature_length
+})
+
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -728,7 +791,6 @@ See \code{FeatureTable$apply_with_index}.
 Convenience wrapper for \code{FeatureTable$apply_with_name(1, fn, ...)}.
 
 See \code{FeatureTable$apply_with_name}.
-Convert FeatureTable to phyloseq object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$apply_samples_with_name(fn, ...)}\if{html}{\out{</div>}}
 }
@@ -738,8 +800,97 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-map"></a>}}
 \if{latex}{\out{\hypertarget{method-map}{}}}
 \subsection{Method \code{map()}}{
+Returns a new FeatureTable by applying a function to margins of the
+\code{$data} field of a \code{FeatureTable}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$map(margin, fn, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{margin}}{Margin to apply the function over.  E.g., \code{1} or
+\code{"samples"} indicates rows, \code{2} or \code{"features"} indicates
+columns.}
+
+\item{\code{fn}}{The function to be applied over the specified margin.  For the
+\code{map_with_*} variants, the function should have at least 2 parameters,
+the data to be applied over, and the \code{name} or \code{index} of the
+current row or column.  See details.}
+
+\item{\code{...}}{Optional arguments to \code{fn}.}
+
+\item{\code{ft}}{A FeatureTable. (only needed in the \code{S3} version)}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new FeatureTable with the result of applying \code{fn} over
+  \code{margin}.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{data(ft)
+
+## Using R6 methods
+
+# Map over features
+ft$map("features", function(feature) feature / sum(feature))
+
+# Map over samples
+ft$map("samples", function(sample) sample / sum(sample))
+
+## Using s3 methods
+
+# Map over features
+map(ft, "features", function(feature) feature / sum(feature))
+
+# Map over samples
+map(ft, "samples", function(sample) sample / sum(sample))
+
+#### map_with_index
+
+# Make up some fake lengths for the features.
+lengths <- 1:ft$num_features()
+
+# Map over features using the index to divide the feature by its length.
+ft$map_with_index("features", function(feature, index) feature / lengths[[index]])
+
+# And of course, the s3 function is also available!
+map_with_index(ft, "features", function(feature, index) feature / lengths[[index]])
+
+#### map_with_name
+
+# This FeatureTable includes a \code{Length} variable in the \code{feature_data}.
+#
+# You can access it like this:
+ft$feature_data$Length
+
+# Let's say you want to divide the count of each feature by its length.
+#
+# To get easy access to that data, you can use map_with_name like so:
+ft$map_with_name("features", function(feature, name) {
+  feature_length <- ft$feature_data[name, "Length"]
+
+  # Some features have an NA for length, so just set those to 1.
+  feature_length <- ifelse(is.na(feature_length), 1, feature_length)
+
+  feature / feature_length
+})
+
+# And of course, the s3 function is also available!
+map_with_name(ft, "features", function(feature, name) {
+  feature_length <- ft$feature_data[name, "Length"]
+
+  # Some features have an NA for length, so just set those to 1.
+  feature_length <- ifelse(is.na(feature_length), 1, feature_length)
+
+  feature / feature_length
+})
+
+}
+\if{html}{\out{</div>}}
+
 }
 
 }
@@ -747,6 +898,10 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-map_with_index"></a>}}
 \if{latex}{\out{\hypertarget{method-map_with_index}{}}}
 \subsection{Method \code{map_with_index()}}{
+Like \code{FeatureTable$map()} but also passes the \code{index} to
+\code{fn} similar to \code{FeatureTable$apply_with_index()}.
+
+See \code{FeatureTable$map()}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$map_with_index(margin, fn, ...)}\if{html}{\out{</div>}}
 }
@@ -756,6 +911,10 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-map_with_name"></a>}}
 \if{latex}{\out{\hypertarget{method-map_with_name}{}}}
 \subsection{Method \code{map_with_name()}}{
+Like \code{FeatureTable$map()} but also passes the \code{name} to
+\code{fn} similar to \code{FeatureTable$apply_with_name()}.
+
+See \code{FeatureTable$map()}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$map_with_name(margin, fn, ...)}\if{html}{\out{</div>}}
 }
@@ -765,6 +924,9 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-map_features"></a>}}
 \if{latex}{\out{\hypertarget{method-map_features}{}}}
 \subsection{Method \code{map_features()}}{
+Convenience wrapper for \code{FeatureTable$map(2, fn, ...)}.
+
+See \code{FeatureTable$map}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$map_features(fn, ...)}\if{html}{\out{</div>}}
 }
@@ -774,6 +936,9 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-map_features_with_index"></a>}}
 \if{latex}{\out{\hypertarget{method-map_features_with_index}{}}}
 \subsection{Method \code{map_features_with_index()}}{
+Convenience wrapper for \code{FeatureTable$map_with_index(2, fn, ...)}.
+
+See \code{FeatureTable$map}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$map_features_with_index(fn, ...)}\if{html}{\out{</div>}}
 }
@@ -783,6 +948,9 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-map_features_with_name"></a>}}
 \if{latex}{\out{\hypertarget{method-map_features_with_name}{}}}
 \subsection{Method \code{map_features_with_name()}}{
+Convenience wrapper for \code{FeatureTable$map_with_name(2, fn, ...)}.
+
+See \code{FeatureTable$map}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$map_features_with_name(fn, ...)}\if{html}{\out{</div>}}
 }
@@ -792,6 +960,9 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-map_samples"></a>}}
 \if{latex}{\out{\hypertarget{method-map_samples}{}}}
 \subsection{Method \code{map_samples()}}{
+Convenience wrapper for \code{FeatureTable$map(1, fn, ...)}.
+
+See \code{FeatureTable$map}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$map_samples(fn, ...)}\if{html}{\out{</div>}}
 }
@@ -801,6 +972,9 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-map_samples_with_index"></a>}}
 \if{latex}{\out{\hypertarget{method-map_samples_with_index}{}}}
 \subsection{Method \code{map_samples_with_index()}}{
+Convenience wrapper for \code{FeatureTable$map_with_index(1, fn, ...)}.
+
+See \code{FeatureTable$map}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$map_samples_with_index(fn, ...)}\if{html}{\out{</div>}}
 }
@@ -810,6 +984,10 @@ Convert FeatureTable to phyloseq object.
 \if{html}{\out{<a id="method-map_samples_with_name"></a>}}
 \if{latex}{\out{\hypertarget{method-map_samples_with_name}{}}}
 \subsection{Method \code{map_samples_with_name()}}{
+Convenience wrapper for \code{FeatureTable$map_with_name(1, fn, ...)}.
+
+See \code{FeatureTable$map}.
+Convert FeatureTable to phyloseq object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$map_samples_with_name(fn, ...)}\if{html}{\out{</div>}}
 }

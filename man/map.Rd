@@ -2,15 +2,60 @@
 % Please edit documentation in R/map.R
 \name{map}
 \alias{map}
+\alias{map.FeatureTable}
+\alias{map_with_index}
+\alias{map_with_index.FeatureTable}
+\alias{map_with_name}
+\alias{map_with_name.FeatureTable}
 \alias{map_features}
+\alias{map_features.FeatureTable}
+\alias{map_features_with_index}
+\alias{map_features_with_index.FeatureTable}
+\alias{map_features_with_name}
+\alias{map_features_with_name.FeatureTable}
 \alias{map_samples}
+\alias{map_samples.FeatureTable}
+\alias{map_samples_with_index}
+\alias{map_samples_with_index.FeatureTable}
+\alias{map_samples_with_name}
+\alias{map_samples_with_name.FeatureTable}
 \title{Apply a function over FeatureTable margins and return a new FeatureTable.}
 \usage{
 map(ft, margin, fn, ...)
 
+\method{map}{FeatureTable}(ft, margin, fn, ...)
+
+map_with_index(ft, margin, fn, ...)
+
+\method{map_with_index}{FeatureTable}(ft, margin, fn, ...)
+
+map_with_name(ft, margin, fn, ...)
+
+\method{map_with_name}{FeatureTable}(ft, margin, fn, ...)
+
 map_features(ft, fn, ...)
 
+\method{map_features}{FeatureTable}(ft, fn, ...)
+
+map_features_with_index(ft, fn, ...)
+
+\method{map_features_with_index}{FeatureTable}(ft, fn, ...)
+
+map_features_with_name(ft, fn, ...)
+
+\method{map_features_with_name}{FeatureTable}(ft, fn, ...)
+
 map_samples(ft, fn, ...)
+
+\method{map_samples}{FeatureTable}(ft, fn, ...)
+
+map_samples_with_index(ft, fn, ...)
+
+\method{map_samples_with_index}{FeatureTable}(ft, fn, ...)
+
+map_samples_with_name(ft, fn, ...)
+
+\method{map_samples_with_name}{FeatureTable}(ft, fn, ...)
 }
 \arguments{
 \item{ft}{A FeatureTable.}
@@ -19,7 +64,10 @@ map_samples(ft, fn, ...)
 \code{"samples"} indicates rows, \code{2} or \code{"features"} indicates
 columns.}
 
-\item{fn}{The function to be applied over the specified margin.}
+\item{fn}{The function to be applied over the specified margin.  For the
+\code{map_with_*} variants, the function should have at least 2 parameters,
+the data to be applied over, and the \code{name} or \code{index} of the
+current row or column.  See details.}
 
 \item{...}{Optional arguments to \code{fn}.}
 }
@@ -30,15 +78,6 @@ A new FeatureTable with the result of applying \code{fn} over
 \description{
 Returns a new FeatureTable by applying a function to margins of the
 \code{$data} field of a \code{FeatureTable}.
-}
-\details{
-Named helpers can also be used rather than specifying the \code{margin}
-argument.
-
-\itemize{
-  \item \code{\link{map_features}}
-  \item \code{\link{map_samples}}
-}
 }
 \examples{
 data(ft)
@@ -59,10 +98,44 @@ map(ft, "features", function(feature) feature / sum(feature))
 # Map over samples
 map(ft, "samples", function(sample) sample / sum(sample))
 
+#### map_with_index
+
+# Make up some fake lengths for the features.
+lengths <- 1:ft$num_features()
+
+# Map over features using the index to divide the feature by its length.
+ft$map_with_index("features", function(feature, index) feature / lengths[[index]])
+
+# And of course, the s3 function is also available!
+map_with_index(ft, "features", function(feature, index) feature / lengths[[index]])
+
+#### map_with_name
+
+# This FeatureTable includes a \code{Length} variable in the \code{feature_data}.
+#
+# You can access it like this:
+ft$feature_data$Length
+
+# Let's say you want to divide the count of each feature by its length.
+#
+# To get easy access to that data, you can use map_with_name like so:
+ft$map_with_name("features", function(feature, name) {
+  feature_length <- ft$feature_data[name, "Length"]
+
+  # Some features have an NA for length, so just set those to 1.
+  feature_length <- ifelse(is.na(feature_length), 1, feature_length)
+
+  feature / feature_length
+})
+
+# And of course, the s3 function is also available!
+map_with_name(ft, "features", function(feature, name) {
+  feature_length <- ft$feature_data[name, "Length"]
+
+  # Some features have an NA for length, so just set those to 1.
+  feature_length <- ifelse(is.na(feature_length), 1, feature_length)
+
+  feature / feature_length
+})
+
 }
-\seealso{
-Other apply functions: 
-\code{\link{map_with_index}()},
-\code{\link{map_with_name}()}
-}
-\concept{apply functions}
