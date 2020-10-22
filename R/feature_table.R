@@ -4,7 +4,10 @@
 #' R6 Class representing a feature table and its associated data.
 #'
 #' @details
-#' A FeatureTable has a feature_table, sample_data, and feature_data.
+#'
+#' For more details, run \code{?featuretable} at the R console, or use this link: \link{featuretable}.
+#'
+#' Also, each of the methods listed below have extensive documention using their individual help files.  For example, to access detailed documentation for \code{FeatureTable$keep}, run this in the R console: \code{?keep}.
 #'
 #' @export
 FeatureTable <- R6::R6Class(
@@ -12,12 +15,13 @@ FeatureTable <- R6::R6Class(
   list(
     # Attributes
 
+    #' @field data The data table with samples/observations as rows and features as columns.
     data = NULL,
 
-    # Rows are features, columns are stuff about the features.  It currently isn't hierarchical.
+    #' @field feature_data Rows are features, columns are stuff about the features.  Not necessarily hierarchical.
     feature_data = NULL,
 
-    # Rows are samples, columns are things about the samples.
+    #' @field sample_data Rows are samples, columns are things about the samples.
     sample_data = NULL,
 
     #' @description

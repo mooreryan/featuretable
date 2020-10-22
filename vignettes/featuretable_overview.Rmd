@@ -18,7 +18,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-FeatureTable is an R package for dealing with feature tables and their associated data, with a specific focus on helping you deal with microbiome data.  For this overview, we are going to use data from a [recent 16S study](https://doi.org/10.3389/fmicb.2015.01470) looking at microbial communities of seafloor basalts by [Mike Lee](https://astrobiomike.github.io/) and friends.
+FeatureTable is an R package for dealing with feature tables and their associated data.  While there are many functions with a specific focus on helping you deal with microbiome data, `FeatureTable` can help you with any type of data that has features and observations, especially when you have (meta)data associated with those features and observations.
+
+For this overview, we are going to use data from a [recent 16S study](https://doi.org/10.3389/fmicb.2015.01470) looking at microbial communities of seafloor basalts by [Mike Lee](https://astrobiomike.github.io/) and friends.
 
 Before we start, let's import the data set and the libraries that we need.  Note that this vignette uses some of the optional dependencies: `ggplot2`, `ggrepel`, and `biplotr`.
 

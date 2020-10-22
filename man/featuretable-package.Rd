@@ -6,6 +6,47 @@
 \alias{featuretable-package}
 \title{FeatureTable}
 \description{
-FeatureTable -- an R6 and s3 class for managing feature tables and data associated with its features and observations.
+FeatureTable -- an R6 and S3 class for managing feature tables and associated metadata.
+}
+\details{
+A FeatureTable has a feature_table, sample_data, and feature_data.
+
+While there are some specific functions that help you deal with microbiome data, \code{FeatureTable} can help you with any type of data that has features and observations, especially when you have (meta)data associated with those features and observations.
+
+To learn more about \code{FeatureTable}, start with the vignettes: \code{browseVignettes(package = "featuretable")}.
+
+There are a lot of functions to help you deal with this sort of data.  If you need help with a specific function, use the R help pages (e.g., \code{?keep_features}, or \code{?collapse}).  You can also see info about the \code{FeatureTable} R6 class with \code{?FeatureTable}.
+
+Here are the broad categories of functions that are avaiable to you:
+
+\strong{Apply a function to the \code{data} field: } \code{apply}, \code{apply_with_index}, \code{apply_with_name}, \code{apply_features}, \code{apply_features_with_index}, \code{apply_features_with_name}, \code{apply_samples}, \code{apply_samples_with_index}, \code{apply_samples_with_name}.
+
+\strong{Apply a function, return a FeatureTable: } \code{\link{map}}, \code{\link{map_features}}, \code{\link{map_features_with_index}}, \code{\link{map_features_with_name}}, \code{\link{map_samples}}, \code{\link{map_samples_with_index}}, \code{\link{map_samples_with_name}}, \code{\link{map_with_index}}, \code{\link{map_with_name}}.
+
+\strong{Collapse samples/observations/rows or features/columns based on metadata: } \code{\link{collapse}}, \code{\link{collapse_features}}, \code{\link{collapse_samples}}.
+
+\strong{Compositional Data Analysis (CoDA)} \code{\link{is_count_table}}, \code{\link{replace_zeros}}, \code{\link{clr}},
+
+\strong{Core microbiome: } \code{\link{core_microbiome}}.
+
+\strong{General S3-like functions: } \code{\link{dim.FeatureTable}}, \code{\link{nrow}}, \code{\link{ncol}}, \code{\link{min}}, \code{\link{non_zero_min}}, \code{\link{max}}, \code{\link{size}}, \code{\link{print}}.
+
+\strong{Info about features: } \code{\link{num_features}}, \code{\link{nfeatures}}, \code{\link{feature_names}}.
+
+\strong{Info about samples (a.k.a., observations): } \code{\link{num_samples}}, \code{\link{nsamples}}, \code{\link{num_observations}}, \code{\link{nobservations}}, \code{\link{nrow}}, \code{\link{observation_names}}, \code{\link{sample_names}}.
+
+\strong{Keep samples/observations/rows or features/columns using a predicate: } \code{\link{keep}}, \code{\link{keep_features}}, \code{\link{keep_samples}}.
+
+\strong{Importing, exporting, converting, & copying: } \code{\link{as.phyloseq}}, \code{\link{as_phyloseq}}, \code{\link{clone}}, \code{\link{as.data.frame.FeatureTable}}, \code{\link{is.FeatureTable}}, \code{\link{ft_from}}, \code{\link{ft_from.phyloseq}}.
+
+\strong{Merging FeatureTables: } \code{\link{shared_features}}, \code{\link{keep_shared_features}}, \code{\link{shared_feature_names}}.
+
+\strong{Plotting} \code{\link{plot}}, \code{\link{pca_biplot}}.
+}
+\seealso{
+
+}
+\author{
+\strong{Maintainer: } Ryan Moore -- \href{https://github.com/mooreryan/}{GitHub} -- \href{https://orcid.org/0000-0003-3337-8184}{ORCiD: 0000-0003-3337-8184}
 }
 \keyword{internal}
