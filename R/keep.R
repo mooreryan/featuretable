@@ -6,19 +6,6 @@
 #' Keep samples/observations/rows or features/columns based on result of a
 #' predicate function or expression.
 #'
-#' @param ft A FeatureTable.
-#' @param margin Margin to apply the predicate over.  E.g., \code{1} or
-#'   \code{"samples"} indicates rows, \code{2} or \code{"features"} indicates
-#'   columns.
-#' @param predicate The predicate function or expression to be applied.  Only
-#'   those elements where \code{predicate} is \code{TRUE} or evaluates to
-#'   \code{TRUE} will be kept.
-#' @param ... Optional arguments to \code{predicate} if \code{predicate} is a
-#'   function.  If it is something like \code{Location == "Spain"}, then
-#'   optional arguments will be ignored.
-#'
-#' @return A new FeatureTable with the elements that were kept.
-#'
 #' @details
 #' A \code{predicate} can be a function that evaluates to \code{TRUE}, or
 #' \code{FALSE} for each item it is applied to, or it can be a logical vector
@@ -52,6 +39,10 @@
 #' # or use the `keep_features` helper function.  For the examples that follow,
 #' # I will show you both ways, but of course, you can pick whichever one you
 #' # prefer!
+#'
+#' # Also note that whenever you see something with the R6 calling convention:
+#' # E.g., ft$keep("features", ...), feel free to use the S3 calling convention
+#' # instead: keep(ft, "features", ...).
 #'
 #' # Keep features that have 'circle' in the `feature_data`.  Note that you can
 #' # refer to variables/colnames in the data directly inside the `keep`
@@ -202,11 +193,26 @@
 #'           restrict = Season == "Winter")
 #' )
 #'
+#' @param ft A FeatureTable. (only used in the \code{S3} version)
+#' @param margin Margin to apply the predicate over.  E.g., \code{1} or
+#'   \code{"samples"} indicates rows, \code{2} or \code{"features"} indicates
+#'   columns.
+#' @param predicate The predicate function or expression to be applied.  Only
+#'   those elements where \code{predicate} is \code{TRUE} or evaluates to
+#'   \code{TRUE} will be kept.
+#' @param ... Optional arguments to \code{predicate} if \code{predicate} is a
+#'   function.  If it is something like \code{Location == "Spain"}, then
+#'   optional arguments will be ignored.
+#'
+#' @return A new FeatureTable with the elements that were kept.
+#'
 #' @export
 keep <- function(ft, ...) {
   UseMethod("keep")
 }
 
+#' @rdname keep
+#' @export
 keep.FeatureTable <- function(ft, ...) {
   ft$keep(...)
 }
@@ -217,6 +223,7 @@ keep_features <- function(ft, ...) {
   UseMethod("keep_features")
 }
 
+#' @rdname keep
 #' @export
 keep_features.FeatureTable <- function(ft, ...) {
   ft$keep_features(...)
@@ -228,6 +235,7 @@ keep_samples <- function(ft, ...) {
   UseMethod("keep_samples")
 }
 
+#' @rdname keep
 #' @export
 keep_samples.FeatureTable <- function(ft, ...) {
   ft$keep_samples(...)

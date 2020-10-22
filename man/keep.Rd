@@ -2,18 +2,27 @@
 % Please edit documentation in R/keep.R
 \name{keep}
 \alias{keep}
+\alias{keep.FeatureTable}
 \alias{keep_features}
+\alias{keep_features.FeatureTable}
 \alias{keep_samples}
+\alias{keep_samples.FeatureTable}
 \title{Keep samples/observations/rows or features/columns using a predicate.}
 \usage{
 keep(ft, ...)
 
+\method{keep}{FeatureTable}(ft, ...)
+
 keep_features(ft, ...)
 
+\method{keep_features}{FeatureTable}(ft, ...)
+
 keep_samples(ft, ...)
+
+\method{keep_samples}{FeatureTable}(ft, ...)
 }
 \arguments{
-\item{ft}{A FeatureTable.}
+\item{ft}{A FeatureTable. (only used in the \code{S3} version)}
 
 \item{...}{Optional arguments to \code{predicate} if \code{predicate} is a
 function.  If it is something like \code{Location == "Spain"}, then
@@ -67,6 +76,10 @@ data(ft)
 # or use the `keep_features` helper function.  For the examples that follow,
 # I will show you both ways, but of course, you can pick whichever one you
 # prefer!
+
+# Also note that whenever you see something with the R6 calling convention:
+# E.g., ft$keep("features", ...), feel free to use the S3 calling convention
+# instead: keep(ft, "features", ...).
 
 # Keep features that have 'circle' in the `feature_data`.  Note that you can
 # refer to variables/colnames in the data directly inside the `keep`

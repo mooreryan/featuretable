@@ -5,19 +5,6 @@
 #' features/samples, any feature/sample with the same metadata for selected
 #' category will be grouped.
 #'
-#' @param ft A FeatureTable.
-#' @param margin Margin to collapse.  E.g., \code{1} or \code{"samples"}
-#'   indicates rows, \code{2} or \code{"features"} indicates columns.
-#' @param by The data column to collapse by.
-#' @param keep_na Do you want to group all NAs together (TRUE) or drop them
-#' (FALSE, the defult)?
-#' @param keep_hierarchy Do you want to keep all data above the level specified
-#'   with the \code{by} argument? Pass \code{TRUE} to this parameter if you
-#'   know some of your data is hierarchical and you want to treat it as such.
-#'
-#' @return A new FeatureTable with the specified margin collapsed on the
-#'   specified metadata column.
-#'
 #' @details
 #' Grouping is done by summing counts for each category.
 #'
@@ -54,11 +41,26 @@
 #'   ft$collapse_samples(c("Location", "Season"))
 #' }
 #'
+#' @param ft A FeatureTable. (Only used in the \code{S3} version.)
+#' @param margin Margin to collapse.  E.g., \code{1} or \code{"samples"}
+#'   indicates rows, \code{2} or \code{"features"} indicates columns.
+#' @param by The data column to collapse by.
+#' @param keep_na Do you want to group all NAs together (TRUE) or drop them
+#' (FALSE, the defult)?
+#' @param keep_hierarchy Do you want to keep all data above the level specified
+#'   with the \code{by} argument? Pass \code{TRUE} to this parameter if you
+#'   know some of your data is hierarchical and you want to treat it as such.
+#'   See vignettes for details.
+#'
+#' @return A new FeatureTable with the specified margin collapsed on the
+#'   specified metadata column.
+#'
 #' @export
 collapse <- function(ft, ...) {
   UseMethod("collapse")
 }
 
+#' @rdname collapse
 #' @export
 collapse.FeatureTable <- function(ft, ...) {
   ft$collapse(...)
@@ -70,6 +72,7 @@ collapse_features <- function(ft, ...) {
   UseMethod("collapse_features")
 }
 
+#' @rdname collapse
 #' @export
 collapse_features.FeatureTable <- function(ft, ...) {
   ft$collapse_features(...)
@@ -81,6 +84,7 @@ collapse_samples <- function(ft, ...) {
   UseMethod("collapse_samples")
 }
 
+#' @rdname collapse
 #' @export
 collapse_samples.FeatureTable <- function(ft, ...) {
   ft$collapse_samples(...)

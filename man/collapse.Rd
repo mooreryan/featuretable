@@ -2,18 +2,27 @@
 % Please edit documentation in R/collapse.R
 \name{collapse}
 \alias{collapse}
+\alias{collapse.FeatureTable}
 \alias{collapse_features}
+\alias{collapse_features.FeatureTable}
 \alias{collapse_samples}
+\alias{collapse_samples.FeatureTable}
 \title{Collapse samples/observations/rows or features/columns based on metadata.}
 \usage{
 collapse(ft, ...)
 
+\method{collapse}{FeatureTable}(ft, ...)
+
 collapse_features(ft, ...)
 
+\method{collapse_features}{FeatureTable}(ft, ...)
+
 collapse_samples(ft, ...)
+
+\method{collapse_samples}{FeatureTable}(ft, ...)
 }
 \arguments{
-\item{ft}{A FeatureTable.}
+\item{ft}{A FeatureTable. (Only used in the \code{S3} version.)}
 
 \item{margin}{Margin to collapse.  E.g., \code{1} or \code{"samples"}
 indicates rows, \code{2} or \code{"features"} indicates columns.}
@@ -25,7 +34,8 @@ indicates rows, \code{2} or \code{"features"} indicates columns.}
 
 \item{keep_hierarchy}{Do you want to keep all data above the level specified
 with the \code{by} argument? Pass \code{TRUE} to this parameter if you
-know some of your data is hierarchical and you want to treat it as such.}
+know some of your data is hierarchical and you want to treat it as such.
+See vignettes for details.}
 }
 \value{
 A new FeatureTable with the specified margin collapsed on the

@@ -260,6 +260,10 @@ FeatureTable <- R6::R6Class(
       colnames(self$data)
     },
 
+    ################################################################################
+    #### apply #####################################################################
+    ################################################################################
+
     #' @description
     #' Apply functions over FeatureTable data margins.
     #'
@@ -409,6 +413,10 @@ FeatureTable <- R6::R6Class(
       self$apply_with_name(margin = 1, fn, ...)
     },
 
+    ################################################################################
+    #### map #######################################################################
+    ################################################################################
+
     #' @description
     #' Returns a new FeatureTable by applying a function to margins of the
     #' \code{$data} field of a \code{FeatureTable}.
@@ -555,10 +563,610 @@ FeatureTable <- R6::R6Class(
     },
 
     ################################################################################
+    #### collapse ##################################################################
+    ################################################################################
+
+    #' @description
+    #' Collapse samples/observations/rows or features/columns based on metadata. For
+    #' features/samples, any feature/sample with the same metadata for selected
+    #' category will be grouped.
+    #'
+    #' @details
+    #' Grouping is done by summing counts for each category.
+    #'
+    #' If you to keep features/samples with \code{NA} for the \code{by} category,
+    #' pass \code{keep_na = TRUE}.  Then the NA will become a new factor in the
+    #' collapsed data.
+    #'
+    #' Currently, you can only collapse on one metadata column at a time :(
+    #'
+    #' @examples
+    #' data(ft)
+    #'
+    #' # You can direcctly access variables in the metadata.
+    #' ft$collapse("features", Color)
+    #' ft$collapse_features(Color)
+    #'
+    #' # Or refer to them by strings.
+    #' ft$collapse("features", "Color")
+    #' ft$collapse_features("Color")
+    #'
+    #' # You can collapse samples on metadata as well.
+    #' ft$collapse("samples", Location)
+    #' ft$collapse_samples(Location)
+    #'
+    #' # And you can use the s3 style functions.
+    #' collapse(ft, "samples", Location)
+    #' collapse_samples(ft, Location)
+    #'
+    #' collapse(ft, "features", Shape)
+    #' collapse_features(ft, Shape)
+    #'
+    #' # For now, you can't do more than one variable at a time.  Sorry!
+    #' \dontrun{
+    #'   ft$collapse_samples(c("Location", "Season"))
+    #' }
+    #'
+    #' @param ft A FeatureTable. (Only used in the \code{S3} version.)
+    #' @param margin Margin to collapse.  E.g., \code{1} or \code{"samples"}
+    #'   indicates rows, \code{2} or \code{"features"} indicates columns.
+    #' @param by The data column to collapse by.
+    #' @param keep_na Do you want to group all NAs together (TRUE) or drop them
+    #' (FALSE, the defult)?
+    #' @param keep_hierarchy Do you want to keep all data above the level specified
+    #'   with the \code{by} argument? Pass \code{TRUE} to this parameter if you
+    #'   know some of your data is hierarchical and you want to treat it as such.
+    #'   See vignettes for details.
+    #'
+    #' @return A new FeatureTable with the specified margin collapsed on the
+    #'   specified metadata column.
+    collapse = function(margin, ...) {
+      if (margin == "features" || margin == 2) {
+        self$collapse_features(...)
+      } else if (margin == "samples" || margin == 1) {
+        self$collapse_samples(...)
+      } else {
+        rlang::abort(
+          paste("'margin' must be 'samples' (or 1), or 'features' (or 2).  Got", margin),
+          class = Error$ArgumentError
+        )
+      }
+    },
+
+    #' @description
+    #' Convenience wrapper for \code{FeatureTable$collapse("features", fn, ...)}.
+    #'
+    #' See \code{FeatureTable$collapse}.
+    collapse_features = function(by, keep_na = FALSE, keep_hierarchy = FALSE) {
+      # TODO better error message for when you pass multiple `by` columns.
+      # TODO `keep_hiearchical_columns` may be a better param name.
+
+      by_expr <- rlang::enexpr(by)
+
+      if (rlang::is_null(by_expr)) {
+        rlang::abort("'by' was NULL!", class = Error$ArgumentError)
+      }
+
+      if (rlang::is_na(by_expr)) {
+        rlang::abort("'by' was NULL!", class = Error$ArgumentError)
+      }
+
+      if (inherits(by_expr, "name")) {
+        by <- as.character(by_expr)
+      }
+
+      if (all(by %in% colnames(self$feature_data))) {
+        # TODO This is a bad variable name!
+        categories <- self$feature_data[, by]
+
+        # Calling unique like this will keep any NA in the data.
+        #
+        # Also, this relies on `unique` NOT changing the order...this may be a problem in the future.
+        unique_categories <- unique(categories)
+
+        # If the user has set the levels themselves, then they are going to care about preserving the order, even if some have dropped out due to things like running `keep` first.
+        original_levels <- levels(categories)
+
+        if (is.null(original_levels)) {
+          new_levels <- sort(unique_categories)
+        } else {
+          new_levels <- original_levels[original_levels %in% unique_categories]
+
+          # If the new_levels is NULL or 0 length, then the user probably changed something manually and broke the levels.  Probably not what they really wanted to do or else they would have also changed the levels.
+          #
+          # On the other hand, if the new_levels is NOT but also fewer levels than original, then the user probably ran a `keep` function first.
+
+          if (is.null(new_levels) || length(new_levels) == 0) {
+            rlang::abort("New levels will be NULL or empty.  Did you convert a column of the feature_data from a factor into a character?  Did you manually change one of the factor variables (e.g., trying to change add a new level or remove one)?", class = Error$BadFactorDataError)
+          }
+        }
+
+        categories <- factor(categories, levels = new_levels)
+
+        if (any(is.na(categories)) && isTRUE(keep_na)) {
+          # We have NAs and we want to keep them!
+          #
+          # Note: If we don't want to keep them, we don't have to do anything
+          # as it will be taken care of later!
+
+          # We will make a new category called "NA".  First check if any "NA" string already there.
+          #
+          # Note na.rm = TRUE because we want to check all the non-NA values to see if there
+          # are any NA character/factor type things in the data.  Shouldn't be, but just a
+          # sanity check.
+          if (any(categories == "NA", na.rm = TRUE)) {
+            stop("TODO test me implement me")
+          }
+
+          # Replace real NAs with the fake "NA" level that behaves the why we want.
+          categories <- `levels<-`(addNA(categories), c(levels(categories), "NA"))
+        }
+
+        category_levels <- levels(categories)
+
+        # Does this still get hit now with the new_levels check? Pretty sure this can't happen anymore.
+        if (is.null(category_levels)) {
+          # TODO better error message would mention the `by` argument.
+          rlang::abort(
+            "category_levels was NULL.  Did you convert a column of the feature_data from a factor into a character, or manually adjust one of the factor variables?",
+            class = Error$NonFactorDataError
+          )
+        }
+
+        collapsed <- sapply(category_levels, function(level) {
+          keep_these <- categories == level
+          keep_these <- ifelse(is.na(keep_these), FALSE, keep_these)
+
+          if (sum(keep_these) == 0) { # Pretty sure this can't happen anymore.
+            # You can get here if a user manually changes a column in the sample
+            # data and that change eliminates all occurences of a factor level from
+            # the data frame.
+            rlang::abort(
+              "One of the factor levels has dropped out of the 'by' data col(s).  Did you manually change the data in sample_data?",
+              class = Error$MissingFactorLevelError
+            )
+          } else if (sum(keep_these) == 1) {
+            # Only a single feature in this category.
+            self$data[, keep_these]
+          } else {
+            # Multiple features are present for this category.
+            rowSums(self$data[, keep_these])
+          }
+        })
+
+        dimnames(collapsed) <- list(Samples = self$sample_names(),
+                                    Features = category_levels)
+
+        if (isTRUE(keep_hierarchy)) {
+          # TODO this will break if you let `by` be more than one column.
+          keep_these <- hierarchical_columns(self$feature_data, by)
+
+          # All keep_these columns that are not `by`, will be equal to `by` (even if they are NA)
+
+          # Assuming `by` is a single thing.
+          #
+          # For now, throw out the NA category. We will add it back in later.
+          new_feature_data <- unique(na.exclude(self$feature_data[, keep_these]))
+          # ^ this will have one row with proper columns for each unique by category
+
+          if (sum(keep_these) == 0) {
+            stop("should be impossible")
+          } else if (sum(keep_these) == 1) {
+
+            # Make sure it's actually a data frame.
+            new_feature_data <- as.data.frame(new_feature_data, stringsAsFactors = TRUE)
+            # Again, assuming `by` is a single thing.
+            stopifnot(length(by) == 1) # TODO will this mess up the enexpr?
+            colnames(new_feature_data) <- by
+          }
+
+          # Now set the proper levels for the by category. And order/sort it by the levels.
+          new_feature_data[, by] <- sort(factor(new_feature_data[, by], levels = category_levels))
+
+          # And the rownames should be whatever the unique things in the by category are
+          rownames(new_feature_data) <- new_feature_data[, by]
+
+          # If keep_na is true but there are actually no NA values, we don't want to add them.
+          if (isTRUE(keep_na) && any(is.na(self$feature_data[, keep_these]))) {
+            # Add on a row with all "NA" strings and
+            tmp <- rep("NA", times = ncol(new_feature_data))
+            # Convert it to a 1 X ncol df
+            tmp <- as.data.frame(as.list(tmp), row.names = "NA", stringsAsFactors = TRUE)
+            colnames(tmp) <- colnames(new_feature_data)
+            new_feature_data <- rbind(new_feature_data, tmp)
+          }
+        } else {
+          # Set X as a factor this way to preserve the original levels.
+          new_feature_data <- data.frame(X = factor(category_levels, levels = category_levels),
+                                         stringsAsFactors = TRUE)
+          colnames(new_feature_data) <- c(by)
+          rownames(new_feature_data) <- category_levels
+        }
+
+        FeatureTable$new(
+          feature_table = collapsed,
+          feature_data = new_feature_data,
+          sample_data = self$sample_data
+        )
+      } else {
+        rlang::abort("Not all data categories passed to the 'by' argument were present in feature_data!",
+                     class = Error$ArgumentError)
+      }
+    },
+
+    #' @description
+    #' Convenience wrapper for \code{FeatureTable$collapse("samples", fn, ...)}.
+    #'
+    #' See \code{FeatureTable$collapse}.
+    collapse_samples = function(by, keep_na = FALSE, keep_hierarchy = FALSE) {
+      by_expr <- rlang::enexpr(by)
+
+      if (rlang::is_null(by_expr)) {
+        rlang::abort("'by' was NULL!", class = Error$ArgumentError)
+      }
+
+      if (rlang::is_na(by_expr)) {
+        rlang::abort("'by' was NULL!", class = Error$ArgumentError)
+      }
+
+      if (inherits(by_expr, "name")) {
+        by <- as.character(by_expr)
+      }
+
+      if (all(by %in% colnames(self$sample_data))) {
+        # TODO This is a bad variable name!
+        categories <- self$sample_data[, by]
+
+        # TODO pull out this code into a function...it's also used in collapse_features.
+
+        # Calling unique like this will keep any NA in the data.
+        #
+        # Also, this relies on `unique` NOT changing the order...this may be a problem in the future.
+        unique_categories <- unique(categories)
+
+        # If the user has set the levels themselves, then they are going to care about preserving the order, even if some have dropped out due to things like running `keep` first.
+        original_levels <- levels(categories)
+
+        if (is.null(original_levels)) {
+          new_levels <- sort(unique_categories)
+        } else {
+          new_levels <- original_levels[original_levels %in% unique_categories]
+
+          # If the new_levels is NULL or 0 length, then the user probably changed something manually and broke the levels.  Probably not what they really wanted to do or else they would have also changed the levels.
+          #
+          # On the other hand, if the new_levels is NOT but also fewer levels than original, then the user probably ran a `keep` function first.
+
+          if (is.null(new_levels) || length(new_levels) == 0) {
+            rlang::abort("New levels will be NULL or empty.  Did you convert a column of the sample_data from a factor into a character?  Did you manually change one of the factor variables (e.g., trying to change add a new level or remove one)?", class = Error$BadFactorDataError)
+          }
+        }
+
+        categories <- factor(categories, levels = new_levels)
+
+        if (any(is.na(categories)) && isTRUE(keep_na)) {
+          # We have NAs and we want to keep them!
+          #
+          # Note: If we don't want to keep them, we don't have to do anything
+          # as it will be taken care of later!
+
+          # We will make a new category called "NA".  First check if any "NA" string already there.
+          #
+          # Note na.rm = TRUE because we want to check all the non-NA values to see if there
+          # are any NA character/factor type things in the data.  Shouldn't be, but just a
+          # sanity check.
+          if (any(categories == "NA", na.rm = TRUE)) {
+            stop("TODO test me implement me")
+          }
+
+          # Replace real NAs with the fake "NA" level.
+          categories <- `levels<-`(addNA(categories), c(levels(categories), "NA"))
+        }
+
+        category_levels <- levels(categories)
+
+        # Does this still get hit now with the new_levels check? Pretty sure this can't happen anymore.
+        if (is.null(category_levels)) {
+          # TODO better error message would mention the `by` argument.
+          rlang::abort(
+            "category_levels was NULL.  Did you convert a column of the sample_data from a factor into a character, or manually adjust one of the factor variables?",
+            class = Error$NonFactorDataError
+          )
+        }
+
+        new_names <- category_levels
+
+        # Note that this one needs the transpose!
+        collapsed <- t(sapply(category_levels, function(level) {
+          keep_these <- categories == level
+          keep_these <- ifelse(is.na(keep_these), FALSE, keep_these)
+
+          if (sum(keep_these) == 0) { # Pretty sure this can't happen anymore.
+            # You can get here if a user manually changes a column in the sample
+            # data and that change eliminates all occurences of a factor level from
+            # the data frame.
+            rlang::abort(
+              "One of the factor levels has dropped out of the 'by' data col(s).  Did you manually change the data in sample_data?",
+              class = Error$MissingFactorLevelError
+            )
+          } else if (sum(keep_these) == 1) {
+            # Only a single feature in this category.
+            self$data[keep_these, ]
+          } else {
+            # Multiple features are present for this category.
+            colSums(self$data[keep_these, ])
+          }
+        }))
+
+        dimnames(collapsed) <- list(Samples = new_names,
+                                    Features = self$feature_names())
+
+        if (isTRUE(keep_hierarchy)) {
+          # TODO this will break if you let `by` be more than one column.
+          keep_these <- hierarchical_columns(self$sample_data, by)
+
+          # All keep_these columns that are not `by`, will be equal to `by` (even if they are NA)
+
+          # Assuming `by` is a single thing.
+          #
+          # For now, throw out the NA category. We will add it back in later.
+          new_sample_data <- unique(na.exclude(self$sample_data[, keep_these]))
+          # ^ this will have one row with proper columns for each unique by category
+
+          if (sum(keep_these) == 0) {
+            stop("should be impossible")
+          } else if (sum(keep_these) == 1) {
+
+            # Make sure it's actually a data frame.
+            new_sample_data <- as.data.frame(new_sample_data, stringsAsFactors = TRUE)
+            # Again, assuming `by` is a single thing.
+            stopifnot(length(by) == 1) # TODO will this mess up the enexpr?
+            colnames(new_sample_data) <- by
+          }
+
+          # Now set the proper levels for the by category. And order/sort it by the levels.
+          new_sample_data[, by] <- sort(factor(new_sample_data[, by], levels = category_levels))
+
+          # And the rownames should be whatever the unique things in the by category are
+          rownames(new_sample_data) <- new_sample_data[, by]
+
+          # If keep_na is true but there are actually no NA values, we don't want to add them.
+          if (isTRUE(keep_na) && any(is.na(self$sample_data[, keep_these]))) {
+            # Add on a row with all "NA" strings and
+            tmp <- rep("NA", times = ncol(new_sample_data))
+            # Convert it to a 1 X ncol df
+            tmp <- as.data.frame(as.list(tmp), row.names = "NA", stringsAsFactors = TRUE)
+            colnames(tmp) <- colnames(new_sample_data)
+            new_sample_data <- rbind(new_sample_data, tmp)
+          }
+        } else {
+          # TODO i think there is technically a bug here....levels will have "NA" (as string) if keep_na is true, but the sample_data itself will have an actual NA value for those places.
+          new_sample_data <- data.frame(X = factor(category_levels, levels = category_levels),
+                                        stringsAsFactors = TRUE)
+          colnames(new_sample_data) <- c(by)
+          rownames(new_sample_data) <- new_names
+        }
+
+        FeatureTable$new(
+          feature_table = collapsed,
+          feature_data = self$feature_data,
+          sample_data = new_sample_data
+        )
+      } else {
+        rlang::abort("Not all data categories passed to the 'by' argument were present in sample_data!",
+                     class = Error$ArgumentError)
+      }
+    },
+
+
+    ################################################################################
     #### keep ######################################################################
     ################################################################################
 
     # TODO what if the predicate attempts to get a column not in the feature/sample data?
+
+    #' @description
+    #' Keep samples/observations/rows or features/columns based on result of a
+    #' predicate function or expression.
+    #'
+    #' @details
+    #' A \code{predicate} can be a function that evaluates to \code{TRUE}, or
+    #' \code{FALSE} for each item it is applied to, or it can be a logical vector
+    #' the same length as the \code{margin} you're working with, or it can be some
+    #' other expresssion/call that will evaluate to a logical vector.  See Examples
+    #' for more information.
+    #'
+    #' Note that `query` is currently only available for filtering features.  See
+    #' Examples for details.
+    #'
+    #' @examples
+    #' data(ft)
+    #'
+    #' #### Filtering based on metadata ####
+    #'
+    #' # First, let me show you how to filter based on metadata (i.e., the stuff in
+    #' # `$feature_data` or `$sample_data`).  Note that this kind of filtering works
+    #' # the same for samples.
+    #'
+    #' # Here is what the `feature_data` looks like.
+    #' #
+    #' # > ft$feature_data
+    #' #           Color  Shape Length
+    #' # Feature_1   red square    5.0
+    #' # Feature_2   red circle    6.0
+    #' # Feature_3   red square    2.3
+    #' # Feature_4  blue   <NA>    7.0
+    #' # Feature_5  blue circle   10.0
+    #'
+    #' # To keep features, you can use either `keep` and specify the correct margin,
+    #' # or use the `keep_features` helper function.  For the examples that follow,
+    #' # I will show you both ways, but of course, you can pick whichever one you
+    #' # prefer!
+    #'
+    #' # Also note that whenever you see something with the R6 calling convention:
+    #' # E.g., ft$keep("features", ...), feel free to use the S3 calling convention
+    #' # instead: keep(ft, "features", ...).
+    #'
+    #' # Keep features that have 'circle' in the `feature_data`.  Note that you can
+    #' # refer to variables/colnames in the data directly inside the `keep`
+    #' # functions!
+    #' #
+    #' ft$keep("features", Shape == "circle")
+    #' ft$keep_features(Shape != "circle")
+    #'
+    #' # You can use a logical vector directly.
+    #' #
+    #' ft$keep("features", c(TRUE, TRUE, FALSE, TRUE, TRUE))
+    #' ft$keep_features(c(TRUE, TRUE, FALSE, TRUE, TRUE))
+    #'
+    #' # Or you can use any expressions that will evaluate to a logical vector.
+    #' #
+    #' ft$keep("features", ft$feature_data$Shape == "circle")
+    #' ft$keep_features(ft$feature_data$Shape == "circle")
+    #'
+    #' # Keep features that do NOT have 'circle' in the `feature_data`.
+    #' #
+    #' ft$keep("features", Shape != "circle")
+    #' ft$keep_features(Shape != "circle")
+    #'
+    #' # You can also have more complicated expressions for predicates.
+    #' #
+    #' # Keep the red circles
+    #' ft$keep("features", Shape == "circle" & Color == "red")
+    #' ft$keep_features(Shape == "circle" & Color == "red")
+    #'
+    #' # Keep any features that are 'red' OR 'circles'.
+    #' ft$keep("features", Shape == "circle" | Color == "red")
+    #' ft$keep_features(Shape == "circle" | Color == "red")
+    #'
+    #' # Of course, you can keep adding on expressions....
+    #' ft$keep("features", (Shape == "square" & Color == "red") | Length > 5)
+    #' ft$keep_features((Shape == "square" & Color == "red") | Length > 5)
+    #'
+    #' #### Filtering based on actual data (i.e., in `$data`) ####
+    #'
+    #' # Sometimes you want to filter features or samples based on the actual data
+    #' # (i.e., the stuff in `$data`), rather than on the metadata (i.e., the stuff
+    #' # in `$feature_data` or `$sample_data`).  No problem!  For that, we will use
+    #' # functions that apply over the margin we want.
+    #'
+    #' # For reference, here is the data:
+    #' #
+    #' # > ft$data
+    #' #           Features
+    #' # Samples    Feature_1 Feature_2 Feature_3 Feature_4 Feature_5
+    #' #   Sample_1         0         0         0         1        10
+    #' #   Sample_2         0         0         1         2        20
+    #' #   Sample_3         0         1         2         3        30
+    #' #   Sample_4         1         2         3         4        40
+    #'
+    #' # Keep features whose sum is more than 5.
+    #' ft$keep("features", function(feature) sum(feature) > 5)
+    #' ft$keep_features(function(feature) sum(feature) > 5)
+    #'
+    #' # Keep samples whose sum is more than 25.
+    #' ft$keep("samples", function(sample) sum(sample) > 5)
+    #' ft$keep_samples(function(sample) sum(sample) > 5)
+    #'
+    #' # Note that there is nothing special about using `sample` or `feature` as a
+    #' # parameter to those anonymous functions.  I could have used `x` or anything
+    #' # else.
+    #'
+    #' #### Predicates that work on data and metadata together! ####
+    #'
+    #' # What if you want to filter based on both metadata and the actual data?
+    #' # For that, you need to use `query`.  It is a special function only
+    #' # accessible from inside the keep functions. (Note that currently, you can
+    #' # only use `query` from `keep` with margin 'features', or keep_features.)
+    #'
+    #' # Keep features that are circles and also have an abundance of > 5.
+    #' ft$keep("features",
+    #'         query(Shape == "circle") & query(function(feature) sum(feature) > 5))
+    #' ft$keep_features(
+    #'   query(Shape == "circle") & query(function(feature) sum(feature) > 5)
+    #' )
+    #'
+    #' # Notice how I wrapped both expressions in a `query` function.  You can also
+    #' # have more than two queries just like before.
+    #'
+    #' # One slightly weird thing is that the expression that evalautes w.r.t. the
+    #' # metadata doesn't actually need to be wrapped in a query.  For example, this
+    #' # will also work:
+    #' #
+    #' ft$keep_features(
+    #'   Shape == "circle" & query(function(feature) sum(feature) > 5)
+    #' )
+    #'
+    #' # But I would consider that a quirk of the implementation and not rely on it,
+    #' # as it may change in the future.
+    #'
+    #' #### Filtering on actual data, feature data, and sample data together ####
+    #'
+    #' # For reference, here is the sample data:
+    #' # > ft$sample_data
+    #' #           Location Season SnazzyFactor
+    #' #  Sample_1    Spain Summer           10
+    #' #  Sample_2    Spain Summer           12
+    #' #  Sample_3 Portugal Winter           25
+    #' #  Sample_4    Spain Winter            3
+    #'
+    #' # (Note that like the above section, this only works for features currently.)
+    #' #
+    #' # Here's something cool.  Let's say you wanted to filter features based on
+    #' # their abundance, some bit of metadata about them (e.g., taxonomy) but
+    #' # restrict your search to a subset of samples (say, all samples from Summer,
+    #' # or all samples from Spain).  You can do that with the `query` function as
+    #' # well!  Let me show you what I mean....
+    #'
+    #' # Keep features whose abundance is > 5 in 'Winter' samples (i.e., you don't
+    #' # care what there abundance in other seasons, as long as they fit the
+    #' # criteria for the 'Winter' samples.)
+    #'
+    #' ft$keep("features", query(function(feature) sum(feature) > 5,
+    #'                           restrict = Season == "Winter"))
+    #'
+    #' # Notice the use of the `restrict` parameter.  It takes expressions that
+    #' # evaluate in the context of the sample data.
+    #'
+    #' # And you can make more complicated queries if you want.
+    #' ft$keep_features(query(Shape == "circle") |
+    #'                    query(function(feature) sum(feature) > 5,
+    #'                          restrict = Season == "Winter"))
+    #'
+    #' # Here is something that may trip you up.
+    #'
+    #' \dontrun{
+    #'   ft$keep_features(query(Shape == "circle", restrict = Season == "Winter"))
+    #' }
+    #'
+    #' # The above code will raise an `ArgumentError`.  Here's the thing: feature
+    #' # metadata does not change based on the sample metadata.  In other words, a
+    #' # feature is a 'circle' or a 'square' regardless of whether it is in a
+    #' # 'Summer' sample, a 'Winter' sample, or both.  So restricting a metadata
+    #' # query to a subset of samples just doesn't make any sense.
+    #' #
+    #' # If you find yourself wanting to do that, my guess is what you really want
+    #' # are to filter features whose 'Shape' is 'circle' and that are actually
+    #' # present in 'Winter' samples.  If that is the case, you want to do something
+    #' # like this:
+    #' #
+    #' ft$keep_features(
+    #'   query(Shape == "circle") &
+    #'     query(function(feature) sum(feature) > 0,
+    #'           restrict = Season == "Winter")
+    #' )
+    #'
+    #' @param ft A FeatureTable. (only used in the \code{S3} version)
+    #' @param margin Margin to apply the predicate over.  E.g., \code{1} or
+    #'   \code{"samples"} indicates rows, \code{2} or \code{"features"} indicates
+    #'   columns.
+    #' @param predicate The predicate function or expression to be applied.  Only
+    #'   those elements where \code{predicate} is \code{TRUE} or evaluates to
+    #'   \code{TRUE} will be kept.
+    #' @param ... Optional arguments to \code{predicate} if \code{predicate} is a
+    #'   function.  If it is something like \code{Location == "Spain"}, then
+    #'   optional arguments will be ignored.
+    #'
+    #' @return A new FeatureTable with the elements that were kept.
     keep = function(margin, ...) {
       if (margin == "features" || margin == 2) {
         self$keep_features(...)
@@ -572,6 +1180,10 @@ FeatureTable <- R6::R6Class(
       }
     },
 
+    #' @description
+    #' Convenience wrapper for \code{FeatureTable$keep("features", fn, ...)}.
+    #'
+    #' See \code{FeatureTable$keep}.
     keep_features = function(predicate, ...) {
       # Helpers.
 
@@ -733,6 +1345,10 @@ FeatureTable <- R6::R6Class(
       FeatureTable$new(result, self$feature_data, self$sample_data)
     },
 
+    #' @description
+    #' Convenience wrapper for \code{FeatureTable$keep("samples", fn, ...)}.
+    #'
+    #' See \code{FeatureTable$keep}.
     keep_samples = function(predicate, ...) {
       # Let the user have access to the sample_data
       predicate <- rlang::eval_tidy(rlang::enquo(predicate), self$sample_data)
@@ -1076,336 +1692,6 @@ FeatureTable <- R6::R6Class(
 
         samples_present >= min_samples && samples_present <= max_samples
       })
-    },
-
-    #### Merging ####
-
-    collapse = function(margin, ...) {
-      if (margin == "features" || margin == 2) {
-        self$collapse_features(...)
-      } else if (margin == "samples" || margin == 1) {
-        self$collapse_samples(...)
-      } else {
-        rlang::abort(
-          paste("'margin' must be 'samples' (or 1), or 'features' (or 2).  Got", margin),
-          class = Error$ArgumentError
-        )
-      }
-    },
-
-    # TODO better error message for when you pass multiple `by` columns.
-    # TODO `keep_hiearchical_columns` may be a better param name.
-    collapse_features = function(by, keep_na = FALSE, keep_hierarchy = FALSE) {
-      by_expr <- rlang::enexpr(by)
-
-      if (rlang::is_null(by_expr)) {
-        rlang::abort("'by' was NULL!", class = Error$ArgumentError)
-      }
-
-      if (rlang::is_na(by_expr)) {
-        rlang::abort("'by' was NULL!", class = Error$ArgumentError)
-      }
-
-      if (inherits(by_expr, "name")) {
-        by <- as.character(by_expr)
-      }
-
-      if (all(by %in% colnames(self$feature_data))) {
-        # TODO This is a bad variable name!
-        categories <- self$feature_data[, by]
-
-        # Calling unique like this will keep any NA in the data.
-        #
-        # Also, this relies on `unique` NOT changing the order...this may be a problem in the future.
-        unique_categories <- unique(categories)
-
-        # If the user has set the levels themselves, then they are going to care about preserving the order, even if some have dropped out due to things like running `keep` first.
-        original_levels <- levels(categories)
-
-        if (is.null(original_levels)) {
-          new_levels <- sort(unique_categories)
-        } else {
-          new_levels <- original_levels[original_levels %in% unique_categories]
-
-          # If the new_levels is NULL or 0 length, then the user probably changed something manually and broke the levels.  Probably not what they really wanted to do or else they would have also changed the levels.
-          #
-          # On the other hand, if the new_levels is NOT but also fewer levels than original, then the user probably ran a `keep` function first.
-
-          if (is.null(new_levels) || length(new_levels) == 0) {
-            rlang::abort("New levels will be NULL or empty.  Did you convert a column of the feature_data from a factor into a character?  Did you manually change one of the factor variables (e.g., trying to change add a new level or remove one)?", class = Error$BadFactorDataError)
-          }
-        }
-
-        categories <- factor(categories, levels = new_levels)
-
-        if (any(is.na(categories)) && isTRUE(keep_na)) {
-          # We have NAs and we want to keep them!
-          #
-          # Note: If we don't want to keep them, we don't have to do anything
-          # as it will be taken care of later!
-
-          # We will make a new category called "NA".  First check if any "NA" string already there.
-          #
-          # Note na.rm = TRUE because we want to check all the non-NA values to see if there
-          # are any NA character/factor type things in the data.  Shouldn't be, but just a
-          # sanity check.
-          if (any(categories == "NA", na.rm = TRUE)) {
-            stop("TODO test me implement me")
-          }
-
-          # Replace real NAs with the fake "NA" level that behaves the why we want.
-          categories <- `levels<-`(addNA(categories), c(levels(categories), "NA"))
-        }
-
-        category_levels <- levels(categories)
-
-        # Does this still get hit now with the new_levels check? Pretty sure this can't happen anymore.
-        if (is.null(category_levels)) {
-          # TODO better error message would mention the `by` argument.
-          rlang::abort(
-            "category_levels was NULL.  Did you convert a column of the feature_data from a factor into a character, or manually adjust one of the factor variables?",
-            class = Error$NonFactorDataError
-          )
-        }
-
-        collapsed <- sapply(category_levels, function(level) {
-          keep_these <- categories == level
-          keep_these <- ifelse(is.na(keep_these), FALSE, keep_these)
-
-          if (sum(keep_these) == 0) { # Pretty sure this can't happen anymore.
-            # You can get here if a user manually changes a column in the sample
-            # data and that change eliminates all occurences of a factor level from
-            # the data frame.
-            rlang::abort(
-              "One of the factor levels has dropped out of the 'by' data col(s).  Did you manually change the data in sample_data?",
-              class = Error$MissingFactorLevelError
-            )
-          } else if (sum(keep_these) == 1) {
-            # Only a single feature in this category.
-            self$data[, keep_these]
-          } else {
-            # Multiple features are present for this category.
-            rowSums(self$data[, keep_these])
-          }
-        })
-
-        dimnames(collapsed) <- list(Samples = self$sample_names(),
-                                    Features = category_levels)
-
-        if (isTRUE(keep_hierarchy)) {
-          # TODO this will break if you let `by` be more than one column.
-          keep_these <- hierarchical_columns(self$feature_data, by)
-
-          # All keep_these columns that are not `by`, will be equal to `by` (even if they are NA)
-
-          # Assuming `by` is a single thing.
-          #
-          # For now, throw out the NA category. We will add it back in later.
-          new_feature_data <- unique(na.exclude(self$feature_data[, keep_these]))
-          # ^ this will have one row with proper columns for each unique by category
-
-          if (sum(keep_these) == 0) {
-            stop("should be impossible")
-          } else if (sum(keep_these) == 1) {
-
-            # Make sure it's actually a data frame.
-            new_feature_data <- as.data.frame(new_feature_data, stringsAsFactors = TRUE)
-            # Again, assuming `by` is a single thing.
-            stopifnot(length(by) == 1) # TODO will this mess up the enexpr?
-            colnames(new_feature_data) <- by
-          }
-
-          # Now set the proper levels for the by category. And order/sort it by the levels.
-          new_feature_data[, by] <- sort(factor(new_feature_data[, by], levels = category_levels))
-
-          # And the rownames should be whatever the unique things in the by category are
-          rownames(new_feature_data) <- new_feature_data[, by]
-
-          # If keep_na is true but there are actually no NA values, we don't want to add them.
-          if (isTRUE(keep_na) && any(is.na(self$feature_data[, keep_these]))) {
-            # Add on a row with all "NA" strings and
-            tmp <- rep("NA", times = ncol(new_feature_data))
-            # Convert it to a 1 X ncol df
-            tmp <- as.data.frame(as.list(tmp), row.names = "NA", stringsAsFactors = TRUE)
-            colnames(tmp) <- colnames(new_feature_data)
-            new_feature_data <- rbind(new_feature_data, tmp)
-          }
-        } else {
-          # Set X as a factor this way to preserve the original levels.
-          new_feature_data <- data.frame(X = factor(category_levels, levels = category_levels),
-                                         stringsAsFactors = TRUE)
-          colnames(new_feature_data) <- c(by)
-          rownames(new_feature_data) <- category_levels
-        }
-
-        FeatureTable$new(
-          feature_table = collapsed,
-          feature_data = new_feature_data,
-          sample_data = self$sample_data
-        )
-      } else {
-        rlang::abort("Not all data categories passed to the 'by' argument were present in feature_data!",
-                     class = Error$ArgumentError)
-      }
-    },
-
-    collapse_samples = function(by, keep_na = FALSE, keep_hierarchy = FALSE) {
-      by_expr <- rlang::enexpr(by)
-
-      if (rlang::is_null(by_expr)) {
-        rlang::abort("'by' was NULL!", class = Error$ArgumentError)
-      }
-
-      if (rlang::is_na(by_expr)) {
-        rlang::abort("'by' was NULL!", class = Error$ArgumentError)
-      }
-
-      if (inherits(by_expr, "name")) {
-        by <- as.character(by_expr)
-      }
-
-      if (all(by %in% colnames(self$sample_data))) {
-        # TODO This is a bad variable name!
-        categories <- self$sample_data[, by]
-
-        # TODO pull out this code into a function...it's also used in collapse_features.
-
-        # Calling unique like this will keep any NA in the data.
-        #
-        # Also, this relies on `unique` NOT changing the order...this may be a problem in the future.
-        unique_categories <- unique(categories)
-
-        # If the user has set the levels themselves, then they are going to care about preserving the order, even if some have dropped out due to things like running `keep` first.
-        original_levels <- levels(categories)
-
-        if (is.null(original_levels)) {
-          new_levels <- sort(unique_categories)
-        } else {
-          new_levels <- original_levels[original_levels %in% unique_categories]
-
-          # If the new_levels is NULL or 0 length, then the user probably changed something manually and broke the levels.  Probably not what they really wanted to do or else they would have also changed the levels.
-          #
-          # On the other hand, if the new_levels is NOT but also fewer levels than original, then the user probably ran a `keep` function first.
-
-          if (is.null(new_levels) || length(new_levels) == 0) {
-            rlang::abort("New levels will be NULL or empty.  Did you convert a column of the sample_data from a factor into a character?  Did you manually change one of the factor variables (e.g., trying to change add a new level or remove one)?", class = Error$BadFactorDataError)
-          }
-        }
-
-        categories <- factor(categories, levels = new_levels)
-
-        if (any(is.na(categories)) && isTRUE(keep_na)) {
-          # We have NAs and we want to keep them!
-          #
-          # Note: If we don't want to keep them, we don't have to do anything
-          # as it will be taken care of later!
-
-          # We will make a new category called "NA".  First check if any "NA" string already there.
-          #
-          # Note na.rm = TRUE because we want to check all the non-NA values to see if there
-          # are any NA character/factor type things in the data.  Shouldn't be, but just a
-          # sanity check.
-          if (any(categories == "NA", na.rm = TRUE)) {
-            stop("TODO test me implement me")
-          }
-
-          # Replace real NAs with the fake "NA" level.
-          categories <- `levels<-`(addNA(categories), c(levels(categories), "NA"))
-        }
-
-        category_levels <- levels(categories)
-
-        # Does this still get hit now with the new_levels check? Pretty sure this can't happen anymore.
-        if (is.null(category_levels)) {
-          # TODO better error message would mention the `by` argument.
-          rlang::abort(
-            "category_levels was NULL.  Did you convert a column of the sample_data from a factor into a character, or manually adjust one of the factor variables?",
-            class = Error$NonFactorDataError
-          )
-        }
-
-        new_names <- category_levels
-
-        # Note that this one needs the transpose!
-        collapsed <- t(sapply(category_levels, function(level) {
-          keep_these <- categories == level
-          keep_these <- ifelse(is.na(keep_these), FALSE, keep_these)
-
-          if (sum(keep_these) == 0) { # Pretty sure this can't happen anymore.
-            # You can get here if a user manually changes a column in the sample
-            # data and that change eliminates all occurences of a factor level from
-            # the data frame.
-            rlang::abort(
-              "One of the factor levels has dropped out of the 'by' data col(s).  Did you manually change the data in sample_data?",
-              class = Error$MissingFactorLevelError
-            )
-          } else if (sum(keep_these) == 1) {
-            # Only a single feature in this category.
-            self$data[keep_these, ]
-          } else {
-            # Multiple features are present for this category.
-            colSums(self$data[keep_these, ])
-          }
-        }))
-
-        dimnames(collapsed) <- list(Samples = new_names,
-                                    Features = self$feature_names())
-
-        if (isTRUE(keep_hierarchy)) {
-          # TODO this will break if you let `by` be more than one column.
-          keep_these <- hierarchical_columns(self$sample_data, by)
-
-          # All keep_these columns that are not `by`, will be equal to `by` (even if they are NA)
-
-          # Assuming `by` is a single thing.
-          #
-          # For now, throw out the NA category. We will add it back in later.
-          new_sample_data <- unique(na.exclude(self$sample_data[, keep_these]))
-          # ^ this will have one row with proper columns for each unique by category
-
-          if (sum(keep_these) == 0) {
-            stop("should be impossible")
-          } else if (sum(keep_these) == 1) {
-
-            # Make sure it's actually a data frame.
-            new_sample_data <- as.data.frame(new_sample_data, stringsAsFactors = TRUE)
-            # Again, assuming `by` is a single thing.
-            stopifnot(length(by) == 1) # TODO will this mess up the enexpr?
-            colnames(new_sample_data) <- by
-          }
-
-          # Now set the proper levels for the by category. And order/sort it by the levels.
-          new_sample_data[, by] <- sort(factor(new_sample_data[, by], levels = category_levels))
-
-          # And the rownames should be whatever the unique things in the by category are
-          rownames(new_sample_data) <- new_sample_data[, by]
-
-          # If keep_na is true but there are actually no NA values, we don't want to add them.
-          if (isTRUE(keep_na) && any(is.na(self$sample_data[, keep_these]))) {
-            # Add on a row with all "NA" strings and
-            tmp <- rep("NA", times = ncol(new_sample_data))
-            # Convert it to a 1 X ncol df
-            tmp <- as.data.frame(as.list(tmp), row.names = "NA", stringsAsFactors = TRUE)
-            colnames(tmp) <- colnames(new_sample_data)
-            new_sample_data <- rbind(new_sample_data, tmp)
-          }
-        } else {
-          # TODO i think there is technically a bug here....levels will have "NA" (as string) if keep_na is true, but the sample_data itself will have an actual NA value for those places.
-          new_sample_data <- data.frame(X = factor(category_levels, levels = category_levels),
-                                        stringsAsFactors = TRUE)
-          colnames(new_sample_data) <- c(by)
-          rownames(new_sample_data) <- new_names
-        }
-
-        FeatureTable$new(
-          feature_table = collapsed,
-          feature_data = self$feature_data,
-          sample_data = new_sample_data
-        )
-      } else {
-        rlang::abort("Not all data categories passed to the 'by' argument were present in sample_data!",
-                     class = Error$ArgumentError)
-      }
     },
 
     # TODO add ... to end of samples and feature names if they're too long
