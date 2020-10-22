@@ -11,3 +11,5 @@ tests/testthat/test_tmp.R
 inst/doc
 
 ignore
+
+.DS_Store

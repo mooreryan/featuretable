@@ -2,26 +2,30 @@
 % Please edit documentation in R/feature_table_s3.R
 \name{num_features}
 \alias{num_features}
+\alias{num_features.FeatureTable}
+\alias{nfeatures}
+\alias{nfeatures.FeatureTable}
 \title{The number of features/columns of a FeatureTable}
 \usage{
 num_features(ft)
+
+\method{num_features}{FeatureTable}(ft)
+
+nfeatures(ft)
+
+\method{nfeatures}{FeatureTable}(ft)
 }
 \arguments{
 \item{ft}{A FeatureTable object.}
 }
 \value{
-The number of columns in the FeatureTable.
+The number of features/columns in the FeatureTable.
 }
 \description{
 Return the number of features/columns in the FeatureTable.
 }
 \seealso{
 Other dimension functions: 
-\code{\link{dim.FeatureTable}()},
-\code{\link{nfeatures}()},
-\code{\link{nobservations}()},
-\code{\link{nsamples}()},
-\code{\link{num_observations}()},
 \code{\link{num_samples}()}
 }
 \concept{dimension functions}

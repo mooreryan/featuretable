@@ -2,9 +2,18 @@
 % Please edit documentation in R/feature_table_s3.R
 \name{sample_names}
 \alias{sample_names}
-\title{Samples/observations/rows of a FeatureTable}
+\alias{sample_names.FeatureTable}
+\alias{observation_names}
+\alias{observation_names.FeatureTable}
+\title{Sample/observation/row names of a FeatureTable}
 \usage{
 sample_names(ft)
+
+\method{sample_names}{FeatureTable}(ft)
+
+observation_names(ft)
+
+\method{observation_names}{FeatureTable}(ft)
 }
 \arguments{
 \item{ft}{A FeatureTable object.}
@@ -17,6 +26,6 @@ Return the names of samples/observations/rows in the FeatureTable.
 }
 \seealso{
 Other row name functions: 
-\code{\link{observation_names}()}
+\code{\link{feature_names}()}
 }
 \concept{row name functions}

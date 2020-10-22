@@ -7,6 +7,17 @@
 \title{FeatureTable}
 \description{
 FeatureTable -- an R6 and S3 class for managing feature tables and associated metadata.
+
+Useful links
+
+\itemize{
+  \item{
+    Repository: \url{https://github.com/mooreryan/featuretable/}
+  }
+  \item{
+    Issue tracker: \url{https://github.com/mooreryan/featuretable/issues}
+  }
+}
 }
 \details{
 A FeatureTable has a feature_table, sample_data, and feature_data.
@@ -42,9 +53,6 @@ Here are the broad categories of functions that are avaiable to you:
 \strong{Merging FeatureTables: } \code{\link{shared_features}}, \code{\link{keep_shared_features}}, \code{\link{shared_feature_names}}.
 
 \strong{Plotting} \code{\link{plot}}, \code{\link{pca_biplot}}.
-}
-\seealso{
-
 }
 \author{
 \strong{Maintainer: } Ryan Moore -- \href{https://github.com/mooreryan/}{GitHub} -- \href{https://orcid.org/0000-0003-3337-8184}{ORCiD: 0000-0003-3337-8184}

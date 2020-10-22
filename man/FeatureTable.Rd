@@ -4,12 +4,12 @@
 \alias{FeatureTable}
 \title{FeatureTable}
 \description{
-R6 Class representing a feature table and its associated data.
+R6 Class for managing feature tables and associated metadata.
 }
 \details{
-For more details, run \code{?featuretable} at the R console, or use this link: \link{featuretable}.
+For an overview of the package, run \code{?featuretable} at the R console, or use this link: \link{featuretable}.
 
-Also, each of the methods listed below have extensive documention using their individual help files.  For example, to access detailed documentation for \code{FeatureTable$keep}, run this in the R console: \code{?keep}.
+Each of the methods listed below have extensive documention in their individual help files.  For example, to access detailed documentation for \code{FeatureTable$keep}, run this in the R console: \code{?keep}.  As such, the documentation on this page is intentionally kept light.
 }
 \examples{
 
@@ -17,7 +17,58 @@ Also, each of the methods listed below have extensive documention using their in
 ## Method `FeatureTable$new`
 ## ------------------------------------------------
 
-"TODO"
+count_table <- matrix(
+  c(
+    0, 0, 0, 1, 10,
+    0, 0, 1, 2, 20,
+    0, 1, 2, 3, 30,
+    1, 2, 3, 4, 40
+  ),
+  byrow = TRUE,
+  nrow = 4,
+  ncol = 5,
+  dimnames = list(Samples = paste0("Sample_", 1:4),
+                  Features = paste0("Feature_", 1:5))
+)
+
+feature_data <- data.frame(
+  Color = c("red", "red", "red", "blue", "blue"),
+  Shape = c("square", "circle", "square", NA, "circle"),
+  Length = c(5, 6, 2.3, 7, 10),
+  row.names = paste0("Feature_", 1:5),
+  stringsAsFactors = TRUE
+)
+
+sample_data <- data.frame(
+  Location = c("Spain", "Spain", "Portugal", "Spain"),
+  Season = c("Summer", "Summer", "Winter", "Winter"),
+  SnazzyFactor = c(10, 12, 25, 3),
+  row.names = paste0("Sample_", 1:4),
+  stringsAsFactors = TRUE
+)
+
+FeatureTable$new(count_table,
+                 feature_data = feature_data,
+                 sample_data = sample_data)
+
+## ------------------------------------------------
+## Method `FeatureTable$dim`
+## ------------------------------------------------
+
+ft <- FeatureTable$new(matrix(1:12, 3, 4))
+stopifnot(ft$dim() == 12)
+stopifnot(ft$nrow() == 3)
+stopifnot(ft$ncol() == 4)
+
+## ------------------------------------------------
+## Method `FeatureTable$max`
+## ------------------------------------------------
+
+ft <- FeatureTable$new(matrix(0:8, 3, 3))
+stopifnot(ft$min() == 0)
+stopifnot(ft$non_zero_min() == 1)
+stopifnot(ft$max() == 8)
+stopifnot(ft$size() == 9)
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -35,14 +86,18 @@ Also, each of the methods listed below have extensive documention using their in
 \itemize{
 \item \href{#method-new}{\code{FeatureTable$new()}}
 \item \href{#method-dim}{\code{FeatureTable$dim()}}
+\item \href{#method-nrow}{\code{FeatureTable$nrow()}}
+\item \href{#method-ncol}{\code{FeatureTable$ncol()}}
+\item \href{#method-max}{\code{FeatureTable$max()}}
+\item \href{#method-min}{\code{FeatureTable$min()}}
+\item \href{#method-non_zero_min}{\code{FeatureTable$non_zero_min()}}
+\item \href{#method-size}{\code{FeatureTable$size()}}
 \item \href{#method-num_samples}{\code{FeatureTable$num_samples()}}
 \item \href{#method-nsamples}{\code{FeatureTable$nsamples()}}
 \item \href{#method-num_observations}{\code{FeatureTable$num_observations()}}
 \item \href{#method-nobservations}{\code{FeatureTable$nobservations()}}
-\item \href{#method-nrow}{\code{FeatureTable$nrow()}}
 \item \href{#method-num_features}{\code{FeatureTable$num_features()}}
 \item \href{#method-nfeatures}{\code{FeatureTable$nfeatures()}}
-\item \href{#method-ncol}{\code{FeatureTable$ncol()}}
 \item \href{#method-sample_names}{\code{FeatureTable$sample_names()}}
 \item \href{#method-observation_names}{\code{FeatureTable$observation_names()}}
 \item \href{#method-feature_names}{\code{FeatureTable$feature_names()}}
@@ -80,10 +135,6 @@ Also, each of the methods listed below have extensive documention using their in
 \item \href{#method-collapse}{\code{FeatureTable$collapse()}}
 \item \href{#method-collapse_features}{\code{FeatureTable$collapse_features()}}
 \item \href{#method-collapse_samples}{\code{FeatureTable$collapse_samples()}}
-\item \href{#method-max}{\code{FeatureTable$max()}}
-\item \href{#method-min}{\code{FeatureTable$min()}}
-\item \href{#method-non_zero_min}{\code{FeatureTable$non_zero_min()}}
-\item \href{#method-size}{\code{FeatureTable$size()}}
 \item \href{#method-plot}{\code{FeatureTable$plot()}}
 \item \href{#method-clone}{\code{FeatureTable$clone()}}
 }
@@ -120,7 +171,39 @@ A new `FeatureTable` object.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{"TODO"
+\preformatted{count_table <- matrix(
+  c(
+    0, 0, 0, 1, 10,
+    0, 0, 1, 2, 20,
+    0, 1, 2, 3, 30,
+    1, 2, 3, 4, 40
+  ),
+  byrow = TRUE,
+  nrow = 4,
+  ncol = 5,
+  dimnames = list(Samples = paste0("Sample_", 1:4),
+                  Features = paste0("Feature_", 1:5))
+)
+
+feature_data <- data.frame(
+  Color = c("red", "red", "red", "blue", "blue"),
+  Shape = c("square", "circle", "square", NA, "circle"),
+  Length = c(5, 6, 2.3, 7, 10),
+  row.names = paste0("Feature_", 1:5),
+  stringsAsFactors = TRUE
+)
+
+sample_data <- data.frame(
+  Location = c("Spain", "Spain", "Portugal", "Spain"),
+  Season = c("Summer", "Summer", "Winter", "Winter"),
+  SnazzyFactor = c(10, 12, 25, 3),
+  row.names = paste0("Sample_", 1:4),
+  stringsAsFactors = TRUE
+)
+
+FeatureTable$new(count_table,
+                 feature_data = feature_data,
+                 sample_data = sample_data)
 }
 \if{html}{\out{</div>}}
 
@@ -131,7 +214,7 @@ A new `FeatureTable` object.
 \if{html}{\out{<a id="method-dim"></a>}}
 \if{latex}{\out{\hypertarget{method-dim}{}}}
 \subsection{Method \code{dim()}}{
-Return the dimensions of the FeatureTable.
+Return the dimensions of the FeatureTable \code{data} field.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$dim()}\if{html}{\out{</div>}}
 }
@@ -139,6 +222,96 @@ Return the dimensions of the FeatureTable.
 \subsection{Returns}{
 The dimension of the feature_table.
 }
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{ft <- FeatureTable$new(matrix(1:12, 3, 4))
+stopifnot(ft$dim() == 12)
+stopifnot(ft$nrow() == 3)
+stopifnot(ft$ncol() == 4)
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-nrow"></a>}}
+\if{latex}{\out{\hypertarget{method-nrow}{}}}
+\subsection{Method \code{nrow()}}{
+See \code{FeatureTable$dim()}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$nrow()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ncol"></a>}}
+\if{latex}{\out{\hypertarget{method-ncol}{}}}
+\subsection{Method \code{ncol()}}{
+See \code{FeatureTable$dim()}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$ncol()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-max"></a>}}
+\if{latex}{\out{\hypertarget{method-max}{}}}
+\subsection{Method \code{max()}}{
+Get the minimum, maximum, size, and other features of the FeatureTable \code{data} field.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$max(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Details}{
+\code{non_zero_min} returns the smallest non-zero number in the \code{data} field.  If any of the values in the \code{data} field are less than zero, then a warning will be given.  In this case, you probably don't want to use \code{non_zero_min}.
+}
+
+\subsection{Returns}{
+The min (\code{min}), non-zero min (\code{non_zero_min}), and max (\code{max}) values.  \code{size} returns the number of elements in the \code{data} field (i.e., \code{nrow * ncol} for the \code{data} field).
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{ft <- FeatureTable$new(matrix(0:8, 3, 3))
+stopifnot(ft$min() == 0)
+stopifnot(ft$non_zero_min() == 1)
+stopifnot(ft$max() == 8)
+stopifnot(ft$size() == 9)
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-min"></a>}}
+\if{latex}{\out{\hypertarget{method-min}{}}}
+\subsection{Method \code{min()}}{
+See \code{FeatureTable$max()}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$min(...)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-non_zero_min"></a>}}
+\if{latex}{\out{\hypertarget{method-non_zero_min}{}}}
+\subsection{Method \code{non_zero_min()}}{
+See \code{FeatureTable$max()}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$non_zero_min(...)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-size"></a>}}
+\if{latex}{\out{\hypertarget{method-size}{}}}
+\subsection{Method \code{size()}}{
+See \code{FeatureTable$max()}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$size(...)}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-num_samples"></a>}}
@@ -150,60 +323,38 @@ Return the number of samples/observations/rows in the FeatureTable.
 }
 
 \subsection{Returns}{
-The number of rows in the FeatureTable.
+The number of samples/observations/rows in the FeatureTable.
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-nsamples"></a>}}
 \if{latex}{\out{\hypertarget{method-nsamples}{}}}
 \subsection{Method \code{nsamples()}}{
-Return the number of samples/observations/rows in the FeatureTable.
+Alias of \code{FeatureTable$num_samples()}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$nsamples()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-The number of rows in the FeatureTable.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-num_observations"></a>}}
 \if{latex}{\out{\hypertarget{method-num_observations}{}}}
 \subsection{Method \code{num_observations()}}{
-Return the number of samples/observations/rows in the FeatureTable.
+Alias of \code{FeatureTable$num_samples()}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$num_observations()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-The number of rows in the FeatureTable.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-nobservations"></a>}}
 \if{latex}{\out{\hypertarget{method-nobservations}{}}}
 \subsection{Method \code{nobservations()}}{
-Return the number of samples/observations/rows in the FeatureTable.
+Alias of \code{FeatureTable$num_samples()}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$nobservations()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-The number of rows in the FeatureTable.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-nrow"></a>}}
-\if{latex}{\out{\hypertarget{method-nrow}{}}}
-\subsection{Method \code{nrow()}}{
-Return the number of samples/observations/rows in the FeatureTable.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$nrow()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The number of rows in the FeatureTable.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-num_features"></a>}}
@@ -215,34 +366,18 @@ Return the number of features/columns in the FeatureTable.
 }
 
 \subsection{Returns}{
-The number of columns in the FeatureTable.
+The number of features/columns in the FeatureTable.
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-nfeatures"></a>}}
 \if{latex}{\out{\hypertarget{method-nfeatures}{}}}
 \subsection{Method \code{nfeatures()}}{
-Return the number of features/columns in the FeatureTable.
+Alias of \code{FeatureTable$num_features()}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$nfeatures()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-The number of columns in the FeatureTable.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ncol"></a>}}
-\if{latex}{\out{\hypertarget{method-ncol}{}}}
-\subsection{Method \code{ncol()}}{
-Return the number of features/columns in the FeatureTable.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$ncol()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The number of columns in the FeatureTable.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-sample_names"></a>}}
@@ -261,26 +396,24 @@ The names of samples/observations/rows in the FeatureTable.
 \if{html}{\out{<a id="method-observation_names"></a>}}
 \if{latex}{\out{\hypertarget{method-observation_names}{}}}
 \subsection{Method \code{observation_names()}}{
-Return the names of samples/observations/rows in the FeatureTable.
+Alias of \code{FeatureTable$sample_names()}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$observation_names()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-The names of samples/observations/rows in the FeatureTable.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-feature_names"></a>}}
 \if{latex}{\out{\hypertarget{method-feature_names}{}}}
 \subsection{Method \code{feature_names()}}{
-Return the names of features/columns in the FeatureTable.
+Return the names of samples/observations/rows in the FeatureTable.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$feature_names()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-The names of features/columns in the FeatureTable.
+The names of samples/observations/rows in the FeatureTable.
+\code{\link{map}}
 Convert FeatureTable to phyloseq object.
 }
 }
@@ -650,42 +783,6 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 \subsection{Method \code{collapse_samples()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$collapse_samples(by, keep_na = FALSE, keep_hierarchy = FALSE)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-max"></a>}}
-\if{latex}{\out{\hypertarget{method-max}{}}}
-\subsection{Method \code{max()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$max(...)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-min"></a>}}
-\if{latex}{\out{\hypertarget{method-min}{}}}
-\subsection{Method \code{min()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$min(...)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-non_zero_min"></a>}}
-\if{latex}{\out{\hypertarget{method-non_zero_min}{}}}
-\subsection{Method \code{non_zero_min()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$non_zero_min(...)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-size"></a>}}
-\if{latex}{\out{\hypertarget{method-size}{}}}
-\subsection{Method \code{size()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$size(...)}\if{html}{\out{</div>}}
 }
 
 }

@@ -1,13 +1,12 @@
 #' FeatureTable
 #'
 #' @description
-#' R6 Class representing a feature table and its associated data.
+#' R6 Class for managing feature tables and associated metadata.
 #'
 #' @details
+#' For an overview of the package, run \code{?featuretable} at the R console, or use this link: \link{featuretable}.
 #'
-#' For more details, run \code{?featuretable} at the R console, or use this link: \link{featuretable}.
-#'
-#' Also, each of the methods listed below have extensive documention using their individual help files.  For example, to access detailed documentation for \code{FeatureTable$keep}, run this in the R console: \code{?keep}.
+#' Each of the methods listed below have extensive documention in their individual help files.  For example, to access detailed documentation for \code{FeatureTable$keep}, run this in the R console: \code{?keep}.  As such, the documentation on this page is intentionally kept light.
 #'
 #' @export
 FeatureTable <- R6::R6Class(
@@ -35,7 +34,39 @@ FeatureTable <- R6::R6Class(
     #' @return A new `FeatureTable` object.
     #'
     #' @examples
-    #' "TODO"
+    #' count_table <- matrix(
+    #'   c(
+    #'     0, 0, 0, 1, 10,
+    #'     0, 0, 1, 2, 20,
+    #'     0, 1, 2, 3, 30,
+    #'     1, 2, 3, 4, 40
+    #'   ),
+    #'   byrow = TRUE,
+    #'   nrow = 4,
+    #'   ncol = 5,
+    #'   dimnames = list(Samples = paste0("Sample_", 1:4),
+    #'                   Features = paste0("Feature_", 1:5))
+    #' )
+    #'
+    #' feature_data <- data.frame(
+    #'   Color = c("red", "red", "red", "blue", "blue"),
+    #'   Shape = c("square", "circle", "square", NA, "circle"),
+    #'   Length = c(5, 6, 2.3, 7, 10),
+    #'   row.names = paste0("Feature_", 1:5),
+    #'   stringsAsFactors = TRUE
+    #' )
+    #'
+    #' sample_data <- data.frame(
+    #'   Location = c("Spain", "Spain", "Portugal", "Spain"),
+    #'   Season = c("Summer", "Summer", "Winter", "Winter"),
+    #'   SnazzyFactor = c(10, 12, 25, 3),
+    #'   row.names = paste0("Sample_", 1:4),
+    #'   stringsAsFactors = TRUE
+    #' )
+    #'
+    #' FeatureTable$new(count_table,
+    #'                  feature_data = feature_data,
+    #'                  sample_data = sample_data)
     initialize = function(feature_table,
                           feature_data = NULL,
                           sample_data = NULL,
@@ -67,85 +98,104 @@ FeatureTable <- R6::R6Class(
       }
     },
 
-    #### Dim
-
     #' @description
-    #' Return the dimensions of the FeatureTable.
+    #' Return the dimensions of the FeatureTable \code{data} field.
     #'
     #' @return The dimension of the feature_table.
+    #'
+    #' @examples
+    #' ft <- FeatureTable$new(matrix(1:12, 3, 4))
+    #' stopifnot(ft$dim() == 12)
+    #' stopifnot(ft$nrow() == 3)
+    #' stopifnot(ft$ncol() == 4)
     dim = function() {
       dim(self$data)
     },
 
-    #### Dealing with number of rows
+    #' @description See \code{FeatureTable$dim()}.
+    nrow = function() {
+      nrow(self$data)
+    },
+
+    #' @description See \code{FeatureTable$dim()}.
+    ncol = function() {
+      ncol(self$data)
+    },
+
+    #' @description
+    #' Get the minimum, maximum, size, and other features of the FeatureTable \code{data} field.
+    #'
+    #' @details
+    #' \code{non_zero_min} returns the smallest non-zero number in the \code{data} field.  If any of the values in the \code{data} field are less than zero, then a warning will be given.  In this case, you probably don't want to use \code{non_zero_min}.
+    #'
+    #' @return The min (\code{min}), non-zero min (\code{non_zero_min}), and max (\code{max}) values.  \code{size} returns the number of elements in the \code{data} field (i.e., \code{nrow * ncol} for the \code{data} field).
+    #'
+    #' @examples
+    #' ft <- FeatureTable$new(matrix(0:8, 3, 3))
+    #' stopifnot(ft$min() == 0)
+    #' stopifnot(ft$non_zero_min() == 1)
+    #' stopifnot(ft$max() == 8)
+    #' stopifnot(ft$size() == 9)
+    max = function(...) {
+      max(self$data, ...)
+    },
+
+    #' @description See \code{FeatureTable$max()}.
+    min = function(...) {
+      min(self$data, ...)
+    },
+
+    #' @description See \code{FeatureTable$max()}.
+    non_zero_min = function(...) {
+      result <- min(self$data[self$data != 0], ...)
+
+      if (!is.na(result) && result < 0) {
+        rlang::warn("Non-zero min was negative. Do you really want this function?")
+      }
+
+      result
+    },
+
+    #' @description See \code{FeatureTable$max()}.
+    size = function(...) {
+      nrow(self$data) * ncol(self$data)
+    },
 
     #' @description
     #' Return the number of samples/observations/rows in the FeatureTable.
     #'
-    #' @return The number of rows in the FeatureTable.
+    #' @return The number of samples/observations/rows in the FeatureTable.
     num_samples = function() {
       nrow(self$data)
     },
 
-    #' @description
-    #' Return the number of samples/observations/rows in the FeatureTable.
-    #'
-    #' @return The number of rows in the FeatureTable.
+    #' @description Alias of \code{FeatureTable$num_samples()}.
     nsamples = function() {
       nrow(self$data)
     },
 
-    #' @description
-    #' Return the number of samples/observations/rows in the FeatureTable.
-    #'
-    #' @return The number of rows in the FeatureTable.
+    #' @description Alias of \code{FeatureTable$num_samples()}.
     num_observations = function() {
       nrow(self$data)
     },
 
-    #' @description
-    #' Return the number of samples/observations/rows in the FeatureTable.
-    #'
-    #' @return The number of rows in the FeatureTable.
+    #' @description Alias of \code{FeatureTable$num_samples()}.
     nobservations = function() {
       nrow(self$data)
     },
 
     #' @description
-    #' Return the number of samples/observations/rows in the FeatureTable.
-    #'
-    #' @return The number of rows in the FeatureTable.
-    nrow = function() {
-      nrow(self$data)
-    },
-
-    #### Dealing with number of columns
-
-    #' @description
     #' Return the number of features/columns in the FeatureTable.
     #'
-    #' @return The number of columns in the FeatureTable.
+    #' @return The number of features/columns in the FeatureTable.
     num_features = function() {
       ncol(self$data)
     },
 
-    #' @description
-    #' Return the number of features/columns in the FeatureTable.
-    #'
-    #' @return The number of columns in the FeatureTable.
+    #' @description Alias of \code{FeatureTable$num_features()}.
     nfeatures = function() {
       ncol(self$data)
     },
-
-    #' @description
-    #' Return the number of features/columns in the FeatureTable.
-    #'
-    #' @return The number of columns in the FeatureTable.
-    ncol = function() {
-      ncol(self$data)
-    },
-
-    #### Dealing with row names
 
     #' @description
     #' Return the names of samples/observations/rows in the FeatureTable.
@@ -155,20 +205,15 @@ FeatureTable <- R6::R6Class(
       rownames(self$data)
     },
 
-    #' @description
-    #' Return the names of samples/observations/rows in the FeatureTable.
-    #'
-    #' @return The names of samples/observations/rows in the FeatureTable.
+    #' @description Alias of \code{FeatureTable$sample_names()}.
     observation_names = function() {
       rownames(self$data)
     },
 
-    #### Dealing with col names
-
     #' @description
-    #' Return the names of features/columns in the FeatureTable.
+    #' Return the names of samples/observations/rows in the FeatureTable.
     #'
-    #' @return The names of features/columns in the FeatureTable.
+    #' @return The names of samples/observations/rows in the FeatureTable.
     feature_names = function() {
       colnames(self$data)
     },
@@ -237,6 +282,7 @@ FeatureTable <- R6::R6Class(
       self$apply_with_name(margin = 1, fn, ...)
     },
 
+    #' \code{\link{map}}
     map = function(margin, fn, ...) {
       private$map_wrapper(self$apply, margin, fn, ...)
     },
@@ -1124,30 +1170,6 @@ FeatureTable <- R6::R6Class(
         rlang::abort("Not all data categories passed to the 'by' argument were present in sample_data!",
                      class = Error$ArgumentError)
       }
-    },
-
-    #### little data utils #######################################################
-
-    max = function(...) {
-      max(self$data, ...)
-    },
-
-    min = function(...) {
-      min(self$data, ...)
-    },
-
-    non_zero_min = function(...) {
-      result <- min(self$data[self$data != 0], ...)
-
-      if (!is.na(result) && result < 0) {
-        rlang::warn("Non-zero min was negative. Do you really want this function?")
-      }
-
-      result
-    },
-
-    size = function(...) {
-      nrow(self$data) * ncol(self$data)
     },
 
     # TODO add ... to end of samples and feature names if they're too long

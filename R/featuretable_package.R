@@ -3,12 +3,15 @@
 #' @description
 #' FeatureTable -- an R6 and S3 class for managing feature tables and associated metadata.
 #'
-#' @seealso
 #' Useful links
 #'
 #' \itemize{
-#'   \item{Repository: \url{https://github.com/mooreryan/featuretable/}
-#'   \item{Issue tracker: \url{https://github.com/mooreryan/featuretable/issues}
+#'   \item{
+#'     Repository: \url{https://github.com/mooreryan/featuretable/}
+#'   }
+#'   \item{
+#'     Issue tracker: \url{https://github.com/mooreryan/featuretable/issues}
+#'   }
 #' }
 #'
 #' @author

@@ -2,16 +2,24 @@
 % Please edit documentation in R/feature_table_s3.R
 \name{feature_names}
 \alias{feature_names}
-\title{Features/columns of a FeatureTable}
+\alias{feature_names.FeatureTable}
+\title{Feature/column names of a FeatureTable.}
 \usage{
 feature_names(ft)
+
+\method{feature_names}{FeatureTable}(ft)
 }
 \arguments{
 \item{ft}{A FeatureTable object.}
 }
 \value{
-The names of features/columns in the FeatureTable.
+The names of samples/observations/rows in the FeatureTable.
 }
 \description{
-Return the names of features/columns in the FeatureTable.
+Return the names of samples/observations/rows in the FeatureTable.
 }
+\seealso{
+Other row name functions: 
+\code{\link{sample_names}()}
+}
+\concept{row name functions}

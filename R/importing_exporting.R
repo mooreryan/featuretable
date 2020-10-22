@@ -2,6 +2,11 @@
 #### exporting data ############################################################
 ################################################################################
 
+#' @export
+as.data.frame.FeatureTable <- function(ft) {
+  ft$data
+}
+
 #' Convert FeatureTable to phyloseq object.
 #'
 #' @description

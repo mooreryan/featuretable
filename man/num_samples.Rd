@@ -2,26 +2,42 @@
 % Please edit documentation in R/feature_table_s3.R
 \name{num_samples}
 \alias{num_samples}
+\alias{num_samples.FeatureTable}
+\alias{nsamples}
+\alias{nsamples.FeatureTable}
+\alias{num_observations}
+\alias{num_observations.FeatureTable}
+\alias{nobservations}
+\alias{nobservations.FeatureTable}
 \title{The number of samples/observations/rows of a FeatureTable}
 \usage{
 num_samples(ft)
+
+\method{num_samples}{FeatureTable}(ft)
+
+nsamples(ft)
+
+\method{nsamples}{FeatureTable}(ft)
+
+num_observations(ft)
+
+\method{num_observations}{FeatureTable}(ft)
+
+nobservations(ft)
+
+\method{nobservations}{FeatureTable}(ft)
 }
 \arguments{
 \item{ft}{A FeatureTable object.}
 }
 \value{
-The number of rows in the FeatureTable.
+The number of samples/observations/rows in the FeatureTable.
 }
 \description{
 Return the number of samples/observations/rows in the FeatureTable.
 }
 \seealso{
 Other dimension functions: 
-\code{\link{dim.FeatureTable}()},
-\code{\link{nfeatures}()},
-\code{\link{nobservations}()},
-\code{\link{nsamples}()},
-\code{\link{num_features}()},
-\code{\link{num_observations}()}
+\code{\link{num_features}()}
 }
 \concept{dimension functions}

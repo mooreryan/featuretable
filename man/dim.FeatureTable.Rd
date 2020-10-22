@@ -2,7 +2,7 @@
 % Please edit documentation in R/feature_table_s3.R
 \name{dim.FeatureTable}
 \alias{dim.FeatureTable}
-\title{Dimensions of a FeatureTable}
+\title{Dimensions of FeatureTable data.}
 \usage{
 \method{dim}{FeatureTable}(x)
 }
@@ -13,17 +13,16 @@
 The dimension of the feature_table.
 }
 \description{
-Return the dimensions of the FeatureTable.
+Return the dimensions of the FeatureTable \code{data} field.
+}
+\examples{
+ft <- FeatureTable$new(matrix(1:12, 3, 4))
+stopifnot(dimft() == 12)
+stopifnot(nrow(ft) == 3)
+stopifnot(ncol(ft) == 4)
+
 }
 \seealso{
-\code{\link{dim}} for generic method, \code{\link{FeatureTable}} for R6 method.
-
-Other dimension functions: 
-\code{\link{nfeatures}()},
-\code{\link{nobservations}()},
-\code{\link{nsamples}()},
-\code{\link{num_features}()},
-\code{\link{num_observations}()},
-\code{\link{num_samples}()}
+\code{\link{dim}} for generic method.
 }
-\concept{dimension functions}
+\concept{general s3-like functions}
