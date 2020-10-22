@@ -99,6 +99,48 @@ FeatureTable <- R6::R6Class(
     },
 
     #' @description
+    #' Print FeatureTable
+    #'
+    #' @details
+    #' Prints \code{self} and returns it invisibly (via \code{invisible(self)}).
+    #'
+    #' @examples
+    #' # `lee` is a dataset included in the FeatureTable package.
+    #' featuretable::lee$print()
+    #' # it would print out something like this:
+    #' # FeatureTable:
+    #' #   data         -- 16 samples, 1490 features
+    #' #   feature_data -- 7 covariates
+    #' #   sample_data  -- 4 covariates
+    #'
+    #' @return \code{invisible(self)}
+    print = function(...) {
+      cat("FeatureTable: \n")
+      cat("  data         -- ",
+          self$num_samples(),
+          " samples, ",
+          self$num_features(),
+          " features\n",
+          sep = "")
+
+      if (!is.null(self$feature_data)) {
+        cat("  feature_data -- ",
+            ncol(self$feature_data),
+            " covariates\n",
+            sep = "")
+      }
+
+      if (!is.null(self$sample_data)) {
+        cat("  sample_data  -- ",
+            ncol(self$sample_data),
+            " covariates\n",
+            sep = "")
+      }
+
+      invisible(self)
+    },
+
+    #' @description
     #' Return the dimensions of the FeatureTable \code{data} field.
     #'
     #' @return The dimension of the feature_table.
@@ -216,32 +258,6 @@ FeatureTable <- R6::R6Class(
     #' @return The names of samples/observations/rows in the FeatureTable.
     feature_names = function() {
       colnames(self$data)
-    },
-
-    print = function(...) {
-      cat("FeatureTable: \n")
-      cat("  data         -- ",
-          self$num_samples(),
-          " samples, ",
-          self$num_features(),
-          " features\n",
-          sep = "")
-
-      if (!is.null(self$feature_data)) {
-        cat("  feature_data -- ",
-            ncol(self$feature_data),
-            " covariates\n",
-            sep = "")
-      }
-
-      if (!is.null(self$sample_data)) {
-        cat("  sample_data  -- ",
-            ncol(self$sample_data),
-            " covariates\n",
-            sep = "")
-      }
-
-      invisible(self)
     },
 
     apply = function(margin, fn, ...) {
