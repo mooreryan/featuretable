@@ -1448,146 +1448,8 @@ FeatureTable <- R6::R6Class(
     },
 
     ################################################################################
-    #### Conversion ################################################################
+    #### core microbiome ###########################################################
     ################################################################################
-
-    # TODO remove title
-    #' Convert FeatureTable to phyloseq object.
-    #'
-    #' @description
-    #' If the 'phyloseq' package is not installed, it raises an Error.
-    #'
-    #' @param ft A FeatureTable
-    #'
-    #' @return a phyloseq object
-    as_phyloseq = function() {
-      if (package_available("phyloseq")) {
-        phyloseq::phyloseq(
-          phyloseq::otu_table(self$data, taxa_are_rows = FALSE),
-
-          # Need to manually ensure that this is a matrix.
-          #
-          # TODO FeatureTable feature_data doesn't have to be hierarchical, will this mess up phyloseq?
-          phyloseq::tax_table(as.matrix(self$feature_data)),
-
-          phyloseq::sample_data(self$sample_data)
-        )
-      } else {
-        rlang::abort("Package 'phyloseq' is not available.  Try installing it first!",
-                     class = Error$PhyloseqUnavailableError)
-      }
-    },
-
-    #### Querying
-
-    #' Is the FeatureTable a count table?
-    #'
-    #' @param ft A FeatureTable
-    #'
-    #' @return TRUE if \code{feature_table} contains only natural numbers (counting numbers >= 0), FALSE otherwise.
-    is_count_table = function() {
-      all(is_natural_number(self$data))
-    },
-
-    #### CoDA basics
-
-    # TODO note that replacement is ignored if use_cmultRepl = TRUE.
-
-    #' Replacing zeros.
-    #'
-    #' @param replacement (Ignored if \code{use_cmultRepl = TRUE})
-    #' @param tol (Ignored if \code{use_cmultRepl = TRUE})
-    #' @param use_cmultRepl TRUE/FALSE whether to use \code{cmultRepl} function.
-    #' @param ... Extra arguments (i.g., passed to \code{cmultRepl})
-    #'
-    #' @return A new FeatureTable with the zeros in \code{data} replaced.
-    replace_zeros = function(replacement = 0.05,
-                             tol = .Machine$double.eps ^ 0.5,
-                             use_cmultRepl = FALSE,
-                             ...) {
-      if (isTRUE(use_cmultRepl) && package_available("zCompositions")) {
-        extra_args <- eval(substitute(alist(...)))
-
-        if (is.null(extra_args$output)) {
-          new_feature_table <- zCompositions::cmultRepl(self$data, output = "p-counts", ...)
-        } else {
-          new_feature_table <- zCompositions::cmultRepl(self$data, ...)
-        }
-      } else if (isTRUE(use_cmultRepl)) {
-        rlang::abort("Package 'zCompositions' is not available.  Try installing it!",
-                     class = Error$zCompositionsUnavailableError)
-      } else if (tol >= replacement) {
-        rlang::abort("tol must be < replacement", class = Error$ArgumentError)
-      } else {
-        new_feature_table <- ifelse(self$data < tol, replacement, self$data)
-      }
-
-      FeatureTable$new(feature_table = new_feature_table,
-                       sample_data = self$sample_data,
-                       feature_data = self$feature_data)
-    },
-
-    #' Centered log ratio.
-    #'
-    #' @param ft A Feature table.
-    #' @param base Base of logarithm.
-    #'
-    #' @return A FeatureTable with the \code{data} transformed with centered log ratio.
-    clr = function(base = 2) {
-      if (any(self$data <= 0)) {
-        rlang::abort("At least one value was <= 0.  Did you replace zeros?",
-                     class = Error$DomainError)
-      }
-
-      transformed_data <- t(apply(self$data, 1, function(x) {
-        log(x, base = base) - mean(log(x, base = base))
-      }))
-
-
-      FeatureTable$new(
-        transformed_data,
-        sample_data = self$sample_data,
-        feature_data = self$feature_data
-      )
-    },
-
-    # Be careful if you use_biplotr = TRUE, not to set options for the normal biplot function.
-    pca_biplot = function(use_biplotr = FALSE, include_sample_data = FALSE, ...) {
-      if (isTRUE(use_biplotr)) {
-        # Need to check some things!
-        if (package_unavailable("biplotr")) {
-          rlang::abort("Package 'biplotr' is not available. Try installing it.",
-                       class = Error$PackageUnavailableError)
-        }
-
-        if (isTRUE(include_sample_data)) {
-          if (is.null(self$sample_data)) {
-            rlang::abort("self$sample_data is NULL, but include_sample_data was TRUE. Check your arguments.",
-                         class = Error$ArgumentError)
-          }
-
-          plot_data <- base::merge(self$data, self$sample_data, by = "row.names")
-
-          # plot_data doesn't have rownames correct...fix it!
-          rownames(plot_data) <- plot_data$Row.names
-          plot_data$Row.names <- NULL
-
-          # TODO handle case where na are present in sample_data
-
-          biplotr::pca_biplot(plot_data, data_cols = 1:self$num_features(), ...)
-        } else {
-          biplotr::pca_biplot(self$data, ...)
-        }
-      } else {
-        # Need to check some more things!
-        if (isTRUE(include_sample_data)) {
-          rlang::abort("include_sample_data was TRUE, but use_biplotr was FALSE. Check your arguments.",
-                       class = Error$ArgumentError)
-        }
-
-        biplot(prcomp(self$data), ...)
-      }
-    },
 
     # both are greater than or equal to
     core_microbiome = function(detection_limit = 1,
@@ -1692,6 +1554,156 @@ FeatureTable <- R6::R6Class(
 
         samples_present >= min_samples && samples_present <= max_samples
       })
+    },
+
+    ################################################################################
+    #### Conversion ################################################################
+    ################################################################################
+
+    # TODO remove title
+    #' Convert FeatureTable to phyloseq object.
+    #'
+    #' @description
+    #' If the 'phyloseq' package is not installed, it raises an Error.
+    #'
+    #' @param ft A FeatureTable
+    #'
+    #' @return a phyloseq object
+    as_phyloseq = function() {
+      if (package_available("phyloseq")) {
+        phyloseq::phyloseq(
+          phyloseq::otu_table(self$data, taxa_are_rows = FALSE),
+
+          # Need to manually ensure that this is a matrix.
+          #
+          # TODO FeatureTable feature_data doesn't have to be hierarchical, will this mess up phyloseq?
+          phyloseq::tax_table(as.matrix(self$feature_data)),
+
+          phyloseq::sample_data(self$sample_data)
+        )
+      } else {
+        rlang::abort("Package 'phyloseq' is not available.  Try installing it first!",
+                     class = Error$PhyloseqUnavailableError)
+      }
+    },
+
+    ################################################################################
+    #### CoDA ######################################################################
+    ################################################################################
+
+    #' @description Is the FeatureTable a count table?
+    #'
+    #' @return TRUE if \code{feature_table} contains only natural numbers (counting numbers >= 0), FALSE otherwise.
+    is_count_table = function() {
+      all(is_natural_number(self$data))
+    },
+
+    #' @description Replacing zeros.
+    #'
+    #' @details
+    #' If \code{use_cmultRepl = TRUE} but \code{zCompositions::cmultRepl} is not
+    #' availabel, it will raise an error.
+    #'
+    #' @param replacement (Ignored if \code{use_cmultRepl = TRUE})
+    #' @param tol (Ignored if \code{use_cmultRepl = TRUE})
+    #' @param use_cmultRepl TRUE/FALSE whether to use \code{cmultRepl} function.
+    #' @param ... Extra arguments (i.g., passed to \code{cmultRepl})
+    #'
+    #' @return A new FeatureTable with the zeros in \code{data} replaced.
+    replace_zeros = function(replacement = 0.05,
+                             tol = .Machine$double.eps ^ 0.5,
+                             use_cmultRepl = FALSE,
+                             ...) {
+      if (isTRUE(use_cmultRepl) && package_available("zCompositions")) {
+        extra_args <- eval(substitute(alist(...)))
+
+        if (is.null(extra_args$output)) {
+          new_feature_table <- zCompositions::cmultRepl(self$data, output = "p-counts", ...)
+        } else {
+          new_feature_table <- zCompositions::cmultRepl(self$data, ...)
+        }
+      } else if (isTRUE(use_cmultRepl)) {
+        rlang::abort("Package 'zCompositions' is not available.  Try installing it!",
+                     class = Error$zCompositionsUnavailableError)
+      } else if (tol >= replacement) {
+        rlang::abort("tol must be < replacement", class = Error$ArgumentError)
+      } else {
+        new_feature_table <- ifelse(self$data < tol, replacement, self$data)
+      }
+
+      FeatureTable$new(feature_table = new_feature_table,
+                       sample_data = self$sample_data,
+                       feature_data = self$feature_data)
+    },
+
+    #' @description Centered log ratio.
+    #'
+    #' @details
+    #' See
+    #' \url{https://en.wikipedia.org/wiki/Compositional_data#Center_logratio_transform}.
+    #'
+    #' @param base Base of logarithm.
+    #'
+    #' @return
+    #' A FeatureTable with the \code{data} transformed with centered log ratio.
+    clr = function(base = 2) {
+      if (any(self$data <= 0)) {
+        rlang::abort("At least one value was <= 0.  Did you replace zeros?",
+                     class = Error$DomainError)
+      }
+
+      transformed_data <- t(apply(self$data, 1, function(x) {
+        log(x, base = base) - mean(log(x, base = base))
+      }))
+
+
+      FeatureTable$new(
+        transformed_data,
+        sample_data = self$sample_data,
+        feature_data = self$feature_data
+      )
+    },
+
+    ################################################################################
+    #### plotting ##################################################################
+    ################################################################################
+
+    # Be careful if you use_biplotr = TRUE, not to set options for the normal biplot function.
+    pca_biplot = function(use_biplotr = FALSE, include_sample_data = FALSE, ...) {
+      if (isTRUE(use_biplotr)) {
+        # Need to check some things!
+        if (package_unavailable("biplotr")) {
+          rlang::abort("Package 'biplotr' is not available. Try installing it.",
+                       class = Error$PackageUnavailableError)
+        }
+
+        if (isTRUE(include_sample_data)) {
+          if (is.null(self$sample_data)) {
+            rlang::abort("self$sample_data is NULL, but include_sample_data was TRUE. Check your arguments.",
+                         class = Error$ArgumentError)
+          }
+
+          plot_data <- base::merge(self$data, self$sample_data, by = "row.names")
+
+          # plot_data doesn't have rownames correct...fix it!
+          rownames(plot_data) <- plot_data$Row.names
+          plot_data$Row.names <- NULL
+
+          # TODO handle case where na are present in sample_data
+
+          biplotr::pca_biplot(plot_data, data_cols = 1:self$num_features(), ...)
+        } else {
+          biplotr::pca_biplot(self$data, ...)
+        }
+      } else {
+        # Need to check some more things!
+        if (isTRUE(include_sample_data)) {
+          rlang::abort("include_sample_data was TRUE, but use_biplotr was FALSE. Check your arguments.",
+                       class = Error$ArgumentError)
+        }
+
+        biplot(prcomp(self$data), ...)
+      }
     },
 
     # TODO add ... to end of samples and feature names if they're too long

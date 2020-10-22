@@ -473,12 +473,12 @@ ft$keep_features(
 \item \href{#method-shared_features}{\code{FeatureTable$shared_features()}}
 \item \href{#method-keep_shared_features}{\code{FeatureTable$keep_shared_features()}}
 \item \href{#method-shared_feature_names}{\code{FeatureTable$shared_feature_names()}}
+\item \href{#method-core_microbiome}{\code{FeatureTable$core_microbiome()}}
 \item \href{#method-as_phyloseq}{\code{FeatureTable$as_phyloseq()}}
 \item \href{#method-is_count_table}{\code{FeatureTable$is_count_table()}}
 \item \href{#method-replace_zeros}{\code{FeatureTable$replace_zeros()}}
 \item \href{#method-clr}{\code{FeatureTable$clr()}}
 \item \href{#method-pca_biplot}{\code{FeatureTable$pca_biplot()}}
-\item \href{#method-core_microbiome}{\code{FeatureTable$core_microbiome()}}
 \item \href{#method-plot}{\code{FeatureTable$plot()}}
 \item \href{#method-clone}{\code{FeatureTable$clone()}}
 }
@@ -1587,6 +1587,21 @@ Convert FeatureTable to phyloseq object.
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-core_microbiome"></a>}}
+\if{latex}{\out{\hypertarget{method-core_microbiome}{}}}
+\subsection{Method \code{core_microbiome()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$core_microbiome(
+  detection_limit = 1,
+  min_sample_proportion = NULL,
+  max_sample_proportion = NULL,
+  min_samples = NULL,
+  max_samples = NULL
+)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-as_phyloseq"></a>}}
 \if{latex}{\out{\hypertarget{method-as_phyloseq}{}}}
 \subsection{Method \code{as_phyloseq()}}{
@@ -1604,33 +1619,26 @@ If the 'phyloseq' package is not installed, it raises an Error.
 }
 \subsection{Returns}{
 a phyloseq object
-Is the FeatureTable a count table?
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-is_count_table"></a>}}
 \if{latex}{\out{\hypertarget{method-is_count_table}{}}}
 \subsection{Method \code{is_count_table()}}{
+Is the FeatureTable a count table?
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$is_count_table()}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{ft}}{A FeatureTable}
-}
-\if{html}{\out{</div>}}
-}
 \subsection{Returns}{
 TRUE if \code{feature_table} contains only natural numbers (counting numbers >= 0), FALSE otherwise.
-Replacing zeros.
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-replace_zeros"></a>}}
 \if{latex}{\out{\hypertarget{method-replace_zeros}{}}}
 \subsection{Method \code{replace_zeros()}}{
+Replacing zeros.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$replace_zeros(
   replacement = 0.05,
@@ -1653,15 +1661,20 @@ Replacing zeros.
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Details}{
+If \code{use_cmultRepl = TRUE} but \code{zCompositions::cmultRepl} is not
+availabel, it will raise an error.
+}
+
 \subsection{Returns}{
 A new FeatureTable with the zeros in \code{data} replaced.
-Centered log ratio.
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clr"></a>}}
 \if{latex}{\out{\hypertarget{method-clr}{}}}
 \subsection{Method \code{clr()}}{
+Centered log ratio.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$clr(base = 2)}\if{html}{\out{</div>}}
 }
@@ -1670,11 +1683,14 @@ Centered log ratio.
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{base}}{Base of logarithm.}
-
-\item{\code{ft}}{A Feature table.}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Details}{
+See
+\url{https://en.wikipedia.org/wiki/Compositional_data#Center_logratio_transform}.
+}
+
 \subsection{Returns}{
 A FeatureTable with the \code{data} transformed with centered log ratio.
 }
@@ -1685,21 +1701,6 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 \subsection{Method \code{pca_biplot()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$pca_biplot(use_biplotr = FALSE, include_sample_data = FALSE, ...)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-core_microbiome"></a>}}
-\if{latex}{\out{\hypertarget{method-core_microbiome}{}}}
-\subsection{Method \code{core_microbiome()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FeatureTable$core_microbiome(
-  detection_limit = 1,
-  min_sample_proportion = NULL,
-  max_sample_proportion = NULL,
-  min_samples = NULL,
-  max_samples = NULL
-)}\if{html}{\out{</div>}}
 }
 
 }

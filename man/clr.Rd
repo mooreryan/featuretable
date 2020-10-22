@@ -2,9 +2,12 @@
 % Please edit documentation in R/coda.R
 \name{clr}
 \alias{clr}
+\alias{clr.FeatureTable}
 \title{Centered log ratio.}
 \usage{
 clr(ft, base = 2)
+
+\method{clr}{FeatureTable}(ft, base = 2)
 }
 \arguments{
 \item{ft}{A Feature table.}
@@ -16,4 +19,7 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 }
 \description{
 Centered log ratio.
+}
+\details{
+See \url{https://en.wikipedia.org/wiki/Compositional_data#Center_logratio_transform}.
 }

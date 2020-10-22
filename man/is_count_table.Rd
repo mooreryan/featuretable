@@ -2,9 +2,12 @@
 % Please edit documentation in R/coda.R
 \name{is_count_table}
 \alias{is_count_table}
+\alias{is_count_table.FeatureTable}
 \title{Is the FeatureTable a count table?}
 \usage{
 is_count_table(ft)
+
+\method{is_count_table}{FeatureTable}(ft)
 }
 \arguments{
 \item{ft}{A FeatureTable}
