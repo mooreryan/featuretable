@@ -1,5 +1,27 @@
 # FeatureTable
 
+*Note:  I still consider FeatureTable to be in the pre-release stage.  The code itself is well tested and I use it in my own research, but the API has not stabalized and is still subject to breaking changes when I cut a new release.*
+
+## Installing
+
+Go to the [Releases page](https://github.com/mooreryan/featuretable/releases) and click on the latest release.  Follow the instructions there to install.  There are few strictly required dependencies, but some features will only work if you install some extras.  See the [dependencies section of this readme](https://github.com/mooreryan/featuretable#dependencies).
+
+If you are an R developer, feel free to clone the repository and use developer tools to build and use the package.
+
+## Usage
+
+### Vignettes
+
+`FeatureTable` comes with a few detailed vignettes describing its usage.  After installing, you can view them with the following command:
+
+```
+browseVignettes("featuretable")
+```
+
+### Function docs
+
+Additionally, each function has a lot of info in the help section.  You can run `?featuretable` to get an overview of everything.  Click on the links in there to get to individual function docs.  You can also access function docs with the `?`, e.g., `?keep_samples`.
+
 ## Dependencies
 
 ### Required
