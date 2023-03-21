@@ -28,6 +28,8 @@ Suggests:
     tidyr,
     vdiffr,
     zCompositions
+Remotes:
+    mooreryan/biplotr@0.0.13
 RoxygenNote: 7.2.1
 Depends: 
     R (>= 2.10)
