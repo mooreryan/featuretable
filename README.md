@@ -79,11 +79,13 @@ Additionally, each function has a lot of info in the help section. You can run `
 
 `R CMD CHECK`, which includes unit tests, are run via GitHub CI for the following versions:
 
-- Latest release
-- 4.1.3
-- 4.0.5
-- 3.6.3
-- 3.5.3
+- MacOS, Windows, & Ubuntu
+  - Latest release
+- Ubuntu
+  - 4.1.3
+  - 4.0.5
+  - 3.6.3
+  - 3.5.3
 
 So as long as that is passing (see the badge at the top of the README), then you can be (pretty) sure the package works with both R v3 and v4.
 
