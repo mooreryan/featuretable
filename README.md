@@ -72,3 +72,9 @@ Optionally, run the following command to remove tracking references to the old b
 ```
 git remote prune origin
 ```
+
+## Hacking
+
+- If you make an update to the core R6 class, make sure you regenerate the `.rda` files in `data`, using the scripts in `data-raw`.
+  - Note that generating the data files requires the [DivNet](https://github.com/adw96/DivNet) R package.
+  - You can use the recipe in the `justfile` for this.
