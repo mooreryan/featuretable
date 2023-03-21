@@ -1234,9 +1234,9 @@ FeatureTable <- R6::R6Class(
         },
 
         expr_has_query_function = function(ex) {
-          if (!rlang::is_expression(ex)) {
-            stop("TODO NEEDED AN EXPRESSION")
-          }
+          if (!rlang::is_call(rlang::enexpr(ex))) {
+            stop("NEEDED A CALL")
+          } 
 
           # TODO what happens if user has 'query' in their calling env?
           any(
