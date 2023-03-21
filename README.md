@@ -53,3 +53,22 @@ Additionally, each function has a lot of info in the help section.  You can run 
   - In theory, you should be fine passing in `data.frame`s that don't have their strings as factors, since `FeatureTable` will convert all strings to factors, but as of 2020-09-22, I haven't tested it.
   - This behavior may change in the future though!
 - One thing to note is that `as.data.frame.FeatureTable` does not have a `stringsAsFactors` parameter.  This shouldn't be a problem as string-esque data is not allowed in the `data` field anyway.
+
+## Default branch is now main
+
+The default branch is now `main`, and the `master` branch no longer exists.
+
+If you have a local clone using `master` as the default branch, you can [update](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-branches-in-your-repository/renaming-a-branch) it by running the following commands.
+
+```
+git branch -m master main
+git fetch origin
+git branch -u origin/main main
+git remote set-head origin -a
+```
+
+Optionally, run the following command to remove tracking references to the old branch name.
+
+```
+git remote prune origin
+```
