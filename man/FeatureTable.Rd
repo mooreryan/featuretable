@@ -430,64 +430,64 @@ ft$keep_features(
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{FeatureTable$new()}}
-\item \href{#method-print}{\code{FeatureTable$print()}}
-\item \href{#method-dim}{\code{FeatureTable$dim()}}
-\item \href{#method-nrow}{\code{FeatureTable$nrow()}}
-\item \href{#method-ncol}{\code{FeatureTable$ncol()}}
-\item \href{#method-max}{\code{FeatureTable$max()}}
-\item \href{#method-min}{\code{FeatureTable$min()}}
-\item \href{#method-non_zero_min}{\code{FeatureTable$non_zero_min()}}
-\item \href{#method-size}{\code{FeatureTable$size()}}
-\item \href{#method-num_samples}{\code{FeatureTable$num_samples()}}
-\item \href{#method-nsamples}{\code{FeatureTable$nsamples()}}
-\item \href{#method-num_observations}{\code{FeatureTable$num_observations()}}
-\item \href{#method-nobservations}{\code{FeatureTable$nobservations()}}
-\item \href{#method-num_features}{\code{FeatureTable$num_features()}}
-\item \href{#method-nfeatures}{\code{FeatureTable$nfeatures()}}
-\item \href{#method-sample_names}{\code{FeatureTable$sample_names()}}
-\item \href{#method-observation_names}{\code{FeatureTable$observation_names()}}
-\item \href{#method-feature_names}{\code{FeatureTable$feature_names()}}
-\item \href{#method-apply}{\code{FeatureTable$apply()}}
-\item \href{#method-apply_with_index}{\code{FeatureTable$apply_with_index()}}
-\item \href{#method-apply_with_name}{\code{FeatureTable$apply_with_name()}}
-\item \href{#method-apply_features}{\code{FeatureTable$apply_features()}}
-\item \href{#method-apply_features_with_index}{\code{FeatureTable$apply_features_with_index()}}
-\item \href{#method-apply_features_with_name}{\code{FeatureTable$apply_features_with_name()}}
-\item \href{#method-apply_samples}{\code{FeatureTable$apply_samples()}}
-\item \href{#method-apply_samples_with_index}{\code{FeatureTable$apply_samples_with_index()}}
-\item \href{#method-apply_samples_with_name}{\code{FeatureTable$apply_samples_with_name()}}
-\item \href{#method-map}{\code{FeatureTable$map()}}
-\item \href{#method-map_with_index}{\code{FeatureTable$map_with_index()}}
-\item \href{#method-map_with_name}{\code{FeatureTable$map_with_name()}}
-\item \href{#method-map_features}{\code{FeatureTable$map_features()}}
-\item \href{#method-map_features_with_index}{\code{FeatureTable$map_features_with_index()}}
-\item \href{#method-map_features_with_name}{\code{FeatureTable$map_features_with_name()}}
-\item \href{#method-map_samples}{\code{FeatureTable$map_samples()}}
-\item \href{#method-map_samples_with_index}{\code{FeatureTable$map_samples_with_index()}}
-\item \href{#method-map_samples_with_name}{\code{FeatureTable$map_samples_with_name()}}
-\item \href{#method-collapse}{\code{FeatureTable$collapse()}}
-\item \href{#method-collapse_features}{\code{FeatureTable$collapse_features()}}
-\item \href{#method-collapse_samples}{\code{FeatureTable$collapse_samples()}}
-\item \href{#method-keep}{\code{FeatureTable$keep()}}
-\item \href{#method-keep_features}{\code{FeatureTable$keep_features()}}
-\item \href{#method-keep_samples}{\code{FeatureTable$keep_samples()}}
-\item \href{#method-shared_features}{\code{FeatureTable$shared_features()}}
-\item \href{#method-keep_shared_features}{\code{FeatureTable$keep_shared_features()}}
-\item \href{#method-shared_feature_names}{\code{FeatureTable$shared_feature_names()}}
-\item \href{#method-core_microbiome}{\code{FeatureTable$core_microbiome()}}
-\item \href{#method-is_count_table}{\code{FeatureTable$is_count_table()}}
-\item \href{#method-replace_zeros}{\code{FeatureTable$replace_zeros()}}
-\item \href{#method-clr}{\code{FeatureTable$clr()}}
-\item \href{#method-plot}{\code{FeatureTable$plot()}}
-\item \href{#method-pca_biplot}{\code{FeatureTable$pca_biplot()}}
-\item \href{#method-as_phyloseq}{\code{FeatureTable$as_phyloseq()}}
-\item \href{#method-clone}{\code{FeatureTable$clone()}}
+\item \href{#method-FeatureTable-new}{\code{FeatureTable$new()}}
+\item \href{#method-FeatureTable-print}{\code{FeatureTable$print()}}
+\item \href{#method-FeatureTable-dim}{\code{FeatureTable$dim()}}
+\item \href{#method-FeatureTable-nrow}{\code{FeatureTable$nrow()}}
+\item \href{#method-FeatureTable-ncol}{\code{FeatureTable$ncol()}}
+\item \href{#method-FeatureTable-max}{\code{FeatureTable$max()}}
+\item \href{#method-FeatureTable-min}{\code{FeatureTable$min()}}
+\item \href{#method-FeatureTable-non_zero_min}{\code{FeatureTable$non_zero_min()}}
+\item \href{#method-FeatureTable-size}{\code{FeatureTable$size()}}
+\item \href{#method-FeatureTable-num_samples}{\code{FeatureTable$num_samples()}}
+\item \href{#method-FeatureTable-nsamples}{\code{FeatureTable$nsamples()}}
+\item \href{#method-FeatureTable-num_observations}{\code{FeatureTable$num_observations()}}
+\item \href{#method-FeatureTable-nobservations}{\code{FeatureTable$nobservations()}}
+\item \href{#method-FeatureTable-num_features}{\code{FeatureTable$num_features()}}
+\item \href{#method-FeatureTable-nfeatures}{\code{FeatureTable$nfeatures()}}
+\item \href{#method-FeatureTable-sample_names}{\code{FeatureTable$sample_names()}}
+\item \href{#method-FeatureTable-observation_names}{\code{FeatureTable$observation_names()}}
+\item \href{#method-FeatureTable-feature_names}{\code{FeatureTable$feature_names()}}
+\item \href{#method-FeatureTable-apply}{\code{FeatureTable$apply()}}
+\item \href{#method-FeatureTable-apply_with_index}{\code{FeatureTable$apply_with_index()}}
+\item \href{#method-FeatureTable-apply_with_name}{\code{FeatureTable$apply_with_name()}}
+\item \href{#method-FeatureTable-apply_features}{\code{FeatureTable$apply_features()}}
+\item \href{#method-FeatureTable-apply_features_with_index}{\code{FeatureTable$apply_features_with_index()}}
+\item \href{#method-FeatureTable-apply_features_with_name}{\code{FeatureTable$apply_features_with_name()}}
+\item \href{#method-FeatureTable-apply_samples}{\code{FeatureTable$apply_samples()}}
+\item \href{#method-FeatureTable-apply_samples_with_index}{\code{FeatureTable$apply_samples_with_index()}}
+\item \href{#method-FeatureTable-apply_samples_with_name}{\code{FeatureTable$apply_samples_with_name()}}
+\item \href{#method-FeatureTable-map}{\code{FeatureTable$map()}}
+\item \href{#method-FeatureTable-map_with_index}{\code{FeatureTable$map_with_index()}}
+\item \href{#method-FeatureTable-map_with_name}{\code{FeatureTable$map_with_name()}}
+\item \href{#method-FeatureTable-map_features}{\code{FeatureTable$map_features()}}
+\item \href{#method-FeatureTable-map_features_with_index}{\code{FeatureTable$map_features_with_index()}}
+\item \href{#method-FeatureTable-map_features_with_name}{\code{FeatureTable$map_features_with_name()}}
+\item \href{#method-FeatureTable-map_samples}{\code{FeatureTable$map_samples()}}
+\item \href{#method-FeatureTable-map_samples_with_index}{\code{FeatureTable$map_samples_with_index()}}
+\item \href{#method-FeatureTable-map_samples_with_name}{\code{FeatureTable$map_samples_with_name()}}
+\item \href{#method-FeatureTable-collapse}{\code{FeatureTable$collapse()}}
+\item \href{#method-FeatureTable-collapse_features}{\code{FeatureTable$collapse_features()}}
+\item \href{#method-FeatureTable-collapse_samples}{\code{FeatureTable$collapse_samples()}}
+\item \href{#method-FeatureTable-keep}{\code{FeatureTable$keep()}}
+\item \href{#method-FeatureTable-keep_features}{\code{FeatureTable$keep_features()}}
+\item \href{#method-FeatureTable-keep_samples}{\code{FeatureTable$keep_samples()}}
+\item \href{#method-FeatureTable-shared_features}{\code{FeatureTable$shared_features()}}
+\item \href{#method-FeatureTable-keep_shared_features}{\code{FeatureTable$keep_shared_features()}}
+\item \href{#method-FeatureTable-shared_feature_names}{\code{FeatureTable$shared_feature_names()}}
+\item \href{#method-FeatureTable-core_microbiome}{\code{FeatureTable$core_microbiome()}}
+\item \href{#method-FeatureTable-is_count_table}{\code{FeatureTable$is_count_table()}}
+\item \href{#method-FeatureTable-replace_zeros}{\code{FeatureTable$replace_zeros()}}
+\item \href{#method-FeatureTable-clr}{\code{FeatureTable$clr()}}
+\item \href{#method-FeatureTable-plot}{\code{FeatureTable$plot()}}
+\item \href{#method-FeatureTable-pca_biplot}{\code{FeatureTable$pca_biplot()}}
+\item \href{#method-FeatureTable-as_phyloseq}{\code{FeatureTable$as_phyloseq()}}
+\item \href{#method-FeatureTable-clone}{\code{FeatureTable$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-FeatureTable-new"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new FeatureTable object.
 \subsection{Usage}{
@@ -557,8 +557,8 @@ FeatureTable$new(count_table,
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-FeatureTable-print"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-print}{}}}
 \subsection{Method \code{print()}}{
 Print FeatureTable
 \subsection{Usage}{
@@ -589,8 +589,8 @@ featuretable::lee$print()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-dim"></a>}}
-\if{latex}{\out{\hypertarget{method-dim}{}}}
+\if{html}{\out{<a id="method-FeatureTable-dim"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-dim}{}}}
 \subsection{Method \code{dim()}}{
 Return the dimensions of the FeatureTable \code{data} field.
 \subsection{Usage}{
@@ -613,8 +613,8 @@ stopifnot(ft$ncol() == 4)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-nrow"></a>}}
-\if{latex}{\out{\hypertarget{method-nrow}{}}}
+\if{html}{\out{<a id="method-FeatureTable-nrow"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-nrow}{}}}
 \subsection{Method \code{nrow()}}{
 See \code{FeatureTable$dim()}.
 \subsection{Usage}{
@@ -623,8 +623,8 @@ See \code{FeatureTable$dim()}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ncol"></a>}}
-\if{latex}{\out{\hypertarget{method-ncol}{}}}
+\if{html}{\out{<a id="method-FeatureTable-ncol"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-ncol}{}}}
 \subsection{Method \code{ncol()}}{
 See \code{FeatureTable$dim()}.
 \subsection{Usage}{
@@ -633,8 +633,8 @@ See \code{FeatureTable$dim()}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-max"></a>}}
-\if{latex}{\out{\hypertarget{method-max}{}}}
+\if{html}{\out{<a id="method-FeatureTable-max"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-max}{}}}
 \subsection{Method \code{max()}}{
 Get the minimum, maximum, size, and other features of the FeatureTable \code{data} field.
 \subsection{Usage}{
@@ -662,8 +662,8 @@ stopifnot(ft$size() == 9)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-min"></a>}}
-\if{latex}{\out{\hypertarget{method-min}{}}}
+\if{html}{\out{<a id="method-FeatureTable-min"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-min}{}}}
 \subsection{Method \code{min()}}{
 See \code{FeatureTable$max()}.
 \subsection{Usage}{
@@ -672,8 +672,8 @@ See \code{FeatureTable$max()}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-non_zero_min"></a>}}
-\if{latex}{\out{\hypertarget{method-non_zero_min}{}}}
+\if{html}{\out{<a id="method-FeatureTable-non_zero_min"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-non_zero_min}{}}}
 \subsection{Method \code{non_zero_min()}}{
 See \code{FeatureTable$max()}.
 \subsection{Usage}{
@@ -682,8 +682,8 @@ See \code{FeatureTable$max()}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-size"></a>}}
-\if{latex}{\out{\hypertarget{method-size}{}}}
+\if{html}{\out{<a id="method-FeatureTable-size"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-size}{}}}
 \subsection{Method \code{size()}}{
 See \code{FeatureTable$max()}.
 \subsection{Usage}{
@@ -692,8 +692,8 @@ See \code{FeatureTable$max()}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-num_samples"></a>}}
-\if{latex}{\out{\hypertarget{method-num_samples}{}}}
+\if{html}{\out{<a id="method-FeatureTable-num_samples"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-num_samples}{}}}
 \subsection{Method \code{num_samples()}}{
 Return the number of samples/observations/rows in the FeatureTable.
 \subsection{Usage}{
@@ -705,8 +705,8 @@ The number of samples/observations/rows in the FeatureTable.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-nsamples"></a>}}
-\if{latex}{\out{\hypertarget{method-nsamples}{}}}
+\if{html}{\out{<a id="method-FeatureTable-nsamples"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-nsamples}{}}}
 \subsection{Method \code{nsamples()}}{
 Alias of \code{FeatureTable$num_samples()}.
 \subsection{Usage}{
@@ -715,8 +715,8 @@ Alias of \code{FeatureTable$num_samples()}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-num_observations"></a>}}
-\if{latex}{\out{\hypertarget{method-num_observations}{}}}
+\if{html}{\out{<a id="method-FeatureTable-num_observations"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-num_observations}{}}}
 \subsection{Method \code{num_observations()}}{
 Alias of \code{FeatureTable$num_samples()}.
 \subsection{Usage}{
@@ -725,8 +725,8 @@ Alias of \code{FeatureTable$num_samples()}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-nobservations"></a>}}
-\if{latex}{\out{\hypertarget{method-nobservations}{}}}
+\if{html}{\out{<a id="method-FeatureTable-nobservations"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-nobservations}{}}}
 \subsection{Method \code{nobservations()}}{
 Alias of \code{FeatureTable$num_samples()}.
 \subsection{Usage}{
@@ -735,8 +735,8 @@ Alias of \code{FeatureTable$num_samples()}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-num_features"></a>}}
-\if{latex}{\out{\hypertarget{method-num_features}{}}}
+\if{html}{\out{<a id="method-FeatureTable-num_features"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-num_features}{}}}
 \subsection{Method \code{num_features()}}{
 Return the number of features/columns in the FeatureTable.
 \subsection{Usage}{
@@ -748,8 +748,8 @@ The number of features/columns in the FeatureTable.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-nfeatures"></a>}}
-\if{latex}{\out{\hypertarget{method-nfeatures}{}}}
+\if{html}{\out{<a id="method-FeatureTable-nfeatures"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-nfeatures}{}}}
 \subsection{Method \code{nfeatures()}}{
 Alias of \code{FeatureTable$num_features()}.
 \subsection{Usage}{
@@ -758,8 +758,8 @@ Alias of \code{FeatureTable$num_features()}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-sample_names"></a>}}
-\if{latex}{\out{\hypertarget{method-sample_names}{}}}
+\if{html}{\out{<a id="method-FeatureTable-sample_names"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-sample_names}{}}}
 \subsection{Method \code{sample_names()}}{
 Return the names of samples/observations/rows in the FeatureTable.
 \subsection{Usage}{
@@ -771,8 +771,8 @@ The names of samples/observations/rows in the FeatureTable.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-observation_names"></a>}}
-\if{latex}{\out{\hypertarget{method-observation_names}{}}}
+\if{html}{\out{<a id="method-FeatureTable-observation_names"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-observation_names}{}}}
 \subsection{Method \code{observation_names()}}{
 Alias of \code{FeatureTable$sample_names()}.
 \subsection{Usage}{
@@ -781,8 +781,8 @@ Alias of \code{FeatureTable$sample_names()}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-feature_names"></a>}}
-\if{latex}{\out{\hypertarget{method-feature_names}{}}}
+\if{html}{\out{<a id="method-FeatureTable-feature_names"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-feature_names}{}}}
 \subsection{Method \code{feature_names()}}{
 Return the names of samples/observations/rows in the FeatureTable.
 \subsection{Usage}{
@@ -794,8 +794,8 @@ The names of samples/observations/rows in the FeatureTable.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-apply"></a>}}
-\if{latex}{\out{\hypertarget{method-apply}{}}}
+\if{html}{\out{<a id="method-FeatureTable-apply"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-apply}{}}}
 \subsection{Method \code{apply()}}{
 Apply functions over FeatureTable data margins.
 \subsection{Usage}{
@@ -841,8 +841,8 @@ stopifnot(
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-apply_with_index"></a>}}
-\if{latex}{\out{\hypertarget{method-apply_with_index}{}}}
+\if{html}{\out{<a id="method-FeatureTable-apply_with_index"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-apply_with_index}{}}}
 \subsection{Method \code{apply_with_index()}}{
 Apply functions over FeatureTable data margins.
 \subsection{Usage}{
@@ -915,8 +915,8 @@ ft$apply_with_index(2, function(feature, index) {
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-apply_with_name"></a>}}
-\if{latex}{\out{\hypertarget{method-apply_with_name}{}}}
+\if{html}{\out{<a id="method-FeatureTable-apply_with_name"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-apply_with_name}{}}}
 \subsection{Method \code{apply_with_name()}}{
 Similar to \code{apply_with_index}, except that \code{fn} takes a
 (row or column) \code{name} rather than an \code{index}.
@@ -941,8 +941,8 @@ ft$apply_with_name(2, function(feature, name) {
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-apply_features"></a>}}
-\if{latex}{\out{\hypertarget{method-apply_features}{}}}
+\if{html}{\out{<a id="method-FeatureTable-apply_features"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-apply_features}{}}}
 \subsection{Method \code{apply_features()}}{
 Convenience wrapper for \code{FeatureTable$apply(2, fn, ...)}.
 
@@ -953,8 +953,8 @@ See \code{FeatureTable$apply}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-apply_features_with_index"></a>}}
-\if{latex}{\out{\hypertarget{method-apply_features_with_index}{}}}
+\if{html}{\out{<a id="method-FeatureTable-apply_features_with_index"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-apply_features_with_index}{}}}
 \subsection{Method \code{apply_features_with_index()}}{
 Convenience wrapper for \code{FeatureTable$apply_with_index(2, fn, ...)}.
 
@@ -965,8 +965,8 @@ See \code{FeatureTable$apply_with_index}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-apply_features_with_name"></a>}}
-\if{latex}{\out{\hypertarget{method-apply_features_with_name}{}}}
+\if{html}{\out{<a id="method-FeatureTable-apply_features_with_name"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-apply_features_with_name}{}}}
 \subsection{Method \code{apply_features_with_name()}}{
 Convenience wrapper for \code{FeatureTable$apply_with_name(2, fn, ...)}.
 
@@ -977,8 +977,8 @@ See \code{FeatureTable$apply_with_name}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-apply_samples"></a>}}
-\if{latex}{\out{\hypertarget{method-apply_samples}{}}}
+\if{html}{\out{<a id="method-FeatureTable-apply_samples"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-apply_samples}{}}}
 \subsection{Method \code{apply_samples()}}{
 Convenience wrapper for \code{FeatureTable$apply(1, fn, ...)}.
 
@@ -989,8 +989,8 @@ See \code{FeatureTable$apply}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-apply_samples_with_index"></a>}}
-\if{latex}{\out{\hypertarget{method-apply_samples_with_index}{}}}
+\if{html}{\out{<a id="method-FeatureTable-apply_samples_with_index"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-apply_samples_with_index}{}}}
 \subsection{Method \code{apply_samples_with_index()}}{
 Convenience wrapper for \code{FeatureTable$apply_with_index(1, fn, ...)}.
 
@@ -1001,8 +1001,8 @@ See \code{FeatureTable$apply_with_index}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-apply_samples_with_name"></a>}}
-\if{latex}{\out{\hypertarget{method-apply_samples_with_name}{}}}
+\if{html}{\out{<a id="method-FeatureTable-apply_samples_with_name"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-apply_samples_with_name}{}}}
 \subsection{Method \code{apply_samples_with_name()}}{
 Convenience wrapper for \code{FeatureTable$apply_with_name(1, fn, ...)}.
 
@@ -1013,8 +1013,8 @@ See \code{FeatureTable$apply_with_name}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-map"></a>}}
-\if{latex}{\out{\hypertarget{method-map}{}}}
+\if{html}{\out{<a id="method-FeatureTable-map"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-map}{}}}
 \subsection{Method \code{map()}}{
 Returns a new FeatureTable by applying a function to margins of the
 \code{$data} field of a \code{FeatureTable}.
@@ -1111,8 +1111,8 @@ map_with_name(ft, "features", function(feature, name) {
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-map_with_index"></a>}}
-\if{latex}{\out{\hypertarget{method-map_with_index}{}}}
+\if{html}{\out{<a id="method-FeatureTable-map_with_index"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-map_with_index}{}}}
 \subsection{Method \code{map_with_index()}}{
 Like \code{FeatureTable$map()} but also passes the \code{index} to
 \code{fn} similar to \code{FeatureTable$apply_with_index()}.
@@ -1124,8 +1124,8 @@ See \code{FeatureTable$map()}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-map_with_name"></a>}}
-\if{latex}{\out{\hypertarget{method-map_with_name}{}}}
+\if{html}{\out{<a id="method-FeatureTable-map_with_name"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-map_with_name}{}}}
 \subsection{Method \code{map_with_name()}}{
 Like \code{FeatureTable$map()} but also passes the \code{name} to
 \code{fn} similar to \code{FeatureTable$apply_with_name()}.
@@ -1137,8 +1137,8 @@ See \code{FeatureTable$map()}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-map_features"></a>}}
-\if{latex}{\out{\hypertarget{method-map_features}{}}}
+\if{html}{\out{<a id="method-FeatureTable-map_features"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-map_features}{}}}
 \subsection{Method \code{map_features()}}{
 Convenience wrapper for \code{FeatureTable$map(2, fn, ...)}.
 
@@ -1149,8 +1149,8 @@ See \code{FeatureTable$map}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-map_features_with_index"></a>}}
-\if{latex}{\out{\hypertarget{method-map_features_with_index}{}}}
+\if{html}{\out{<a id="method-FeatureTable-map_features_with_index"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-map_features_with_index}{}}}
 \subsection{Method \code{map_features_with_index()}}{
 Convenience wrapper for \code{FeatureTable$map_with_index(2, fn, ...)}.
 
@@ -1161,8 +1161,8 @@ See \code{FeatureTable$map}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-map_features_with_name"></a>}}
-\if{latex}{\out{\hypertarget{method-map_features_with_name}{}}}
+\if{html}{\out{<a id="method-FeatureTable-map_features_with_name"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-map_features_with_name}{}}}
 \subsection{Method \code{map_features_with_name()}}{
 Convenience wrapper for \code{FeatureTable$map_with_name(2, fn, ...)}.
 
@@ -1173,8 +1173,8 @@ See \code{FeatureTable$map}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-map_samples"></a>}}
-\if{latex}{\out{\hypertarget{method-map_samples}{}}}
+\if{html}{\out{<a id="method-FeatureTable-map_samples"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-map_samples}{}}}
 \subsection{Method \code{map_samples()}}{
 Convenience wrapper for \code{FeatureTable$map(1, fn, ...)}.
 
@@ -1185,8 +1185,8 @@ See \code{FeatureTable$map}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-map_samples_with_index"></a>}}
-\if{latex}{\out{\hypertarget{method-map_samples_with_index}{}}}
+\if{html}{\out{<a id="method-FeatureTable-map_samples_with_index"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-map_samples_with_index}{}}}
 \subsection{Method \code{map_samples_with_index()}}{
 Convenience wrapper for \code{FeatureTable$map_with_index(1, fn, ...)}.
 
@@ -1197,8 +1197,8 @@ See \code{FeatureTable$map}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-map_samples_with_name"></a>}}
-\if{latex}{\out{\hypertarget{method-map_samples_with_name}{}}}
+\if{html}{\out{<a id="method-FeatureTable-map_samples_with_name"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-map_samples_with_name}{}}}
 \subsection{Method \code{map_samples_with_name()}}{
 Convenience wrapper for \code{FeatureTable$map_with_name(1, fn, ...)}.
 
@@ -1209,8 +1209,8 @@ See \code{FeatureTable$map}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-collapse"></a>}}
-\if{latex}{\out{\hypertarget{method-collapse}{}}}
+\if{html}{\out{<a id="method-FeatureTable-collapse"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-collapse}{}}}
 \subsection{Method \code{collapse()}}{
 Collapse samples/observations/rows or features/columns based on metadata. For
 features/samples, any feature/sample with the same metadata for selected
@@ -1288,8 +1288,8 @@ collapse_features(ft, Shape)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-collapse_features"></a>}}
-\if{latex}{\out{\hypertarget{method-collapse_features}{}}}
+\if{html}{\out{<a id="method-FeatureTable-collapse_features"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-collapse_features}{}}}
 \subsection{Method \code{collapse_features()}}{
 Convenience wrapper for \code{FeatureTable$collapse("features", fn, ...)}.
 
@@ -1300,8 +1300,8 @@ See \code{FeatureTable$collapse}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-collapse_samples"></a>}}
-\if{latex}{\out{\hypertarget{method-collapse_samples}{}}}
+\if{html}{\out{<a id="method-FeatureTable-collapse_samples"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-collapse_samples}{}}}
 \subsection{Method \code{collapse_samples()}}{
 Convenience wrapper for \code{FeatureTable$collapse("samples", fn, ...)}.
 
@@ -1312,8 +1312,8 @@ See \code{FeatureTable$collapse}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-keep"></a>}}
-\if{latex}{\out{\hypertarget{method-keep}{}}}
+\if{html}{\out{<a id="method-FeatureTable-keep"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-keep}{}}}
 \subsection{Method \code{keep()}}{
 Keep samples/observations/rows or features/columns based on result of a
 predicate function or expression.
@@ -1539,8 +1539,8 @@ ft$keep_features(
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-keep_features"></a>}}
-\if{latex}{\out{\hypertarget{method-keep_features}{}}}
+\if{html}{\out{<a id="method-FeatureTable-keep_features"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-keep_features}{}}}
 \subsection{Method \code{keep_features()}}{
 Convenience wrapper for \code{FeatureTable$keep("features", fn, ...)}.
 
@@ -1551,8 +1551,8 @@ See \code{FeatureTable$keep}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-keep_samples"></a>}}
-\if{latex}{\out{\hypertarget{method-keep_samples}{}}}
+\if{html}{\out{<a id="method-FeatureTable-keep_samples"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-keep_samples}{}}}
 \subsection{Method \code{keep_samples()}}{
 Convenience wrapper for \code{FeatureTable$keep("samples", fn, ...)}.
 
@@ -1563,8 +1563,8 @@ See \code{FeatureTable$keep}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-shared_features"></a>}}
-\if{latex}{\out{\hypertarget{method-shared_features}{}}}
+\if{html}{\out{<a id="method-FeatureTable-shared_features"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-shared_features}{}}}
 \subsection{Method \code{shared_features()}}{
 Merge FeatureTables by keeping only features that are shared between them
 (base on feature names).
@@ -1600,8 +1600,8 @@ If \code{method = "names"}, return the shared feature names between \code{ft}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-keep_shared_features"></a>}}
-\if{latex}{\out{\hypertarget{method-keep_shared_features}{}}}
+\if{html}{\out{<a id="method-FeatureTable-keep_shared_features"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-keep_shared_features}{}}}
 \subsection{Method \code{keep_shared_features()}}{
 Alias for \code{FeatureTable$shared_features("keep", ...)}.
 
@@ -1612,8 +1612,8 @@ See \code{FeatureTable$shared_features}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-shared_feature_names"></a>}}
-\if{latex}{\out{\hypertarget{method-shared_feature_names}{}}}
+\if{html}{\out{<a id="method-FeatureTable-shared_feature_names"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-shared_feature_names}{}}}
 \subsection{Method \code{shared_feature_names()}}{
 Alias for \code{FeatureTable$shared_features("names", ...)}.
 
@@ -1624,8 +1624,8 @@ See \code{FeatureTable$shared_features}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-core_microbiome"></a>}}
-\if{latex}{\out{\hypertarget{method-core_microbiome}{}}}
+\if{html}{\out{<a id="method-FeatureTable-core_microbiome"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-core_microbiome}{}}}
 \subsection{Method \code{core_microbiome()}}{
 Core Microbiome
 \subsection{Usage}{
@@ -1672,8 +1672,8 @@ A new FeatureTable with only the specified "core" features.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-is_count_table"></a>}}
-\if{latex}{\out{\hypertarget{method-is_count_table}{}}}
+\if{html}{\out{<a id="method-FeatureTable-is_count_table"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-is_count_table}{}}}
 \subsection{Method \code{is_count_table()}}{
 Is the FeatureTable a count table?
 \subsection{Usage}{
@@ -1685,8 +1685,8 @@ TRUE if \code{feature_table} contains only natural numbers (counting numbers >= 
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-replace_zeros"></a>}}
-\if{latex}{\out{\hypertarget{method-replace_zeros}{}}}
+\if{html}{\out{<a id="method-FeatureTable-replace_zeros"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-replace_zeros}{}}}
 \subsection{Method \code{replace_zeros()}}{
 Replacing zeros.
 \subsection{Usage}{
@@ -1721,8 +1721,8 @@ A new FeatureTable with the zeros in \code{data} replaced.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clr"></a>}}
-\if{latex}{\out{\hypertarget{method-clr}{}}}
+\if{html}{\out{<a id="method-FeatureTable-clr"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-clr}{}}}
 \subsection{Method \code{clr()}}{
 Centered log ratio.
 \subsection{Usage}{
@@ -1746,8 +1746,8 @@ A FeatureTable with the \code{data} transformed with centered log ratio.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-plot"></a>}}
-\if{latex}{\out{\hypertarget{method-plot}{}}}
+\if{html}{\out{<a id="method-FeatureTable-plot"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-plot}{}}}
 \subsection{Method \code{plot()}}{
 FeatureTable summary plots
 \subsection{Usage}{
@@ -1809,8 +1809,8 @@ A `ggplot2` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-pca_biplot"></a>}}
-\if{latex}{\out{\hypertarget{method-pca_biplot}{}}}
+\if{html}{\out{<a id="method-FeatureTable-pca_biplot"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-pca_biplot}{}}}
 \subsection{Method \code{pca_biplot()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FeatureTable$pca_biplot(use_biplotr = FALSE, include_sample_data = FALSE, ...)}\if{html}{\out{</div>}}
@@ -1842,8 +1842,8 @@ then this function is a wrapper for \code{base::biplot}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-as_phyloseq"></a>}}
-\if{latex}{\out{\hypertarget{method-as_phyloseq}{}}}
+\if{html}{\out{<a id="method-FeatureTable-as_phyloseq"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-as_phyloseq}{}}}
 \subsection{Method \code{as_phyloseq()}}{
 Convert FeatureTable to phyloseq object.
 \subsection{Usage}{
@@ -1866,8 +1866,8 @@ a phyloseq object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-FeatureTable-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-FeatureTable-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
