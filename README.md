@@ -1,5 +1,7 @@
 # FeatureTable
 
+[![R-CMD-check](https://github.com/mooreryan/featuretable/actions/workflows/check-standard.yaml/badge.svg?branch=main)](https://github.com/mooreryan/featuretable/actions/workflows/check-standard.yaml)
+
 *Note:  I still consider FeatureTable to be in the pre-release stage.  The code itself is well tested and I use it in my own research, but the API has not stabalized and is still subject to breaking changes when I cut a new release.*
 
 ## Installing
@@ -47,14 +49,31 @@ Additionally, each function has a lot of info in the help section.  You can run 
   
 ## R v3 and v4 compatibility
 
-- All the unit tests pass on R v3.6.3 (tested with [this](https://hub.docker.com/layers/mooreryan/featuretable_dev/v1--rocker-verse-3.6.3/images/sha256-e67882750a5abadcefe7fb7107ad4dbc924a2014f199a96abdd48c97172131f8?context=repo) Docker image) and v4.0.2 (tested with [this](https://hub.docker.com/layers/mooreryan/featuretable_dev/v1--rocker-verse-4.0.2/images/sha256-08a916b6bda371ffa8571286373a523dc46d14db9129701cc7a1d75d0c209cd6?context=repo) Docker image).
-- Literally every time `data.frame` or `as.data.frame` is called in the `FeatureTable` code and tests , `stringsAsFactors = TRUE` is passed in as an argument.  
-  - So, if you need a specific stable sorting of your sringly data, you need to set the factor levels yourself.
-  - In theory, you should be fine passing in `data.frame`s that don't have their strings as factors, since `FeatureTable` will convert all strings to factors, but as of 2020-09-22, I haven't tested it.
+`R CMD CHECK`, which includes unit tests, are run via GitHub CI for the following versions:
+
+  - Latest release
+  - 4.1.3
+  - 4.0.5
+  - 3.6.3
+  - 3.5.3
+
+So as long as that is passing (see the badge at the top of the README), then you can be (pretty) sure the package works with both R v3 and v4.
+
+Notes:
+
+- Each time `data.frame` or `as.data.frame` is called in the `FeatureTable` code and tests , `stringsAsFactors = TRUE` is passed in as an argument.  
+  - So, if you need a specific stable sorting of your string-like data, you need to set the factor levels yourself.
+  - In theory, you should be fine passing in `data.frame`s that don't have their strings as factors, since `FeatureTable` will convert all strings to factors, but I should probably add tests for this.
   - This behavior may change in the future though!
 - One thing to note is that `as.data.frame.FeatureTable` does not have a `stringsAsFactors` parameter.  This shouldn't be a problem as string-esque data is not allowed in the `data` field anyway.
 
-## Default branch is now main
+## Hacking
+
+- If you make an update to the core R6 class, make sure you regenerate the `.rda` files in `data`, using the scripts in `data-raw`.
+  - Note that generating the data files requires the [DivNet](https://github.com/adw96/DivNet) R package.
+  - You can use the recipe in the `justfile` for this.
+
+### Default branch is now main
 
 The default branch is now `main`, and the `master` branch no longer exists.
 
@@ -72,9 +91,3 @@ Optionally, run the following command to remove tracking references to the old b
 ```
 git remote prune origin
 ```
-
-## Hacking
-
-- If you make an update to the core R6 class, make sure you regenerate the `.rda` files in `data`, using the scripts in `data-raw`.
-  - Note that generating the data files requires the [DivNet](https://github.com/adw96/DivNet) R package.
-  - You can use the recipe in the `justfile` for this.
