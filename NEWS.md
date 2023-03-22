@@ -1,10 +1,22 @@
 # Version updates and changes
 
+## featuretable 0.0.11
+
+### Code
+
+- Fix `is_expression` bug. (See https://github.com/mooreryan/featuretable/issues/4)
+
+### Other
+
+- Add `biplotr` to `Remotes` section (will help with installation)
+- Set up CI for tests
+- Drop the `v` from version numbers going forward.
+
 ## featuretable v0.0.10
 
-- Remove `reduce` functions.  They were more or less redundant with the `apply` 
+- Remove `reduce` functions. They were more or less redundant with the `apply`
   functions.
-- Update a *lot* of documentation!
+- Update a _lot_ of documentation!
 
 ## featuretable v0.0.9
 
@@ -53,9 +65,9 @@
 
 ## featuretable v0.0.2
 
-- Add some fancy stuff to the `keep` functions: `query` and `restrict`.  These
+- Add some fancy stuff to the `keep` functions: `query` and `restrict`. These
   are used to mix data and metadata queries into a single predicate, and to
-  restrict data queries to subsets of samples.  Currently, they are only
+  restrict data queries to subsets of samples. Currently, they are only
   available in when keeping `features`.
 - Add methods to collapse features based on metadata.
 - Add various data utilities and helpers.
